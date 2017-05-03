@@ -1,0 +1,544 @@
+consumes:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+definitions:
+  Arraytype:
+    description: example (default view)
+    example:
+      ID: 1
+      value: hoge
+    properties:
+      ID:
+        description: ID
+        example: 1
+        format: int64
+        type: integer
+      value:
+        description: 値
+        example: hoge
+        type: string
+    required:
+    - ID
+    - value
+    title: 'Mediatype identifier: application/vnd.arraytype+json; view=default'
+    type: object
+  ArraytypeCollection:
+    description: ArraytypeCollection is the media type for an array of Arraytype (default
+      view)
+    example:
+    - ID: 1
+      value: hoge
+    - ID: 1
+      value: hoge
+    items:
+      $ref: '#/definitions/Arraytype'
+    title: 'Mediatype identifier: application/vnd.arraytype+json; type=collection;
+      view=default'
+    type: array
+  Integertype:
+    description: example (default view)
+    example:
+      ID: 1
+    properties:
+      ID:
+        description: 数値
+        example: 1
+        format: int64
+        type: integer
+    required:
+    - ID
+    title: 'Mediatype identifier: application/vnd.integertype+json; view=default'
+    type: object
+  Messagetype:
+    description: example (default view)
+    example:
+      message: ok
+    properties:
+      message:
+        description: メッセージ
+        example: ok
+        type: string
+    required:
+    - message
+    title: 'Mediatype identifier: application/vnd.messagetype+json; view=default'
+    type: object
+  Validationtype:
+    description: example (default view)
+    example:
+      ID: 1
+      default: でふぉ
+      email: example@gmail.com
+      enum: A
+      integer: 5
+      string: あいうえお
+    properties:
+      ID:
+        description: ID
+        example: 1
+        format: int64
+        type: integer
+      default:
+        description: デフォルト値
+        example: でふぉ
+        type: string
+      email:
+        description: メールアドレス
+        example: example@gmail.com
+        type: string
+      enum:
+        description: 列挙型
+        example: A
+        type: string
+      integer:
+        description: 数字（1〜10）
+        example: 5
+        format: int64
+        type: integer
+      string:
+        description: 文字（1~10文字）
+        example: あいうえお
+        type: string
+    required:
+    - ID
+    - integer
+    - string
+    - email
+    - enum
+    - default
+    title: 'Mediatype identifier: application/vnd.validationtype+json; view=default'
+    type: object
+  Viewtype:
+    description: example (default view)
+    example:
+      ID: 1
+      value: hoge
+    properties:
+      ID:
+        description: ID
+        example: 1
+        format: int64
+        type: integer
+      value:
+        description: 値
+        example: hoge
+        type: string
+    required:
+    - ID
+    - value
+    title: 'Mediatype identifier: application/vnd.viewtype+json; view=default'
+    type: object
+  error:
+    description: Error response media type (default view)
+    example:
+      code: invalid_value
+      detail: Value of ID must be an integer
+      id: 3F1FKVRR
+      meta:
+        timestamp: 1.458609e+09
+      status: "400"
+    properties:
+      code:
+        description: an application-specific error code, expressed as a string value.
+        example: invalid_value
+        type: string
+      detail:
+        description: a human-readable explanation specific to this occurrence of the
+          problem.
+        example: Value of ID must be an integer
+        type: string
+      id:
+        description: a unique identifier for this particular occurrence of the problem.
+        example: 3F1FKVRR
+        type: string
+      meta:
+        additionalProperties: true
+        description: a meta object containing non-standard meta-information about
+          the error.
+        example:
+          timestamp: 1.458609e+09
+        type: object
+      status:
+        description: the HTTP status code applicable to this problem, expressed as
+          a string value.
+        example: "400"
+        type: string
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+externalDocs:
+  description: tikasan/goa-simple-sample
+  url: https://github.com/tikasan/goa-simple-sample
+host: localhost:8080
+info:
+  description: tikasan/goa-simple-sample
+  license:
+    name: MIT
+    url: https://github.com/tikasan/eventory/blob/master/LICENSE
+  title: tikasan/goa-simple-sample
+  version: ""
+paths:
+  /actions/{id}:
+    get:
+      description: 複数アクション（:id）
+      operationId: actions#id
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.integertype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Integertype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: id actions
+      tags:
+      - actions
+  /actions/main:
+    get:
+      description: 複数アクション（main）
+      operationId: actions#main
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.messagetype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: main actions
+      tags:
+      - actions
+  /actions/sub:
+    get:
+      description: 複数アクション（sub）
+      operationId: actions#sub
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.messagetype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: sub actions
+      tags:
+      - actions
+  /array:
+    get:
+      description: 複数値
+      operationId: array#array
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.arraytype+json; type=collection
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ArraytypeCollection'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: array array
+      tags:
+      - array
+  /method/delete:
+    delete:
+      description: HTTPメソッド
+      operationId: method#method#2
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.messagetype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: method method
+      tags:
+      - method
+  /method/get:
+    get:
+      description: HTTPメソッド
+      operationId: method#method
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.messagetype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: method method
+      tags:
+      - method
+  /method/post:
+    post:
+      description: HTTPメソッド
+      operationId: method#method#1
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.messagetype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: method method
+      tags:
+      - method
+  /method/put:
+    put:
+      description: HTTPメソッド
+      operationId: method#method#3
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.messagetype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: method method
+      tags:
+      - method
+  /securiy:
+    get:
+      description: セキュリティの例です
+      operationId: security#security
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.messagetype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      - https
+      summary: security security
+      tags:
+      - security
+  /swagger.json:
+    get:
+      operationId: swagger#/swagger.json
+      responses:
+        "200":
+          description: File downloaded
+          schema:
+            type: file
+      schemes:
+      - http
+      - https
+      summary: Download swagger/swagger.json
+  /swagger/{filepath}:
+    get:
+      operationId: swagger#/swagger/*filepath
+      parameters:
+      - description: Relative file path
+        in: path
+        name: filepath
+        required: true
+        type: string
+      responses:
+        "200":
+          description: File downloaded
+          schema:
+            type: file
+        "404":
+          description: File not found
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: Download public/swagger/
+  /validation:
+    get:
+      description: Validation
+      operationId: validation#validation
+      parameters:
+      - description: ID
+        in: query
+        name: ID
+        required: false
+        type: integer
+      - default: でふぉ
+        description: デフォルト値
+        in: query
+        name: default
+        required: false
+        type: string
+      - description: メールアドレス
+        format: email
+        in: query
+        name: email
+        required: false
+        type: string
+      - description: 列挙型
+        enum:
+        - A
+        - B
+        - C
+        in: query
+        name: enum
+        required: false
+        type: string
+      - description: 数字（1〜10）
+        in: query
+        maximum: 10
+        minimum: 0
+        name: integer
+        required: false
+        type: integer
+      - description: 文字（1~10文字）
+        in: query
+        maxLength: 10
+        minLength: 1
+        name: string
+        required: false
+        type: string
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.validationtype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Validationtype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: validation validation
+      tags:
+      - validation
+  /view/default:
+    get:
+      description: MediaTypeのバリエーション
+      operationId: view#view
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.viewtype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Viewtype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: view view
+      tags:
+      - view
+  /view/tiny:
+    get:
+      description: MediaTypeのバリエーション
+      operationId: view#view#1
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.viewtype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Viewtype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: view view
+      tags:
+      - view
+produces:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+responses:
+  Unauthorized:
+    description: Unauthorized
+schemes:
+- http
+- https
+securityDefinitions:
+  userToken:
+    description: ユーザートークン
+    in: header
+    name: X-Authorization
+    type: apiKey
+swagger: "2.0"
