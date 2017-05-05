@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": actions TestHelpers
+// API "goa simple sample": actions TestHelpers
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -28,7 +28,7 @@ import (
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func IDActionsBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController, id string) (http.ResponseWriter, error) {
+func IDActionsBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController, id int) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -49,14 +49,14 @@ func IDActionsBadRequest(t goatest.TInterface, ctx context.Context, service *goa
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/actions/%v", id),
+		Path: fmt.Sprintf("/api/v1/actions/%v", id),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	prms["ID"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -89,11 +89,11 @@ func IDActionsBadRequest(t goatest.TInterface, ctx context.Context, service *goa
 	return rw, mt
 }
 
-// IDActionsOK runs the method ID of the given controller with the given parameters.
-// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// IDActionsNotFound runs the method ID of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func IDActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController, id string) (http.ResponseWriter, *app.Integertype) {
+func IDActionsNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController, id int) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -114,14 +114,71 @@ func IDActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/actions/%v", id),
+		Path: fmt.Sprintf("/api/v1/actions/%v", id),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "ActionsTest"), rw, req, prms)
+	idCtx, _err := app.NewIDActionsContext(goaCtx, req, service)
+	if _err != nil {
+		panic("invalid test data " + _err.Error()) // bug
+	}
+
+	// Perform action
+	_err = ctrl.ID(idCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 404 {
+		t.Errorf("invalid response status code: got %+v, expected 404", rw.Code)
+	}
+
+	// Return results
+	return rw
+}
+
+// IDActionsOK runs the method ID of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func IDActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController, id int) (http.ResponseWriter, *app.Integertype) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/api/v1/actions/%v", id),
+	}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["ID"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -179,7 +236,7 @@ func MainActionsBadRequest(t goatest.TInterface, ctx context.Context, service *g
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/actions/main"),
+		Path: fmt.Sprintf("/api/v1/actions/main"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -243,7 +300,7 @@ func MainActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/actions/main"),
+		Path: fmt.Sprintf("/api/v1/actions/main"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -290,7 +347,7 @@ func MainActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Servi
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func SubActionsBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController) (http.ResponseWriter, error) {
+func SubActionsBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController, name string) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -310,14 +367,24 @@ func SubActionsBadRequest(t goatest.TInterface, ctx context.Context, service *go
 
 	// Setup request context
 	rw := httptest.NewRecorder()
+	query := url.Values{}
+	{
+		sliceVal := []string{name}
+		query["name"] = sliceVal
+	}
 	u := &url.URL{
-		Path: fmt.Sprintf("/actions/sub"),
+		Path:     fmt.Sprintf("/api/v1/actions/sub"),
+		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
+	{
+		sliceVal := []string{name}
+		prms["name"] = sliceVal
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -354,7 +421,7 @@ func SubActionsBadRequest(t goatest.TInterface, ctx context.Context, service *go
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func SubActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController) (http.ResponseWriter, *app.Messagetype) {
+func SubActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController, name string) (http.ResponseWriter, *app.Messagetype) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -374,14 +441,24 @@ func SubActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 
 	// Setup request context
 	rw := httptest.NewRecorder()
+	query := url.Values{}
+	{
+		sliceVal := []string{name}
+		query["name"] = sliceVal
+	}
 	u := &url.URL{
-		Path: fmt.Sprintf("/actions/sub"),
+		Path:     fmt.Sprintf("/api/v1/actions/sub"),
+		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
+	{
+		sliceVal := []string{name}
+		prms["name"] = sliceVal
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}

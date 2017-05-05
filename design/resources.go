@@ -28,15 +28,25 @@ var _ = Resource("actions", func() {
 		Routing(
 			GET("/sub"),
 		)
+		Params(func() {
+			Param("name", String, "名前", func() {
+				Default("")
+			})
+			Required("name")
+		})
 		Response(OK, MessageType)
 		Response(BadRequest, ErrorMedia)
 	})
-	Action("id", func() {
-		Description("複数アクション（:id）")
+	Action("ID", func() {
+		Description("複数アクション（:ID）")
 		Routing(
-			GET("/:id"),
+			GET("/:ID"),
 		)
+		Params(func() {
+			Param("ID", Integer, "ID")
+		})
 		Response(OK, IntegerType)
+		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})
 })

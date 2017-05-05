@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": array Resource Client
+// API "goa simple sample": array Resource Client
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -20,7 +20,7 @@ import (
 // ArrayArrayPath computes a request path to the array action of array.
 func ArrayArrayPath() string {
 
-	return fmt.Sprintf("/array")
+	return fmt.Sprintf("/api/v1/array")
 }
 
 // 複数値

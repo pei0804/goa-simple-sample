@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": view Resource Client
+// API "goa simple sample": view Resource Client
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -20,13 +20,13 @@ import (
 // ViewViewPath computes a request path to the view action of view.
 func ViewViewPath() string {
 
-	return fmt.Sprintf("/view/default")
+	return fmt.Sprintf("/api/v1/view/default")
 }
 
 // ViewViewPath2 computes a request path to the view action of view.
 func ViewViewPath2() string {
 
-	return fmt.Sprintf("/view/tiny")
+	return fmt.Sprintf("/api/v1/view/tiny")
 }
 
 // MediaTypeのバリエーション

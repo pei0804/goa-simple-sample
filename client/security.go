@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": security Resource Client
+// API "goa simple sample": security Resource Client
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -20,7 +20,7 @@ import (
 // SecuritySecurityPath computes a request path to the security action of security.
 func SecuritySecurityPath() string {
 
-	return fmt.Sprintf("/securiy")
+	return fmt.Sprintf("/api/v1/securiy")
 }
 
 // セキュリティの例です

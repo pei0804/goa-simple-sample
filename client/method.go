@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": method Resource Client
+// API "goa simple sample": method Resource Client
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -20,25 +20,25 @@ import (
 // MethodMethodPath computes a request path to the method action of method.
 func MethodMethodPath() string {
 
-	return fmt.Sprintf("/method/get")
+	return fmt.Sprintf("/api/v1/method/get")
 }
 
 // MethodMethodPath2 computes a request path to the method action of method.
 func MethodMethodPath2() string {
 
-	return fmt.Sprintf("/method/post")
+	return fmt.Sprintf("/api/v1/method/post")
 }
 
 // MethodMethodPath3 computes a request path to the method action of method.
 func MethodMethodPath3() string {
 
-	return fmt.Sprintf("/method/delete")
+	return fmt.Sprintf("/api/v1/method/delete")
 }
 
 // MethodMethodPath4 computes a request path to the method action of method.
 func MethodMethodPath4() string {
 
-	return fmt.Sprintf("/method/put")
+	return fmt.Sprintf("/api/v1/method/put")
 }
 
 // HTTPメソッド

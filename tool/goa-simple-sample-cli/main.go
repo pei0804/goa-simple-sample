@@ -14,8 +14,8 @@ import (
 func main() {
 	// Create command line parser
 	app := &cobra.Command{
-		Use:   "tikasan/goa-simple-sample-cli",
-		Short: `CLI client for the tikasan/goa-simple-sample service (https://github.com/tikasan/goa-simple-sample)`,
+		Use:   "goa simple sample-cli",
+		Short: `CLI client for the goa simple sample service (https://github.com/tikasan/goa-simple-sample/wiki)`,
 	}
 
 	// Create client struct
@@ -39,7 +39,7 @@ func main() {
 
 	// Initialize API client
 	c.SetUserTokenSigner(userTokenSigner)
-	c.UserAgent = "tikasan/goa-simple-sample-cli/0"
+	c.UserAgent = "goa simple sample-cli/0"
 
 	// Register API commands
 	cli.RegisterCommands(app, c)

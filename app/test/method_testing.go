@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": method TestHelpers
+// API "goa simple sample": method TestHelpers
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -49,7 +49,7 @@ func MethodMethodBadRequest(t goatest.TInterface, ctx context.Context, service *
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/method/get"),
+		Path: fmt.Sprintf("/api/v1/method/get"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -113,7 +113,7 @@ func MethodMethodBadRequest1(t goatest.TInterface, ctx context.Context, service 
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/method/post"),
+		Path: fmt.Sprintf("/api/v1/method/post"),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -177,7 +177,7 @@ func MethodMethodBadRequest2(t goatest.TInterface, ctx context.Context, service 
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/method/delete"),
+		Path: fmt.Sprintf("/api/v1/method/delete"),
 	}
 	req, err := http.NewRequest("DELETE", u.String(), nil)
 	if err != nil {
@@ -241,7 +241,7 @@ func MethodMethodBadRequest3(t goatest.TInterface, ctx context.Context, service 
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/method/put"),
+		Path: fmt.Sprintf("/api/v1/method/put"),
 	}
 	req, err := http.NewRequest("PUT", u.String(), nil)
 	if err != nil {
@@ -305,7 +305,7 @@ func MethodMethodOK(t goatest.TInterface, ctx context.Context, service *goa.Serv
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/method/get"),
+		Path: fmt.Sprintf("/api/v1/method/get"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -373,7 +373,7 @@ func MethodMethodOK1(t goatest.TInterface, ctx context.Context, service *goa.Ser
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/method/post"),
+		Path: fmt.Sprintf("/api/v1/method/post"),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -441,7 +441,7 @@ func MethodMethodOK2(t goatest.TInterface, ctx context.Context, service *goa.Ser
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/method/delete"),
+		Path: fmt.Sprintf("/api/v1/method/delete"),
 	}
 	req, err := http.NewRequest("DELETE", u.String(), nil)
 	if err != nil {
@@ -509,7 +509,7 @@ func MethodMethodOK3(t goatest.TInterface, ctx context.Context, service *goa.Ser
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/method/put"),
+		Path: fmt.Sprintf("/api/v1/method/put"),
 	}
 	req, err := http.NewRequest("PUT", u.String(), nil)
 	if err != nil {

@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": array TestHelpers
+// API "goa simple sample": array TestHelpers
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -49,7 +49,7 @@ func ArrayArrayBadRequest(t goatest.TInterface, ctx context.Context, service *go
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/array"),
+		Path: fmt.Sprintf("/api/v1/array"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -113,7 +113,7 @@ func ArrayArrayOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/array"),
+		Path: fmt.Sprintf("/api/v1/array"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {

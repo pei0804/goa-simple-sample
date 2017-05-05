@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": Client
+// API "goa simple sample": Client
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -15,7 +15,7 @@ import (
 	goaclient "github.com/goadesign/goa/client"
 )
 
-// Client is the tikasan/goa-simple-sample service client.
+// Client is the goa simple sample service client.
 type Client struct {
 	*goaclient.Client
 	UserTokenSigner goaclient.Signer

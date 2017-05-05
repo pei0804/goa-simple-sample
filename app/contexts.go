@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": Application Contexts
+// API "goa simple sample": Application Contexts
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -18,16 +18,16 @@ import (
 	"unicode/utf8"
 )
 
-// IDActionsContext provides the actions id action context.
+// IDActionsContext provides the actions ID action context.
 type IDActionsContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	ID string
+	ID int
 }
 
 // NewIDActionsContext parses the incoming request URL and body, performs validations and creates the
-// context used by the actions controller id action.
+// context used by the actions controller ID action.
 func NewIDActionsContext(ctx context.Context, r *http.Request, service *goa.Service) (*IDActionsContext, error) {
 	var err error
 	resp := goa.ContextResponse(ctx)
@@ -35,10 +35,14 @@ func NewIDActionsContext(ctx context.Context, r *http.Request, service *goa.Serv
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := IDActionsContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramID := req.Params["id"]
+	paramID := req.Params["ID"]
 	if len(paramID) > 0 {
 		rawID := paramID[0]
-		rctx.ID = rawID
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
+		}
 	}
 	return &rctx, err
 }
@@ -53,6 +57,12 @@ func (ctx *IDActionsContext) OK(r *Integertype) error {
 func (ctx *IDActionsContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *IDActionsContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
 }
 
 // MainActionsContext provides the actions main action context.
@@ -91,6 +101,7 @@ type SubActionsContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
+	Name string
 }
 
 // NewSubActionsContext parses the incoming request URL and body, performs validations and creates the
@@ -102,6 +113,13 @@ func NewSubActionsContext(ctx context.Context, r *http.Request, service *goa.Ser
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := SubActionsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramName := req.Params["name"]
+	if len(paramName) == 0 {
+		rctx.Name = ""
+	} else {
+		rawName := paramName[0]
+		rctx.Name = rawName
+	}
 	return &rctx, err
 }
 
@@ -245,9 +263,9 @@ func NewValidationValidationContext(ctx context.Context, r *http.Request, servic
 	if len(paramID) > 0 {
 		rawID := paramID[0]
 		if id, err2 := strconv.Atoi(rawID); err2 == nil {
-			tmp2 := id
-			tmp1 := &tmp2
-			rctx.ID = tmp1
+			tmp3 := id
+			tmp2 := &tmp3
+			rctx.ID = tmp2
 		} else {
 			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
 		}
@@ -283,9 +301,9 @@ func NewValidationValidationContext(ctx context.Context, r *http.Request, servic
 	if len(paramInteger) > 0 {
 		rawInteger := paramInteger[0]
 		if integer, err2 := strconv.Atoi(rawInteger); err2 == nil {
-			tmp4 := integer
-			tmp3 := &tmp4
-			rctx.Integer = tmp3
+			tmp5 := integer
+			tmp4 := &tmp5
+			rctx.Integer = tmp4
 		} else {
 			err = goa.MergeErrors(err, goa.InvalidParamTypeError("integer", rawInteger, "integer"))
 		}

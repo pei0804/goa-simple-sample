@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": Application User Types
+// API "goa simple sample": Application User Types
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 

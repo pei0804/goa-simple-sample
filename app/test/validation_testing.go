@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": validation TestHelpers
+// API "goa simple sample": validation TestHelpers
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -75,7 +75,7 @@ func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, s
 		query["string"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/validation"),
+		Path:     fmt.Sprintf("/api/v1/validation"),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
@@ -189,7 +189,7 @@ func ValidationValidationOK(t goatest.TInterface, ctx context.Context, service *
 		query["string"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/validation"),
+		Path:     fmt.Sprintf("/api/v1/validation"),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)

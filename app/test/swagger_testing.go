@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": swagger TestHelpers
+// API "goa simple sample": swagger TestHelpers
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 

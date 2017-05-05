@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": validation Resource Client
+// API "goa simple sample": validation Resource Client
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -21,7 +21,7 @@ import (
 // ValidationValidationPath computes a request path to the validation action of validation.
 func ValidationValidationPath() string {
 
-	return fmt.Sprintf("/validation")
+	return fmt.Sprintf("/api/v1/validation")
 }
 
 // Validation

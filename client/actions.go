@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": actions Resource Client
+// API "goa simple sample": actions Resource Client
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -15,16 +15,17 @@ import (
 	"golang.org/x/net/context"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
-// IDActionsPath computes a request path to the id action of actions.
-func IDActionsPath(id string) string {
-	param0 := id
+// IDActionsPath computes a request path to the ID action of actions.
+func IDActionsPath(id int) string {
+	param0 := strconv.Itoa(id)
 
-	return fmt.Sprintf("/actions/%s", param0)
+	return fmt.Sprintf("/api/v1/actions/%s", param0)
 }
 
-// 複数アクション（:id）
+// 複数アクション（:ID）
 func (c *Client) IDActions(ctx context.Context, path string) (*http.Response, error) {
 	req, err := c.NewIDActionsRequest(ctx, path)
 	if err != nil {
@@ -33,7 +34,7 @@ func (c *Client) IDActions(ctx context.Context, path string) (*http.Response, er
 	return c.Client.Do(ctx, req)
 }
 
-// NewIDActionsRequest create the request corresponding to the id action endpoint of the actions resource.
+// NewIDActionsRequest create the request corresponding to the ID action endpoint of the actions resource.
 func (c *Client) NewIDActionsRequest(ctx context.Context, path string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
@@ -50,7 +51,7 @@ func (c *Client) NewIDActionsRequest(ctx context.Context, path string) (*http.Re
 // MainActionsPath computes a request path to the main action of actions.
 func MainActionsPath() string {
 
-	return fmt.Sprintf("/actions/main")
+	return fmt.Sprintf("/api/v1/actions/main")
 }
 
 // 複数アクション（main）
@@ -79,12 +80,12 @@ func (c *Client) NewMainActionsRequest(ctx context.Context, path string) (*http.
 // SubActionsPath computes a request path to the sub action of actions.
 func SubActionsPath() string {
 
-	return fmt.Sprintf("/actions/sub")
+	return fmt.Sprintf("/api/v1/actions/sub")
 }
 
 // 複数アクション（sub）
-func (c *Client) SubActions(ctx context.Context, path string) (*http.Response, error) {
-	req, err := c.NewSubActionsRequest(ctx, path)
+func (c *Client) SubActions(ctx context.Context, path string, name string) (*http.Response, error) {
+	req, err := c.NewSubActionsRequest(ctx, path, name)
 	if err != nil {
 		return nil, err
 	}
@@ -92,12 +93,15 @@ func (c *Client) SubActions(ctx context.Context, path string) (*http.Response, e
 }
 
 // NewSubActionsRequest create the request corresponding to the sub action endpoint of the actions resource.
-func (c *Client) NewSubActionsRequest(ctx context.Context, path string) (*http.Request, error) {
+func (c *Client) NewSubActionsRequest(ctx context.Context, path string, name string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "https"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	values := u.Query()
+	values.Set("name", name)
+	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err

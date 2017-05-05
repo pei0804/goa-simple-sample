@@ -167,26 +167,31 @@ definitions:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
 externalDocs:
-  description: tikasan/goa-simple-sample
-  url: https://github.com/tikasan/goa-simple-sample
+  description: wiki
+  url: https://github.com/tikasan/goa-simple-sample/wiki
 host: localhost:8080
 info:
-  description: tikasan/goa-simple-sample
+  contact:
+    email: satak47cpc@gmail.com
+    name: pei
+    url: https://github.com/tikasan/goa-simple-sample/issues
+  description: goaのサンプルです
   license:
     name: MIT
     url: https://github.com/tikasan/eventory/blob/master/LICENSE
   title: tikasan/goa-simple-sample
   version: ""
 paths:
-  /actions/{id}:
+  /api/v1/actions/{ID}:
     get:
-      description: 複数アクション（:id）
-      operationId: actions#id
+      description: 複数アクション（:ID）
+      operationId: actions#ID
       parameters:
-      - in: path
-        name: id
+      - description: ID
+        in: path
+        name: ID
         required: true
-        type: string
+        type: integer
       produces:
       - application/vnd.goa.error
       - application/vnd.integertype+json
@@ -199,13 +204,15 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/error'
+        "404":
+          description: Not Found
       schemes:
       - http
       - https
-      summary: id actions
+      summary: ID actions
       tags:
       - actions
-  /actions/main:
+  /api/v1/actions/main:
     get:
       description: 複数アクション（main）
       operationId: actions#main
@@ -227,10 +234,17 @@ paths:
       summary: main actions
       tags:
       - actions
-  /actions/sub:
+  /api/v1/actions/sub:
     get:
       description: 複数アクション（sub）
       operationId: actions#sub
+      parameters:
+      - default: ""
+        description: 名前
+        in: query
+        name: name
+        required: true
+        type: string
       produces:
       - application/vnd.goa.error
       - application/vnd.messagetype+json
@@ -249,7 +263,7 @@ paths:
       summary: sub actions
       tags:
       - actions
-  /array:
+  /api/v1/array:
     get:
       description: 複数値
       operationId: array#array
@@ -271,7 +285,7 @@ paths:
       summary: array array
       tags:
       - array
-  /method/delete:
+  /api/v1/method/delete:
     delete:
       description: HTTPメソッド
       operationId: method#method#2
@@ -293,7 +307,7 @@ paths:
       summary: method method
       tags:
       - method
-  /method/get:
+  /api/v1/method/get:
     get:
       description: HTTPメソッド
       operationId: method#method
@@ -315,7 +329,7 @@ paths:
       summary: method method
       tags:
       - method
-  /method/post:
+  /api/v1/method/post:
     post:
       description: HTTPメソッド
       operationId: method#method#1
@@ -337,7 +351,7 @@ paths:
       summary: method method
       tags:
       - method
-  /method/put:
+  /api/v1/method/put:
     put:
       description: HTTPメソッド
       operationId: method#method#3
@@ -359,7 +373,7 @@ paths:
       summary: method method
       tags:
       - method
-  /securiy:
+  /api/v1/securiy:
     get:
       description: セキュリティの例です
       operationId: security#security
@@ -383,41 +397,7 @@ paths:
       summary: security security
       tags:
       - security
-  /swagger.json:
-    get:
-      operationId: swagger#/swagger.json
-      responses:
-        "200":
-          description: File downloaded
-          schema:
-            type: file
-      schemes:
-      - http
-      - https
-      summary: Download swagger/swagger.json
-  /swagger/{filepath}:
-    get:
-      operationId: swagger#/swagger/*filepath
-      parameters:
-      - description: Relative file path
-        in: path
-        name: filepath
-        required: true
-        type: string
-      responses:
-        "200":
-          description: File downloaded
-          schema:
-            type: file
-        "404":
-          description: File not found
-          schema:
-            $ref: '#/definitions/error'
-      schemes:
-      - http
-      - https
-      summary: Download public/swagger/
-  /validation:
+  /api/v1/validation:
     get:
       description: Validation
       operationId: validation#validation
@@ -480,13 +460,13 @@ paths:
       summary: validation validation
       tags:
       - validation
-  /view/default:
+  /api/v1/view/default:
     get:
       description: MediaTypeのバリエーション
       operationId: view#view
       produces:
-      - application/vnd.goa.error
       - application/vnd.viewtype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -502,7 +482,7 @@ paths:
       summary: view view
       tags:
       - view
-  /view/tiny:
+  /api/v1/view/tiny:
     get:
       description: MediaTypeのバリエーション
       operationId: view#view#1
@@ -524,12 +504,48 @@ paths:
       summary: view view
       tags:
       - view
+  /swagger.json:
+    get:
+      operationId: swagger#/swagger.json
+      responses:
+        "200":
+          description: File downloaded
+          schema:
+            type: file
+      schemes:
+      - http
+      - https
+      summary: Download swagger/swagger.json
+  /swagger/{filepath}:
+    get:
+      operationId: swagger#/swagger/*filepath
+      parameters:
+      - description: Relative file path
+        in: path
+        name: filepath
+        required: true
+        type: string
+      responses:
+        "200":
+          description: File downloaded
+          schema:
+            type: file
+        "404":
+          description: File not found
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: Download public/swagger/
 produces:
 - application/json
 - application/xml
 - application/gob
 - application/x-gob
 responses:
+  NotFound:
+    description: Not Found
   Unauthorized:
     description: Unauthorized
 schemes:

@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": security TestHelpers
+// API "goa simple sample": security TestHelpers
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -49,7 +49,7 @@ func SecuritySecurityBadRequest(t goatest.TInterface, ctx context.Context, servi
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/securiy"),
+		Path: fmt.Sprintf("/api/v1/securiy"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -113,7 +113,7 @@ func SecuritySecurityOK(t goatest.TInterface, ctx context.Context, service *goa.
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/securiy"),
+		Path: fmt.Sprintf("/api/v1/securiy"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -181,7 +181,7 @@ func SecuritySecurityUnauthorized(t goatest.TInterface, ctx context.Context, ser
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/securiy"),
+		Path: fmt.Sprintf("/api/v1/securiy"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {

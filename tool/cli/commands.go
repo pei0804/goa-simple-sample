@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": CLI Commands
+// API "goa simple sample": CLI Commands
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -20,7 +20,6 @@ import (
 	"github.com/tikasan/goa-simple-sample/client"
 	"golang.org/x/net/context"
 	"log"
-	"net/url"
 	"os"
 	"path"
 	"strconv"
@@ -29,9 +28,10 @@ import (
 )
 
 type (
-	// IDActionsCommand is the command line data structure for the id action of actions
+	// IDActionsCommand is the command line data structure for the ID action of actions
 	IDActionsCommand struct {
-		ID          string
+		// ID
+		ID          int
 		PrettyPrint bool
 	}
 
@@ -42,6 +42,8 @@ type (
 
 	// SubActionsCommand is the command line data structure for the sub action of actions
 	SubActionsCommand struct {
+		// 名前
+		Name        string
 		PrettyPrint bool
 	}
 
@@ -98,7 +100,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	}
 	tmp1 := new(ArrayArrayCommand)
 	sub = &cobra.Command{
-		Use:   `array ["/array"]`,
+		Use:   `array ["/api/v1/array"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp1.Run(c, args) },
 	}
@@ -108,11 +110,11 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	app.AddCommand(command)
 	command = &cobra.Command{
 		Use:   "id",
-		Short: `複数アクション（:id）`,
+		Short: `複数アクション（:ID）`,
 	}
 	tmp2 := new(IDActionsCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/actions/ID"]`,
+		Use:   `actions ["/api/v1/actions/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
@@ -126,7 +128,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	}
 	tmp3 := new(MainActionsCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/actions/main"]`,
+		Use:   `actions ["/api/v1/actions/main"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
@@ -140,7 +142,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	}
 	tmp4 := new(MethodMethodCommand)
 	sub = &cobra.Command{
-		Use:   `method [("/method/get"|"/method/post"|"/method/delete"|"/method/put")]`,
+		Use:   `method [("/api/v1/method/get"|"/api/v1/method/post"|"/api/v1/method/delete"|"/api/v1/method/put")]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp4.Run(c, args) },
 	}
@@ -154,7 +156,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	}
 	tmp5 := new(SecuritySecurityCommand)
 	sub = &cobra.Command{
-		Use:   `security ["/securiy"]`,
+		Use:   `security ["/api/v1/securiy"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp5.Run(c, args) },
 	}
@@ -168,7 +170,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	}
 	tmp6 := new(SubActionsCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/actions/sub"]`,
+		Use:   `actions ["/api/v1/actions/sub"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
@@ -182,7 +184,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	}
 	tmp7 := new(ValidationValidationCommand)
 	sub = &cobra.Command{
-		Use:   `validation ["/validation"]`,
+		Use:   `validation ["/api/v1/validation"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}
@@ -196,7 +198,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	}
 	tmp8 := new(ViewViewCommand)
 	sub = &cobra.Command{
-		Use:   `view [("/view/default"|"/view/tiny")]`,
+		Use:   `view [("/api/v1/view/default"|"/api/v1/view/tiny")]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp8.Run(c, args) },
 	}
@@ -423,7 +425,7 @@ func (cmd *IDActionsCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = fmt.Sprintf("/actions/%v", url.QueryEscape(cmd.ID))
+		path = fmt.Sprintf("/api/v1/actions/%v", cmd.ID)
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -439,8 +441,8 @@ func (cmd *IDActionsCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *IDActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
-	var id string
-	cc.Flags().StringVar(&cmd.ID, "id", id, ``)
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "ID", id, `ID`)
 }
 
 // Run makes the HTTP request corresponding to the MainActionsCommand command.
@@ -449,7 +451,7 @@ func (cmd *MainActionsCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = "/actions/main"
+		path = "/api/v1/actions/main"
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -473,11 +475,11 @@ func (cmd *SubActionsCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = "/actions/sub"
+		path = "/api/v1/actions/sub"
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.SubActions(ctx, path)
+	resp, err := c.SubActions(ctx, path, cmd.Name)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -489,6 +491,8 @@ func (cmd *SubActionsCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *SubActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var name string
+	cc.Flags().StringVar(&cmd.Name, "name", name, `名前`)
 }
 
 // Run makes the HTTP request corresponding to the ArrayArrayCommand command.
@@ -497,7 +501,7 @@ func (cmd *ArrayArrayCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = "/array"
+		path = "/api/v1/array"
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -521,7 +525,7 @@ func (cmd *MethodMethodCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = "/method/get"
+		path = "/api/v1/method/get"
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -545,7 +549,7 @@ func (cmd *SecuritySecurityCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = "/securiy"
+		path = "/api/v1/securiy"
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -569,7 +573,7 @@ func (cmd *ValidationValidationCommand) Run(c *client.Client, args []string) err
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = "/validation"
+		path = "/api/v1/validation"
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -604,7 +608,7 @@ func (cmd *ViewViewCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = "/view/default"
+		path = "/api/v1/view/default"
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)

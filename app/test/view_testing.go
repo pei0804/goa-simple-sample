@@ -4,7 +4,7 @@
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
 // --version=v1.1.0
 //
-// API "tikasan/goa-simple-sample": view TestHelpers
+// API "goa simple sample": view TestHelpers
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 
@@ -49,7 +49,7 @@ func ViewViewBadRequest(t goatest.TInterface, ctx context.Context, service *goa.
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/view/default"),
+		Path: fmt.Sprintf("/api/v1/view/default"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -113,7 +113,7 @@ func ViewViewBadRequest1(t goatest.TInterface, ctx context.Context, service *goa
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/view/tiny"),
+		Path: fmt.Sprintf("/api/v1/view/tiny"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -177,7 +177,7 @@ func ViewViewOK(t goatest.TInterface, ctx context.Context, service *goa.Service,
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/view/default"),
+		Path: fmt.Sprintf("/api/v1/view/default"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -245,7 +245,7 @@ func ViewViewOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Serv
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/view/default"),
+		Path: fmt.Sprintf("/api/v1/view/default"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -309,7 +309,7 @@ func ViewViewOK1(t goatest.TInterface, ctx context.Context, service *goa.Service
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/view/tiny"),
+		Path: fmt.Sprintf("/api/v1/view/tiny"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -377,7 +377,7 @@ func ViewViewOK1Tiny(t goatest.TInterface, ctx context.Context, service *goa.Ser
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/view/tiny"),
+		Path: fmt.Sprintf("/api/v1/view/tiny"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
