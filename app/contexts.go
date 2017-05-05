@@ -242,12 +242,13 @@ type ValidationValidationContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	ID      *int
-	Default string
-	Email   *string
-	Enum    *string
-	Integer *int
-	String  *string
+	ID          int
+	DefaultType string
+	Email       string
+	EnumType    string
+	IntegerType int
+	Reg         string
+	StringType  string
 }
 
 // NewValidationValidationContext parses the incoming request URL and body, performs validations and creates the
@@ -260,77 +261,81 @@ func NewValidationValidationContext(ctx context.Context, r *http.Request, servic
 	req.Request = r
 	rctx := ValidationValidationContext{Context: ctx, ResponseData: resp, RequestData: req}
 	paramID := req.Params["ID"]
-	if len(paramID) > 0 {
+	if len(paramID) == 0 {
+		err = goa.MergeErrors(err, goa.MissingParamError("ID"))
+	} else {
 		rawID := paramID[0]
 		if id, err2 := strconv.Atoi(rawID); err2 == nil {
-			tmp3 := id
-			tmp2 := &tmp3
-			rctx.ID = tmp2
+			rctx.ID = id
 		} else {
 			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
 		}
 	}
-	paramDefault := req.Params["default"]
-	if len(paramDefault) == 0 {
-		rctx.Default = "でふぉ"
+	paramDefaultType := req.Params["defaultType"]
+	if len(paramDefaultType) == 0 {
+		rctx.DefaultType = "でふぉ"
 	} else {
-		rawDefault := paramDefault[0]
-		rctx.Default = rawDefault
+		rawDefaultType := paramDefaultType[0]
+		rctx.DefaultType = rawDefaultType
 	}
 	paramEmail := req.Params["email"]
-	if len(paramEmail) > 0 {
+	if len(paramEmail) == 0 {
+		err = goa.MergeErrors(err, goa.MissingParamError("email"))
+	} else {
 		rawEmail := paramEmail[0]
-		rctx.Email = &rawEmail
-		if rctx.Email != nil {
-			if err2 := goa.ValidateFormat(goa.FormatEmail, *rctx.Email); err2 != nil {
-				err = goa.MergeErrors(err, goa.InvalidFormatError(`email`, *rctx.Email, goa.FormatEmail, err2))
-			}
+		rctx.Email = rawEmail
+		if err2 := goa.ValidateFormat(goa.FormatEmail, rctx.Email); err2 != nil {
+			err = goa.MergeErrors(err, goa.InvalidFormatError(`email`, rctx.Email, goa.FormatEmail, err2))
 		}
 	}
-	paramEnum := req.Params["enum"]
-	if len(paramEnum) > 0 {
-		rawEnum := paramEnum[0]
-		rctx.Enum = &rawEnum
-		if rctx.Enum != nil {
-			if !(*rctx.Enum == "A" || *rctx.Enum == "B" || *rctx.Enum == "C") {
-				err = goa.MergeErrors(err, goa.InvalidEnumValueError(`enum`, *rctx.Enum, []interface{}{"A", "B", "C"}))
-			}
+	paramEnumType := req.Params["enumType"]
+	if len(paramEnumType) == 0 {
+		err = goa.MergeErrors(err, goa.MissingParamError("enumType"))
+	} else {
+		rawEnumType := paramEnumType[0]
+		rctx.EnumType = rawEnumType
+		if !(rctx.EnumType == "A" || rctx.EnumType == "B" || rctx.EnumType == "C") {
+			err = goa.MergeErrors(err, goa.InvalidEnumValueError(`enumType`, rctx.EnumType, []interface{}{"A", "B", "C"}))
 		}
 	}
-	paramInteger := req.Params["integer"]
-	if len(paramInteger) > 0 {
-		rawInteger := paramInteger[0]
-		if integer, err2 := strconv.Atoi(rawInteger); err2 == nil {
-			tmp5 := integer
-			tmp4 := &tmp5
-			rctx.Integer = tmp4
+	paramIntegerType := req.Params["integerType"]
+	if len(paramIntegerType) == 0 {
+		err = goa.MergeErrors(err, goa.MissingParamError("integerType"))
+	} else {
+		rawIntegerType := paramIntegerType[0]
+		if integerType, err2 := strconv.Atoi(rawIntegerType); err2 == nil {
+			rctx.IntegerType = integerType
 		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("integer", rawInteger, "integer"))
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("integerType", rawIntegerType, "integer"))
 		}
-		if rctx.Integer != nil {
-			if *rctx.Integer < 0 {
-				err = goa.MergeErrors(err, goa.InvalidRangeError(`integer`, *rctx.Integer, 0, true))
-			}
+		if rctx.IntegerType < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`integerType`, rctx.IntegerType, 0, true))
 		}
-		if rctx.Integer != nil {
-			if *rctx.Integer > 10 {
-				err = goa.MergeErrors(err, goa.InvalidRangeError(`integer`, *rctx.Integer, 10, false))
-			}
+		if rctx.IntegerType > 10 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`integerType`, rctx.IntegerType, 10, false))
 		}
 	}
-	paramString := req.Params["string"]
-	if len(paramString) > 0 {
-		rawString := paramString[0]
-		rctx.String = &rawString
-		if rctx.String != nil {
-			if utf8.RuneCountInString(*rctx.String) < 1 {
-				err = goa.MergeErrors(err, goa.InvalidLengthError(`string`, *rctx.String, utf8.RuneCountInString(*rctx.String), 1, true))
-			}
+	paramReg := req.Params["reg"]
+	if len(paramReg) == 0 {
+		err = goa.MergeErrors(err, goa.MissingParamError("reg"))
+	} else {
+		rawReg := paramReg[0]
+		rctx.Reg = rawReg
+		if ok := goa.ValidatePattern(`^[a-z0-9]{5}$`, rctx.Reg); !ok {
+			err = goa.MergeErrors(err, goa.InvalidPatternError(`reg`, rctx.Reg, `^[a-z0-9]{5}$`))
 		}
-		if rctx.String != nil {
-			if utf8.RuneCountInString(*rctx.String) > 10 {
-				err = goa.MergeErrors(err, goa.InvalidLengthError(`string`, *rctx.String, utf8.RuneCountInString(*rctx.String), 10, false))
-			}
+	}
+	paramStringType := req.Params["stringType"]
+	if len(paramStringType) == 0 {
+		err = goa.MergeErrors(err, goa.MissingParamError("stringType"))
+	} else {
+		rawStringType := paramStringType[0]
+		rctx.StringType = rawStringType
+		if utf8.RuneCountInString(rctx.StringType) < 1 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError(`stringType`, rctx.StringType, utf8.RuneCountInString(rctx.StringType), 1, true))
+		}
+		if utf8.RuneCountInString(rctx.StringType) > 10 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError(`stringType`, rctx.StringType, utf8.RuneCountInString(rctx.StringType), 10, false))
 		}
 	}
 	return &rctx, err

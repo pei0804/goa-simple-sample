@@ -29,7 +29,7 @@ import (
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ValidationController, id *int, default_ string, email *string, enum *string, integer *int, string_ *string) (http.ResponseWriter, error) {
+func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ValidationController, id int, defaultType string, email string, enumType string, integerType int, reg string, stringType string) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -50,29 +50,33 @@ func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, s
 	// Setup request context
 	rw := httptest.NewRecorder()
 	query := url.Values{}
-	if id != nil {
-		sliceVal := []string{strconv.Itoa(*id)}
+	{
+		sliceVal := []string{strconv.Itoa(id)}
 		query["ID"] = sliceVal
 	}
 	{
-		sliceVal := []string{default_}
-		query["default"] = sliceVal
+		sliceVal := []string{defaultType}
+		query["defaultType"] = sliceVal
 	}
-	if email != nil {
-		sliceVal := []string{*email}
+	{
+		sliceVal := []string{email}
 		query["email"] = sliceVal
 	}
-	if enum != nil {
-		sliceVal := []string{*enum}
-		query["enum"] = sliceVal
+	{
+		sliceVal := []string{enumType}
+		query["enumType"] = sliceVal
 	}
-	if integer != nil {
-		sliceVal := []string{strconv.Itoa(*integer)}
-		query["integer"] = sliceVal
+	{
+		sliceVal := []string{strconv.Itoa(integerType)}
+		query["integerType"] = sliceVal
 	}
-	if string_ != nil {
-		sliceVal := []string{*string_}
-		query["string"] = sliceVal
+	{
+		sliceVal := []string{reg}
+		query["reg"] = sliceVal
+	}
+	{
+		sliceVal := []string{stringType}
+		query["stringType"] = sliceVal
 	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/api/v1/validation"),
@@ -83,29 +87,33 @@ func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, s
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	if id != nil {
-		sliceVal := []string{strconv.Itoa(*id)}
+	{
+		sliceVal := []string{strconv.Itoa(id)}
 		prms["ID"] = sliceVal
 	}
 	{
-		sliceVal := []string{default_}
-		prms["default"] = sliceVal
+		sliceVal := []string{defaultType}
+		prms["defaultType"] = sliceVal
 	}
-	if email != nil {
-		sliceVal := []string{*email}
+	{
+		sliceVal := []string{email}
 		prms["email"] = sliceVal
 	}
-	if enum != nil {
-		sliceVal := []string{*enum}
-		prms["enum"] = sliceVal
+	{
+		sliceVal := []string{enumType}
+		prms["enumType"] = sliceVal
 	}
-	if integer != nil {
-		sliceVal := []string{strconv.Itoa(*integer)}
-		prms["integer"] = sliceVal
+	{
+		sliceVal := []string{strconv.Itoa(integerType)}
+		prms["integerType"] = sliceVal
 	}
-	if string_ != nil {
-		sliceVal := []string{*string_}
-		prms["string"] = sliceVal
+	{
+		sliceVal := []string{reg}
+		prms["reg"] = sliceVal
+	}
+	{
+		sliceVal := []string{stringType}
+		prms["stringType"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()
@@ -143,7 +151,7 @@ func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, s
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ValidationValidationOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ValidationController, id *int, default_ string, email *string, enum *string, integer *int, string_ *string) (http.ResponseWriter, *app.Validationtype) {
+func ValidationValidationOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ValidationController, id int, defaultType string, email string, enumType string, integerType int, reg string, stringType string) (http.ResponseWriter, *app.Validationtype) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -164,29 +172,33 @@ func ValidationValidationOK(t goatest.TInterface, ctx context.Context, service *
 	// Setup request context
 	rw := httptest.NewRecorder()
 	query := url.Values{}
-	if id != nil {
-		sliceVal := []string{strconv.Itoa(*id)}
+	{
+		sliceVal := []string{strconv.Itoa(id)}
 		query["ID"] = sliceVal
 	}
 	{
-		sliceVal := []string{default_}
-		query["default"] = sliceVal
+		sliceVal := []string{defaultType}
+		query["defaultType"] = sliceVal
 	}
-	if email != nil {
-		sliceVal := []string{*email}
+	{
+		sliceVal := []string{email}
 		query["email"] = sliceVal
 	}
-	if enum != nil {
-		sliceVal := []string{*enum}
-		query["enum"] = sliceVal
+	{
+		sliceVal := []string{enumType}
+		query["enumType"] = sliceVal
 	}
-	if integer != nil {
-		sliceVal := []string{strconv.Itoa(*integer)}
-		query["integer"] = sliceVal
+	{
+		sliceVal := []string{strconv.Itoa(integerType)}
+		query["integerType"] = sliceVal
 	}
-	if string_ != nil {
-		sliceVal := []string{*string_}
-		query["string"] = sliceVal
+	{
+		sliceVal := []string{reg}
+		query["reg"] = sliceVal
+	}
+	{
+		sliceVal := []string{stringType}
+		query["stringType"] = sliceVal
 	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/api/v1/validation"),
@@ -197,29 +209,33 @@ func ValidationValidationOK(t goatest.TInterface, ctx context.Context, service *
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	if id != nil {
-		sliceVal := []string{strconv.Itoa(*id)}
+	{
+		sliceVal := []string{strconv.Itoa(id)}
 		prms["ID"] = sliceVal
 	}
 	{
-		sliceVal := []string{default_}
-		prms["default"] = sliceVal
+		sliceVal := []string{defaultType}
+		prms["defaultType"] = sliceVal
 	}
-	if email != nil {
-		sliceVal := []string{*email}
+	{
+		sliceVal := []string{email}
 		prms["email"] = sliceVal
 	}
-	if enum != nil {
-		sliceVal := []string{*enum}
-		prms["enum"] = sliceVal
+	{
+		sliceVal := []string{enumType}
+		prms["enumType"] = sliceVal
 	}
-	if integer != nil {
-		sliceVal := []string{strconv.Itoa(*integer)}
-		prms["integer"] = sliceVal
+	{
+		sliceVal := []string{strconv.Itoa(integerType)}
+		prms["integerType"] = sliceVal
 	}
-	if string_ != nil {
-		sliceVal := []string{*string_}
-		prms["string"] = sliceVal
+	{
+		sliceVal := []string{reg}
+		prms["reg"] = sliceVal
+	}
+	{
+		sliceVal := []string{stringType}
+		prms["stringType"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()

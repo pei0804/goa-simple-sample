@@ -25,8 +25,8 @@ func ValidationValidationPath() string {
 }
 
 // Validation
-func (c *Client) ValidationValidation(ctx context.Context, path string, id *int, default_ *string, email *string, enum *string, integer *int, string_ *string) (*http.Response, error) {
-	req, err := c.NewValidationValidationRequest(ctx, path, id, default_, email, enum, integer, string_)
+func (c *Client) ValidationValidation(ctx context.Context, path string, id int, defaultType string, email string, enumType string, integerType int, reg string, stringType string) (*http.Response, error) {
+	req, err := c.NewValidationValidationRequest(ctx, path, id, defaultType, email, enumType, integerType, reg, stringType)
 	if err != nil {
 		return nil, err
 	}
@@ -34,33 +34,22 @@ func (c *Client) ValidationValidation(ctx context.Context, path string, id *int,
 }
 
 // NewValidationValidationRequest create the request corresponding to the validation action endpoint of the validation resource.
-func (c *Client) NewValidationValidationRequest(ctx context.Context, path string, id *int, default_ *string, email *string, enum *string, integer *int, string_ *string) (*http.Request, error) {
+func (c *Client) NewValidationValidationRequest(ctx context.Context, path string, id int, defaultType string, email string, enumType string, integerType int, reg string, stringType string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "https"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
-	if id != nil {
-		tmp9 := strconv.Itoa(*id)
-		values.Set("ID", tmp9)
-	}
-	if default_ != nil {
-		values.Set("default", *default_)
-	}
-	if email != nil {
-		values.Set("email", *email)
-	}
-	if enum != nil {
-		values.Set("enum", *enum)
-	}
-	if integer != nil {
-		tmp10 := strconv.Itoa(*integer)
-		values.Set("integer", tmp10)
-	}
-	if string_ != nil {
-		values.Set("string", *string_)
-	}
+	tmp9 := strconv.Itoa(id)
+	values.Set("ID", tmp9)
+	values.Set("defaultType", defaultType)
+	values.Set("email", email)
+	values.Set("enumType", enumType)
+	tmp10 := strconv.Itoa(integerType)
+	values.Set("integerType", tmp10)
+	values.Set("reg", reg)
+	values.Set("stringType", stringType)
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {

@@ -68,18 +68,19 @@ definitions:
     description: example (default view)
     example:
       ID: 1
-      default: でふぉ
+      defaultType: でふぉ
       email: example@gmail.com
-      enum: A
-      integer: 5
-      string: あいうえお
+      enumType: A
+      integerType: 5
+      reg: 12abc
+      stringType: あいうえお
     properties:
       ID:
         description: ID
         example: 1
         format: int64
         type: integer
-      default:
+      defaultType:
         description: デフォルト値
         example: でふぉ
         type: string
@@ -87,26 +88,31 @@ definitions:
         description: メールアドレス
         example: example@gmail.com
         type: string
-      enum:
+      enumType:
         description: 列挙型
         example: A
         type: string
-      integer:
+      integerType:
         description: 数字（1〜10）
         example: 5
         format: int64
         type: integer
-      string:
+      reg:
+        description: デフォルト値
+        example: 12abc
+        type: string
+      stringType:
         description: 文字（1~10文字）
         example: あいうえお
         type: string
     required:
     - ID
-    - integer
-    - string
+    - integerType
+    - stringType
     - email
-    - enum
-    - default
+    - enumType
+    - defaultType
+    - reg
     title: 'Mediatype identifier: application/vnd.validationtype+json; view=default'
     type: object
   Viewtype:
@@ -312,8 +318,8 @@ paths:
       description: HTTPメソッド
       operationId: method#method
       produces:
-      - application/vnd.goa.error
       - application/vnd.messagetype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -405,19 +411,19 @@ paths:
       - description: ID
         in: query
         name: ID
-        required: false
+        required: true
         type: integer
       - default: でふぉ
         description: デフォルト値
         in: query
-        name: default
-        required: false
+        name: defaultType
+        required: true
         type: string
       - description: メールアドレス
         format: email
         in: query
         name: email
-        required: false
+        required: true
         type: string
       - description: 列挙型
         enum:
@@ -425,26 +431,32 @@ paths:
         - B
         - C
         in: query
-        name: enum
-        required: false
+        name: enumType
+        required: true
         type: string
       - description: 数字（1〜10）
         in: query
         maximum: 10
         minimum: 0
-        name: integer
-        required: false
+        name: integerType
+        required: true
         type: integer
+      - description: 正規表現
+        in: query
+        name: reg
+        pattern: ^[a-z0-9]{5}$
+        required: true
+        type: string
       - description: 文字（1~10文字）
         in: query
         maxLength: 10
         minLength: 1
-        name: string
-        required: false
+        name: stringType
+        required: true
         type: string
       produces:
-      - application/vnd.goa.error
       - application/vnd.validationtype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -465,8 +477,8 @@ paths:
       description: MediaTypeのバリエーション
       operationId: view#view
       produces:
-      - application/vnd.viewtype+json
       - application/vnd.goa.error
+      - application/vnd.viewtype+json
       responses:
         "200":
           description: OK
@@ -487,8 +499,8 @@ paths:
       description: MediaTypeのバリエーション
       operationId: view#view#1
       produces:
-      - application/vnd.viewtype+json
       - application/vnd.goa.error
+      - application/vnd.viewtype+json
       responses:
         "200":
           description: OK
@@ -504,6 +516,28 @@ paths:
       summary: view view
       tags:
       - view
+  /js/{filepath}:
+    get:
+      operationId: js#/js/*filepath
+      parameters:
+      - description: Relative file path
+        in: path
+        name: filepath
+        required: true
+        type: string
+      responses:
+        "200":
+          description: File downloaded
+          schema:
+            type: file
+        "404":
+          description: File not found
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: Download /js/
   /swagger.json:
     get:
       operationId: swagger#/swagger.json

@@ -67,15 +67,17 @@ type (
 		// ID
 		ID int
 		// デフォルト値
-		Default string
+		DefaultType string
 		// メールアドレス
 		Email string
 		// 列挙型
-		Enum string
+		EnumType string
 		// 数字（1〜10）
-		Integer int
+		IntegerType int
+		// 正規表現
+		Reg string
 		// 文字（1~10文字）
-		String      string
+		StringType  string
 		PrettyPrint bool
 	}
 
@@ -395,6 +397,14 @@ func (cmd *DownloadCommand) Run(c *client.Client, args []string) error {
 		}
 		goto found
 	}
+	if strings.HasPrefix(rpath, "/js/") {
+		fnd = c.DownloadJs
+		rpath = rpath[4:]
+		if outfile == "" {
+			_, outfile = path.Split(rpath)
+		}
+		goto found
+	}
 	if strings.HasPrefix(rpath, "/swagger/") {
 		fnd = c.DownloadSwagger
 		rpath = rpath[9:]
@@ -577,7 +587,7 @@ func (cmd *ValidationValidationCommand) Run(c *client.Client, args []string) err
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.ValidationValidation(ctx, path, intFlagVal("ID", cmd.ID), stringFlagVal("default", cmd.Default), stringFlagVal("email", cmd.Email), stringFlagVal("enum", cmd.Enum), intFlagVal("integer", cmd.Integer), stringFlagVal("string", cmd.String))
+	resp, err := c.ValidationValidation(ctx, path, cmd.ID, cmd.DefaultType, cmd.Email, cmd.EnumType, cmd.IntegerType, cmd.Reg, cmd.StringType)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -591,15 +601,17 @@ func (cmd *ValidationValidationCommand) Run(c *client.Client, args []string) err
 func (cmd *ValidationValidationCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id int
 	cc.Flags().IntVar(&cmd.ID, "ID", id, `ID`)
-	cc.Flags().StringVar(&cmd.Default, "default", "でふぉ", `デフォルト値`)
+	cc.Flags().StringVar(&cmd.DefaultType, "defaultType", "でふぉ", `デフォルト値`)
 	var email string
 	cc.Flags().StringVar(&cmd.Email, "email", email, `メールアドレス`)
-	var enum string
-	cc.Flags().StringVar(&cmd.Enum, "enum", enum, `列挙型`)
-	var integer int
-	cc.Flags().IntVar(&cmd.Integer, "integer", integer, `数字（1〜10）`)
-	var string_ string
-	cc.Flags().StringVar(&cmd.String, "string", string_, `文字（1~10文字）`)
+	var enumType string
+	cc.Flags().StringVar(&cmd.EnumType, "enumType", enumType, `列挙型`)
+	var integerType int
+	cc.Flags().IntVar(&cmd.IntegerType, "integerType", integerType, `数字（1〜10）`)
+	var reg string
+	cc.Flags().StringVar(&cmd.Reg, "reg", reg, `正規表現`)
+	var stringType string
+	cc.Flags().StringVar(&cmd.StringType, "stringType", stringType, `文字（1~10文字）`)
 }
 
 // Run makes the HTTP request corresponding to the ViewViewCommand command.

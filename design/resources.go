@@ -14,6 +14,13 @@ var _ = Resource("swagger", func() {
 	Files("/swagger/*filepath", "public/swagger/")
 })
 
+var _ = Resource("js", func() {
+	Origin("*", func() {
+		Methods("GET", "OPTIONS")
+	})
+	Files("/js/*filepath", "/js/")
+})
+
 // /actionsの定義をする
 var _ = Resource("actions", func() {
 	// actionsリソースのベースパス
@@ -138,31 +145,45 @@ var _ = Resource("validation", func() {
 			GET("/"),
 		)
 		Params(func() {
+			// Integer型
 			Param("ID", Integer, "ID", func() {
 				Example(1)
 			})
-			Param("integer", Integer, "数字（1〜10）", func() {
+			// Integer型かつ1〜10以下
+			Param("integerType", Integer, "数字（1〜10）", func() {
 				Minimum(0)
 				Maximum(10)
 				Example(2)
 			})
-			Param("string", String, "文字（1~10文字）", func() {
+			// String型かつ1〜10文字以下
+			Param("stringType", String, "文字（1~10文字）", func() {
 				MinLength(1)
 				MaxLength(10)
 				Example("あいうえお")
 			})
+			// String型かつemailフォーマット
 			Param("email", String, "メールアドレス", func() {
 				Format("email")
 				Example("example@gmail.com")
 			})
-			Param("enum", String, "列挙型", func() {
+			// String型でEnumで指定されたいずれかの文字列
+			Param("enumType", String, "列挙型", func() {
 				Enum("A", "B", "C")
 				Example("A")
 			})
-			Param("default", String, "デフォルト値", func() {
+			// String型で何も指定が無ければ”でふぉ”という文字列が自動でセットされる
+			Param("defaultType", String, "デフォルト値", func() {
 				Default("でふぉ")
 				Example("でふぉ")
 			})
+			// String型で正規表現で指定したパターンの文字列
+			Param("reg", String, "正規表現", func() {
+				Pattern("^[a-z0-9]{5}$")
+				Example("12abc")
+			})
+
+			// 全て必須パラメーター
+			Required("ID", "integerType", "stringType", "email", "enumType", "defaultType", "reg")
 		})
 		Response(OK, ValidationType)
 		Response(BadRequest, ErrorMedia)

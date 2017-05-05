@@ -15,17 +15,30 @@ func NewActionsController(service *goa.Service) *ActionsController {
 	return &ActionsController{Controller: service.NewController("ActionsController")}
 }
 
-// ID runs the id action.
+// Action ID
 func (c *ActionsController) ID(ctx *app.IDActionsContext) error {
-	// ActionsController_ID: start_implement
 
-	// Put your logic here
+	/*
+		Paramsで定義したものはctx.hogeで受け取れる
+		Params(func() {
+			Param("ID", Integer, "ID")
+		})
+	*/
 	if ctx.ID == 0 {
+		// Response(NotFound)
+		// 0の場合は、404エラーを返す
 		return ctx.NotFound()
 	}
 
-	// ActionsController_ID: end_implement
+	// Response(OK, IntegerType)
+	// MediaType IntegerTypeでレスポンス
 	res := &app.Integertype{}
+	/*
+		IDはInteger型
+		Attribute("ID", Integer, "ID", func() {
+			Example(1)
+		})
+	*/
 	res.ID = ctx.ID
 	return ctx.OK(res)
 }

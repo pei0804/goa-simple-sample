@@ -81,31 +81,36 @@ type Validationtype struct {
 	// ID
 	ID int `form:"ID" json:"ID" xml:"ID"`
 	// デフォルト値
-	Default string `form:"default" json:"default" xml:"default"`
+	DefaultType string `form:"defaultType" json:"defaultType" xml:"defaultType"`
 	// メールアドレス
 	Email string `form:"email" json:"email" xml:"email"`
 	// 列挙型
-	Enum string `form:"enum" json:"enum" xml:"enum"`
+	EnumType string `form:"enumType" json:"enumType" xml:"enumType"`
 	// 数字（1〜10）
-	Integer int `form:"integer" json:"integer" xml:"integer"`
+	IntegerType int `form:"integerType" json:"integerType" xml:"integerType"`
+	// デフォルト値
+	Reg string `form:"reg" json:"reg" xml:"reg"`
 	// 文字（1~10文字）
-	String string `form:"string" json:"string" xml:"string"`
+	StringType string `form:"stringType" json:"stringType" xml:"stringType"`
 }
 
 // Validate validates the Validationtype media type instance.
 func (mt *Validationtype) Validate() (err error) {
 
-	if mt.String == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "string"))
+	if mt.StringType == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "stringType"))
 	}
 	if mt.Email == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "email"))
 	}
-	if mt.Enum == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "enum"))
+	if mt.EnumType == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "enumType"))
 	}
-	if mt.Default == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "default"))
+	if mt.DefaultType == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "defaultType"))
+	}
+	if mt.Reg == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "reg"))
 	}
 	return
 }

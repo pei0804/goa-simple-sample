@@ -25,21 +25,24 @@ func main() {
 	// Mount "array" controller
 	c2 := controller.NewArrayController(service)
 	app.MountArrayController(service, c2)
+	// Mount "js" controller
+	c3 := controller.NewJsController(service)
+	app.MountJsController(service, c3)
 	// Mount "method" controller
-	c3 := controller.NewMethodController(service)
-	app.MountMethodController(service, c3)
+	c4 := controller.NewMethodController(service)
+	app.MountMethodController(service, c4)
 	// Mount "security" controller
-	c4 := controller.NewSecurityController(service)
-	app.MountSecurityController(service, c4)
+	c5 := controller.NewSecurityController(service)
+	app.MountSecurityController(service, c5)
 	// Mount "swagger" controller
-	c5 := controller.NewSwaggerController(service)
-	app.MountSwaggerController(service, c5)
+	c6 := controller.NewSwaggerController(service)
+	app.MountSwaggerController(service, c6)
 	// Mount "validation" controller
-	c6 := controller.NewValidationController(service)
-	app.MountValidationController(service, c6)
+	c7 := controller.NewValidationController(service)
+	app.MountValidationController(service, c7)
 	// Mount "view" controller
-	c7 := controller.NewViewController(service)
-	app.MountViewController(service, c7)
+	c8 := controller.NewViewController(service)
+	app.MountViewController(service, c8)
 
 	// Start service
 	if err := service.ListenAndServe(":8080"); err != nil {

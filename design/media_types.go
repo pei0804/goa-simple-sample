@@ -81,29 +81,33 @@ var ValidationType = MediaType("application/vnd.validationType+json", func() {
 		Attribute("ID", Integer, "ID", func() {
 			Example(1)
 		})
-		Attribute("integer", Integer, "数字（1〜10）", func() {
+		Attribute("integerType", Integer, "数字（1〜10）", func() {
 			Example(5)
 		})
-		Attribute("string", String, "文字（1~10文字）", func() {
+		Attribute("stringType", String, "文字（1~10文字）", func() {
 			Example("あいうえお")
 		})
 		Attribute("email", String, "メールアドレス", func() {
 			Example("example@gmail.com")
 		})
-		Attribute("enum", String, "列挙型", func() {
+		Attribute("enumType", String, "列挙型", func() {
 			Example("A")
 		})
-		Attribute("default", String, "デフォルト値", func() {
+		Attribute("defaultType", String, "デフォルト値", func() {
 			Example("でふぉ")
 		})
+		Attribute("reg", String, "デフォルト値", func() {
+			Example("12abc")
+		})
 	})
-	Required("ID", "integer", "string", "email", "enum", "default")
+	Required("ID", "integerType", "stringType", "email", "enumType", "defaultType", "reg")
 	View("default", func() {
 		Attribute("ID")
-		Attribute("integer")
-		Attribute("string")
+		Attribute("integerType")
+		Attribute("stringType")
 		Attribute("email")
-		Attribute("enum")
-		Attribute("default")
+		Attribute("enumType")
+		Attribute("defaultType")
+		Attribute("reg")
 	})
 })

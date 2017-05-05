@@ -180,6 +180,66 @@ func handleArrayOrigin(h goa.Handler) goa.Handler {
 	}
 }
 
+// JsController is the controller interface for the Js actions.
+type JsController interface {
+	goa.Muxer
+	goa.FileServer
+}
+
+// MountJsController "mounts" a Js resource controller on the given service.
+func MountJsController(service *goa.Service, ctrl JsController) {
+	initService(service)
+	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/js/*filepath", ctrl.MuxHandler("preflight", handleJsOrigin(cors.HandlePreflight()), nil))
+
+	h = ctrl.FileHandler("/js/*filepath", "/js/")
+	h = handleJsOrigin(h)
+	service.Mux.Handle("GET", "/js/*filepath", ctrl.MuxHandler("serve", h, nil))
+	service.LogInfo("mount", "ctrl", "Js", "files", "/js/", "route", "GET /js/*filepath")
+
+	h = ctrl.FileHandler("/js/", "/js/index.html")
+	h = handleJsOrigin(h)
+	service.Mux.Handle("GET", "/js/", ctrl.MuxHandler("serve", h, nil))
+	service.LogInfo("mount", "ctrl", "Js", "files", "/js/index.html", "route", "GET /js/")
+}
+
+// handleJsOrigin applies the CORS response headers corresponding to the origin.
+func handleJsOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "*") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+			}
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "http://localhost:8080/swagger") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Vary", "Origin")
+			rw.Header().Set("Access-Control-Expose-Headers", "X-Time")
+			rw.Header().Set("Access-Control-Max-Age", "600")
+			rw.Header().Set("Access-Control-Allow-Credentials", "true")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
+}
+
 // MethodController is the controller interface for the Method actions.
 type MethodController interface {
 	goa.Muxer

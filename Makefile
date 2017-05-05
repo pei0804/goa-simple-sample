@@ -16,16 +16,21 @@ bootstrap:
 main:
 	@goagen main -d $(REPO)/design
 
+js:
+	@goagen js -d $(REPO)/design
+
 clean:
 	@rm -rf app
 	@rm -rf client
 	@rm -rf tool
 	@rm -rf swagger
+	@rm -rf js
 
 generate:
 	@goagen app     -d $(REPO)/design
 	@goagen swagger -d $(REPO)/design
 	@goagen client -d $(REPO)/design
+	@goagen js -d $(REPO)/design
 
 swaggerUI:
 	@open http://localhost:8080/swagger/index.html
@@ -71,10 +76,13 @@ appengine:
 BASEURL:=http://localhost:8080/api/v1
 
 curl_action_id:
-	curl -v $(BASEURL)/actions/$(id)
+	curl -v '$(BASEURL)/actions/$(ID)'
 
-curl_action_main:
-	curl -v $(BASEURL)/actions/ping
+curl_action_ping:
+	curl -v '$(BASEURL)/actions/ping'
 
-curl_action_sub:
-	curl -v $(BASEURL)/actions/sub?name=$(name)
+curl_action_hello:
+	curl -v '$(BASEURL)/actions/hello?name=$(name)'
+
+curl_action_validation:
+	curl -v '$(BASEURL)/validation?ID=1&defaultType=&email=satak%40gmail.com&enumType=A&integerType=10&stringType=foo&reg=12abc'
