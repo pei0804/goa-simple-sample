@@ -29,8 +29,7 @@ var _ = API("goa simple sample", func() {
 	// ホストの設定
 	Host("localhost:8080")
 	// 対応しているプロトコル定義、httpかhttpsまたはその両方
-	Scheme("http")
-	Scheme("https")
+	Scheme("http", "https")
 	// 全てのエンドポイントのベースパス
 	// /usersというエンドポイントがあったら、/api/v1/usersとなる
 	BasePath("/api/v1")

@@ -211,11 +211,11 @@ func IDActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	return rw, mt
 }
 
-// MainActionsBadRequest runs the method Main of the given controller with the given parameters.
+// HelloActionsBadRequest runs the method Hello of the given controller with the given parameters.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func MainActionsBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController) (http.ResponseWriter, error) {
+func HelloActionsBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController, name string) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -235,25 +235,35 @@ func MainActionsBadRequest(t goatest.TInterface, ctx context.Context, service *g
 
 	// Setup request context
 	rw := httptest.NewRecorder()
+	query := url.Values{}
+	{
+		sliceVal := []string{name}
+		query["name"] = sliceVal
+	}
 	u := &url.URL{
-		Path: fmt.Sprintf("/api/v1/actions/main"),
+		Path:     fmt.Sprintf("/api/v1/actions/hello"),
+		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
+	{
+		sliceVal := []string{name}
+		prms["name"] = sliceVal
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	goaCtx := goa.NewContext(goa.WithAction(ctx, "ActionsTest"), rw, req, prms)
-	mainCtx, _err := app.NewMainActionsContext(goaCtx, req, service)
+	helloCtx, _err := app.NewHelloActionsContext(goaCtx, req, service)
 	if _err != nil {
 		panic("invalid test data " + _err.Error()) // bug
 	}
 
 	// Perform action
-	_err = ctrl.Main(mainCtx)
+	_err = ctrl.Hello(helloCtx)
 
 	// Validate response
 	if _err != nil {
@@ -275,11 +285,11 @@ func MainActionsBadRequest(t goatest.TInterface, ctx context.Context, service *g
 	return rw, mt
 }
 
-// MainActionsOK runs the method Main of the given controller with the given parameters.
+// HelloActionsOK runs the method Hello of the given controller with the given parameters.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func MainActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController) (http.ResponseWriter, *app.Messagetype) {
+func HelloActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController, name string) (http.ResponseWriter, *app.Messagetype) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -299,25 +309,35 @@ func MainActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Servi
 
 	// Setup request context
 	rw := httptest.NewRecorder()
+	query := url.Values{}
+	{
+		sliceVal := []string{name}
+		query["name"] = sliceVal
+	}
 	u := &url.URL{
-		Path: fmt.Sprintf("/api/v1/actions/main"),
+		Path:     fmt.Sprintf("/api/v1/actions/hello"),
+		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
+	{
+		sliceVal := []string{name}
+		prms["name"] = sliceVal
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	goaCtx := goa.NewContext(goa.WithAction(ctx, "ActionsTest"), rw, req, prms)
-	mainCtx, _err := app.NewMainActionsContext(goaCtx, req, service)
+	helloCtx, _err := app.NewHelloActionsContext(goaCtx, req, service)
 	if _err != nil {
 		panic("invalid test data " + _err.Error()) // bug
 	}
 
 	// Perform action
-	_err = ctrl.Main(mainCtx)
+	_err = ctrl.Hello(helloCtx)
 
 	// Validate response
 	if _err != nil {
@@ -343,11 +363,11 @@ func MainActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	return rw, mt
 }
 
-// SubActionsBadRequest runs the method Sub of the given controller with the given parameters.
+// PingActionsBadRequest runs the method Ping of the given controller with the given parameters.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func SubActionsBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController, name string) (http.ResponseWriter, error) {
+func PingActionsBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -367,35 +387,25 @@ func SubActionsBadRequest(t goatest.TInterface, ctx context.Context, service *go
 
 	// Setup request context
 	rw := httptest.NewRecorder()
-	query := url.Values{}
-	{
-		sliceVal := []string{name}
-		query["name"] = sliceVal
-	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/api/v1/actions/sub"),
-		RawQuery: query.Encode(),
+		Path: fmt.Sprintf("/api/v1/actions/ping"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	{
-		sliceVal := []string{name}
-		prms["name"] = sliceVal
-	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	goaCtx := goa.NewContext(goa.WithAction(ctx, "ActionsTest"), rw, req, prms)
-	subCtx, _err := app.NewSubActionsContext(goaCtx, req, service)
+	pingCtx, _err := app.NewPingActionsContext(goaCtx, req, service)
 	if _err != nil {
 		panic("invalid test data " + _err.Error()) // bug
 	}
 
 	// Perform action
-	_err = ctrl.Sub(subCtx)
+	_err = ctrl.Ping(pingCtx)
 
 	// Validate response
 	if _err != nil {
@@ -417,11 +427,11 @@ func SubActionsBadRequest(t goatest.TInterface, ctx context.Context, service *go
 	return rw, mt
 }
 
-// SubActionsOK runs the method Sub of the given controller with the given parameters.
+// PingActionsOK runs the method Ping of the given controller with the given parameters.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func SubActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController, name string) (http.ResponseWriter, *app.Messagetype) {
+func PingActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ActionsController) (http.ResponseWriter, *app.Messagetype) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -441,35 +451,25 @@ func SubActionsOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 
 	// Setup request context
 	rw := httptest.NewRecorder()
-	query := url.Values{}
-	{
-		sliceVal := []string{name}
-		query["name"] = sliceVal
-	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/api/v1/actions/sub"),
-		RawQuery: query.Encode(),
+		Path: fmt.Sprintf("/api/v1/actions/ping"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	{
-		sliceVal := []string{name}
-		prms["name"] = sliceVal
-	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	goaCtx := goa.NewContext(goa.WithAction(ctx, "ActionsTest"), rw, req, prms)
-	subCtx, _err := app.NewSubActionsContext(goaCtx, req, service)
+	pingCtx, _err := app.NewPingActionsContext(goaCtx, req, service)
 	if _err != nil {
 		panic("invalid test data " + _err.Error()) // bug
 	}
 
 	// Perform action
-	_err = ctrl.Sub(subCtx)
+	_err = ctrl.Ping(pingCtx)
 
 	// Validate response
 	if _err != nil {

@@ -7,7 +7,8 @@ gen: clean generate
 rerun: clean generate run
 
 depend:
-	go get -v ./...
+	@which goagen || go get -v github.com/goadesign/goa/goagen
+	@go get -v ./...
 
 bootstrap:
 	@goagen bootstrap -d $(REPO)/design
@@ -73,7 +74,7 @@ curl_action_id:
 	curl -v $(BASEURL)/actions/$(id)
 
 curl_action_main:
-	curl -v $(BASEURL)/actions/main
+	curl -v $(BASEURL)/actions/ping
 
 curl_action_sub:
 	curl -v $(BASEURL)/actions/sub?name=$(name)

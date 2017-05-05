@@ -6,14 +6,21 @@ import (
 )
 
 // レスポンスデータの定義
+// MediaTypeに名前をつけます
 var IntegerType = MediaType("application/vnd.integerType+json", func() {
+	// 説明
 	Description("example")
+	// どのような値があるか（複数定義出来る）
 	Attributes(func() {
-		Attribute("ID", Integer, "数値", func() {
+		// IDはInteger型
+		Attribute("ID", Integer, "ID", func() {
+			// 返すレスポンスの例
 			Example(1)
 		})
+		// レスポンスに必須な要素（基本は全て必須にした方が楽）
+		Required("ID")
 	})
-	Required("ID")
+	// 返すレスポンスのフォーマット（別記事で紹介予定）
 	View("default", func() {
 		Attribute("ID")
 	})
@@ -24,8 +31,8 @@ var MessageType = MediaType("application/vnd.messageType+json", func() {
 		Attribute("message", String, "メッセージ", func() {
 			Example("ok")
 		})
+		Required("message")
 	})
-	Required("message")
 	View("default", func() {
 		Attribute("message")
 	})
@@ -40,8 +47,8 @@ var ViewType = MediaType("application/vnd.viewType+json", func() {
 		Attribute("value", String, "値", func() {
 			Example("hoge")
 		})
+		Required("ID", "value")
 	})
-	Required("ID", "value")
 	View("default", func() {
 		Attribute("ID")
 		Attribute("value")
@@ -60,8 +67,8 @@ var ArrayType = MediaType("application/vnd.arrayType+json", func() {
 		Attribute("value", String, "値", func() {
 			Example("hoge")
 		})
+		Required("ID", "value")
 	})
-	Required("ID", "value")
 	View("default", func() {
 		Attribute("ID")
 		Attribute("value")

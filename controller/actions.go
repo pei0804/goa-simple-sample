@@ -30,28 +30,28 @@ func (c *ActionsController) ID(ctx *app.IDActionsContext) error {
 	return ctx.OK(res)
 }
 
-// Main runs the main action.
-func (c *ActionsController) Main(ctx *app.MainActionsContext) error {
-	// ActionsController_Main: start_implement
-
-	// Put your logic here
-	message := "main"
-
-	// ActionsController_Main: end_implement
-	res := &app.Messagetype{}
-	res.Message = message
-	return ctx.OK(res)
-}
-
-// Sub runs the sub action.
-func (c *ActionsController) Sub(ctx *app.SubActionsContext) error {
-	// ActionsController_Sub: start_implement
+// Hello runs the hello action.
+func (c *ActionsController) Hello(ctx *app.HelloActionsContext) error {
+	// ActionsController_Ping: start_implement
 
 	// Put your logic here
 	name := ctx.Name
 
-	// ActionsController_Sub: end_implement
+	// ActionsController_Ping: end_implement
 	res := &app.Messagetype{}
 	res.Message = "Hello " + name
+	return ctx.OK(res)
+}
+
+// Ping runs the ping action.
+func (c *ActionsController) Ping(ctx *app.PingActionsContext) error {
+	// ActionsController_Ping: start_implement
+
+	// Put your logic here
+	message := "pong"
+
+	// ActionsController_Ping: end_implement
+	res := &app.Messagetype{}
+	res.Message = message
 	return ctx.OK(res)
 }

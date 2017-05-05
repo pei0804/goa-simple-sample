@@ -43,7 +43,7 @@ definitions:
       ID: 1
     properties:
       ID:
-        description: 数値
+        description: ID
         example: 1
         format: int64
         type: integer
@@ -212,32 +212,10 @@ paths:
       summary: ID actions
       tags:
       - actions
-  /api/v1/actions/main:
+  /api/v1/actions/hello:
     get:
-      description: 複数アクション（main）
-      operationId: actions#main
-      produces:
-      - application/vnd.goa.error
-      - application/vnd.messagetype+json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/Messagetype'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/error'
-      schemes:
-      - http
-      - https
-      summary: main actions
-      tags:
-      - actions
-  /api/v1/actions/sub:
-    get:
-      description: 複数アクション（sub）
-      operationId: actions#sub
+      description: 挨拶する
+      operationId: actions#hello
       parameters:
       - default: ""
         description: 名前
@@ -260,7 +238,29 @@ paths:
       schemes:
       - http
       - https
-      summary: sub actions
+      summary: hello actions
+      tags:
+      - actions
+  /api/v1/actions/ping:
+    get:
+      description: サーバーとの導通確認
+      operationId: actions#ping
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.messagetype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: ping actions
       tags:
       - actions
   /api/v1/array:
@@ -487,8 +487,8 @@ paths:
       description: MediaTypeのバリエーション
       operationId: view#view#1
       produces:
-      - application/vnd.goa.error
       - application/vnd.viewtype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK

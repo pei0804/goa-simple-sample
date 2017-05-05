@@ -54,7 +54,7 @@ func (mt ArraytypeCollection) Validate() (err error) {
 //
 // Identifier: application/vnd.integertype+json; view=default
 type Integertype struct {
-	// 数値
+	// ID
 	ID int `form:"ID" json:"ID" xml:"ID"`
 }
 

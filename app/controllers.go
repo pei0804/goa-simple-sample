@@ -36,8 +36,8 @@ func initService(service *goa.Service) {
 type ActionsController interface {
 	goa.Muxer
 	ID(*IDActionsContext) error
-	Main(*MainActionsContext) error
-	Sub(*SubActionsContext) error
+	Hello(*HelloActionsContext) error
+	Ping(*PingActionsContext) error
 }
 
 // MountActionsController "mounts" a Actions resource controller on the given service.
@@ -45,8 +45,8 @@ func MountActionsController(service *goa.Service, ctrl ActionsController) {
 	initService(service)
 	var h goa.Handler
 	service.Mux.Handle("OPTIONS", "/api/v1/actions/:ID", ctrl.MuxHandler("preflight", handleActionsOrigin(cors.HandlePreflight()), nil))
-	service.Mux.Handle("OPTIONS", "/api/v1/actions/main", ctrl.MuxHandler("preflight", handleActionsOrigin(cors.HandlePreflight()), nil))
-	service.Mux.Handle("OPTIONS", "/api/v1/actions/sub", ctrl.MuxHandler("preflight", handleActionsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/actions/hello", ctrl.MuxHandler("preflight", handleActionsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/actions/ping", ctrl.MuxHandler("preflight", handleActionsOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -70,15 +70,15 @@ func MountActionsController(service *goa.Service, ctrl ActionsController) {
 			return err
 		}
 		// Build the context
-		rctx, err := NewMainActionsContext(ctx, req, service)
+		rctx, err := NewHelloActionsContext(ctx, req, service)
 		if err != nil {
 			return err
 		}
-		return ctrl.Main(rctx)
+		return ctrl.Hello(rctx)
 	}
 	h = handleActionsOrigin(h)
-	service.Mux.Handle("GET", "/api/v1/actions/main", ctrl.MuxHandler("Main", h, nil))
-	service.LogInfo("mount", "ctrl", "Actions", "action", "Main", "route", "GET /api/v1/actions/main")
+	service.Mux.Handle("GET", "/api/v1/actions/hello", ctrl.MuxHandler("Hello", h, nil))
+	service.LogInfo("mount", "ctrl", "Actions", "action", "Hello", "route", "GET /api/v1/actions/hello")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -86,15 +86,15 @@ func MountActionsController(service *goa.Service, ctrl ActionsController) {
 			return err
 		}
 		// Build the context
-		rctx, err := NewSubActionsContext(ctx, req, service)
+		rctx, err := NewPingActionsContext(ctx, req, service)
 		if err != nil {
 			return err
 		}
-		return ctrl.Sub(rctx)
+		return ctrl.Ping(rctx)
 	}
 	h = handleActionsOrigin(h)
-	service.Mux.Handle("GET", "/api/v1/actions/sub", ctrl.MuxHandler("Sub", h, nil))
-	service.LogInfo("mount", "ctrl", "Actions", "action", "Sub", "route", "GET /api/v1/actions/sub")
+	service.Mux.Handle("GET", "/api/v1/actions/ping", ctrl.MuxHandler("Ping", h, nil))
+	service.LogInfo("mount", "ctrl", "Actions", "action", "Ping", "route", "GET /api/v1/actions/ping")
 }
 
 // handleActionsOrigin applies the CORS response headers corresponding to the origin.

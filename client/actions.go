@@ -48,52 +48,23 @@ func (c *Client) NewIDActionsRequest(ctx context.Context, path string) (*http.Re
 	return req, nil
 }
 
-// MainActionsPath computes a request path to the main action of actions.
-func MainActionsPath() string {
+// HelloActionsPath computes a request path to the hello action of actions.
+func HelloActionsPath() string {
 
-	return fmt.Sprintf("/api/v1/actions/main")
+	return fmt.Sprintf("/api/v1/actions/hello")
 }
 
-// 複数アクション（main）
-func (c *Client) MainActions(ctx context.Context, path string) (*http.Response, error) {
-	req, err := c.NewMainActionsRequest(ctx, path)
+// 挨拶する
+func (c *Client) HelloActions(ctx context.Context, path string, name string) (*http.Response, error) {
+	req, err := c.NewHelloActionsRequest(ctx, path, name)
 	if err != nil {
 		return nil, err
 	}
 	return c.Client.Do(ctx, req)
 }
 
-// NewMainActionsRequest create the request corresponding to the main action endpoint of the actions resource.
-func (c *Client) NewMainActionsRequest(ctx context.Context, path string) (*http.Request, error) {
-	scheme := c.Scheme
-	if scheme == "" {
-		scheme = "https"
-	}
-	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
-	req, err := http.NewRequest("GET", u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	return req, nil
-}
-
-// SubActionsPath computes a request path to the sub action of actions.
-func SubActionsPath() string {
-
-	return fmt.Sprintf("/api/v1/actions/sub")
-}
-
-// 複数アクション（sub）
-func (c *Client) SubActions(ctx context.Context, path string, name string) (*http.Response, error) {
-	req, err := c.NewSubActionsRequest(ctx, path, name)
-	if err != nil {
-		return nil, err
-	}
-	return c.Client.Do(ctx, req)
-}
-
-// NewSubActionsRequest create the request corresponding to the sub action endpoint of the actions resource.
-func (c *Client) NewSubActionsRequest(ctx context.Context, path string, name string) (*http.Request, error) {
+// NewHelloActionsRequest create the request corresponding to the hello action endpoint of the actions resource.
+func (c *Client) NewHelloActionsRequest(ctx context.Context, path string, name string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "https"
@@ -102,6 +73,35 @@ func (c *Client) NewSubActionsRequest(ctx context.Context, path string, name str
 	values := u.Query()
 	values.Set("name", name)
 	u.RawQuery = values.Encode()
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// PingActionsPath computes a request path to the ping action of actions.
+func PingActionsPath() string {
+
+	return fmt.Sprintf("/api/v1/actions/ping")
+}
+
+// サーバーとの導通確認
+func (c *Client) PingActions(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewPingActionsRequest(ctx, path)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewPingActionsRequest create the request corresponding to the ping action endpoint of the actions resource.
+func (c *Client) NewPingActionsRequest(ctx context.Context, path string) (*http.Request, error) {
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "https"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err

@@ -65,54 +65,23 @@ func (ctx *IDActionsContext) NotFound() error {
 	return nil
 }
 
-// MainActionsContext provides the actions main action context.
-type MainActionsContext struct {
-	context.Context
-	*goa.ResponseData
-	*goa.RequestData
-}
-
-// NewMainActionsContext parses the incoming request URL and body, performs validations and creates the
-// context used by the actions controller main action.
-func NewMainActionsContext(ctx context.Context, r *http.Request, service *goa.Service) (*MainActionsContext, error) {
-	var err error
-	resp := goa.ContextResponse(ctx)
-	resp.Service = service
-	req := goa.ContextRequest(ctx)
-	req.Request = r
-	rctx := MainActionsContext{Context: ctx, ResponseData: resp, RequestData: req}
-	return &rctx, err
-}
-
-// OK sends a HTTP response with status code 200.
-func (ctx *MainActionsContext) OK(r *Messagetype) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.messagetype+json")
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
-}
-
-// BadRequest sends a HTTP response with status code 400.
-func (ctx *MainActionsContext) BadRequest(r error) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
-	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
-}
-
-// SubActionsContext provides the actions sub action context.
-type SubActionsContext struct {
+// HelloActionsContext provides the actions hello action context.
+type HelloActionsContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
 	Name string
 }
 
-// NewSubActionsContext parses the incoming request URL and body, performs validations and creates the
-// context used by the actions controller sub action.
-func NewSubActionsContext(ctx context.Context, r *http.Request, service *goa.Service) (*SubActionsContext, error) {
+// NewHelloActionsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the actions controller hello action.
+func NewHelloActionsContext(ctx context.Context, r *http.Request, service *goa.Service) (*HelloActionsContext, error) {
 	var err error
 	resp := goa.ContextResponse(ctx)
 	resp.Service = service
 	req := goa.ContextRequest(ctx)
 	req.Request = r
-	rctx := SubActionsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	rctx := HelloActionsContext{Context: ctx, ResponseData: resp, RequestData: req}
 	paramName := req.Params["name"]
 	if len(paramName) == 0 {
 		rctx.Name = ""
@@ -124,13 +93,44 @@ func NewSubActionsContext(ctx context.Context, r *http.Request, service *goa.Ser
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *SubActionsContext) OK(r *Messagetype) error {
+func (ctx *HelloActionsContext) OK(r *Messagetype) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.messagetype+json")
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
 // BadRequest sends a HTTP response with status code 400.
-func (ctx *SubActionsContext) BadRequest(r error) error {
+func (ctx *HelloActionsContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// PingActionsContext provides the actions ping action context.
+type PingActionsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewPingActionsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the actions controller ping action.
+func NewPingActionsContext(ctx context.Context, r *http.Request, service *goa.Service) (*PingActionsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := PingActionsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *PingActionsContext) OK(r *Messagetype) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.messagetype+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *PingActionsContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }

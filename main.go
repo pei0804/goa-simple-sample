@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// Create service
-	service := goa.New("tikasan/goa-simple-sample")
+	service := goa.New("goa simple sample")
 
 	// Mount middleware
 	service.Use(middleware.RequestID())
@@ -31,15 +31,15 @@ func main() {
 	// Mount "security" controller
 	c4 := controller.NewSecurityController(service)
 	app.MountSecurityController(service, c4)
-	// Mount "validation" controller
-	c5 := controller.NewValidationController(service)
-	app.MountValidationController(service, c5)
-	// Mount "view" controller
-	c6 := controller.NewViewController(service)
-	app.MountViewController(service, c6)
 	// Mount "swagger" controller
-	sc := controller.NewSwaggerController(service)
-	app.MountSwaggerController(service, sc)
+	c5 := controller.NewSwaggerController(service)
+	app.MountSwaggerController(service, c5)
+	// Mount "validation" controller
+	c6 := controller.NewValidationController(service)
+	app.MountValidationController(service, c6)
+	// Mount "view" controller
+	c7 := controller.NewViewController(service)
+	app.MountViewController(service, c7)
 
 	// Start service
 	if err := service.ListenAndServe(":8080"); err != nil {

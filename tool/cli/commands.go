@@ -35,15 +35,15 @@ type (
 		PrettyPrint bool
 	}
 
-	// MainActionsCommand is the command line data structure for the main action of actions
-	MainActionsCommand struct {
+	// HelloActionsCommand is the command line data structure for the hello action of actions
+	HelloActionsCommand struct {
+		// 名前
+		Name        string
 		PrettyPrint bool
 	}
 
-	// SubActionsCommand is the command line data structure for the sub action of actions
-	SubActionsCommand struct {
-		// 名前
-		Name        string
+	// PingActionsCommand is the command line data structure for the ping action of actions
+	PingActionsCommand struct {
 		PrettyPrint bool
 	}
 
@@ -109,12 +109,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "id",
-		Short: `複数アクション（:ID）`,
+		Use:   "hello",
+		Short: `挨拶する`,
 	}
-	tmp2 := new(IDActionsCommand)
+	tmp2 := new(HelloActionsCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/api/v1/actions/ID"]`,
+		Use:   `actions ["/api/v1/actions/hello"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
@@ -123,12 +123,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "main",
-		Short: `複数アクション（main）`,
+		Use:   "id",
+		Short: `複数アクション（:ID）`,
 	}
-	tmp3 := new(MainActionsCommand)
+	tmp3 := new(IDActionsCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/api/v1/actions/main"]`,
+		Use:   `actions ["/api/v1/actions/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
@@ -151,12 +151,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "security",
-		Short: `セキュリティの例です`,
+		Use:   "ping",
+		Short: `サーバーとの導通確認`,
 	}
-	tmp5 := new(SecuritySecurityCommand)
+	tmp5 := new(PingActionsCommand)
 	sub = &cobra.Command{
-		Use:   `security ["/api/v1/securiy"]`,
+		Use:   `actions ["/api/v1/actions/ping"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp5.Run(c, args) },
 	}
@@ -165,12 +165,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "sub",
-		Short: `複数アクション（sub）`,
+		Use:   "security",
+		Short: `セキュリティの例です`,
 	}
-	tmp6 := new(SubActionsCommand)
+	tmp6 := new(SecuritySecurityCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/api/v1/actions/sub"]`,
+		Use:   `security ["/api/v1/securiy"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
@@ -445,17 +445,17 @@ func (cmd *IDActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) 
 	cc.Flags().IntVar(&cmd.ID, "ID", id, `ID`)
 }
 
-// Run makes the HTTP request corresponding to the MainActionsCommand command.
-func (cmd *MainActionsCommand) Run(c *client.Client, args []string) error {
+// Run makes the HTTP request corresponding to the HelloActionsCommand command.
+func (cmd *HelloActionsCommand) Run(c *client.Client, args []string) error {
 	var path string
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = "/api/v1/actions/main"
+		path = "/api/v1/actions/hello"
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.MainActions(ctx, path)
+	resp, err := c.HelloActions(ctx, path, cmd.Name)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -466,33 +466,33 @@ func (cmd *MainActionsCommand) Run(c *client.Client, args []string) error {
 }
 
 // RegisterFlags registers the command flags with the command line.
-func (cmd *MainActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
-}
-
-// Run makes the HTTP request corresponding to the SubActionsCommand command.
-func (cmd *SubActionsCommand) Run(c *client.Client, args []string) error {
-	var path string
-	if len(args) > 0 {
-		path = args[0]
-	} else {
-		path = "/api/v1/actions/sub"
-	}
-	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
-	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.SubActions(ctx, path, cmd.Name)
-	if err != nil {
-		goa.LogError(ctx, "failed", "err", err)
-		return err
-	}
-
-	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
-	return nil
-}
-
-// RegisterFlags registers the command flags with the command line.
-func (cmd *SubActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+func (cmd *HelloActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var name string
 	cc.Flags().StringVar(&cmd.Name, "name", name, `名前`)
+}
+
+// Run makes the HTTP request corresponding to the PingActionsCommand command.
+func (cmd *PingActionsCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/api/v1/actions/ping"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.PingActions(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *PingActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 }
 
 // Run makes the HTTP request corresponding to the ArrayArrayCommand command.
