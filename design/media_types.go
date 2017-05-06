@@ -38,26 +38,6 @@ var MessageType = MediaType("application/vnd.messageType+json", func() {
 	})
 })
 
-var ViewType = MediaType("application/vnd.viewType+json", func() {
-	Description("example")
-	Attributes(func() {
-		Attribute("ID", Integer, "ID", func() {
-			Example(1)
-		})
-		Attribute("value", String, "値", func() {
-			Example("hoge")
-		})
-		Required("ID", "value")
-	})
-	View("default", func() {
-		Attribute("ID")
-		Attribute("value")
-	})
-	View("tiny", func() {
-		Attribute("ID")
-	})
-})
-
 var UserType = MediaType("application/vnd.userType+json", func() {
 	Description("example")
 	Attributes(func() {
