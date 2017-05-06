@@ -15,7 +15,39 @@ import (
 	"golang.org/x/net/context"
 	"net/http"
 	"net/url"
+	"strconv"
 )
+
+// EtcMethodPath computes a request path to the etc action of method.
+func EtcMethodPath(id int, type_ int) string {
+	param0 := strconv.Itoa(id)
+	param1 := strconv.Itoa(type_)
+
+	return fmt.Sprintf("/api/v1/method/users/%s/follow/%s", param0, param1)
+}
+
+// ちょっと特殊ケース
+func (c *Client) EtcMethod(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewEtcMethodRequest(ctx, path)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewEtcMethodRequest create the request corresponding to the etc action endpoint of the method resource.
+func (c *Client) NewEtcMethodRequest(ctx context.Context, path string) (*http.Request, error) {
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "https"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}
 
 // FollowMethodPath computes a request path to the follow action of method.
 func FollowMethodPath() string {

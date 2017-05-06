@@ -135,6 +135,62 @@ func (ctx *PingActionsContext) BadRequest(r error) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }
 
+// EtcMethodContext provides the method etc action context.
+type EtcMethodContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID   int
+	Type int
+}
+
+// NewEtcMethodContext parses the incoming request URL and body, performs validations and creates the
+// context used by the method controller etc action.
+func NewEtcMethodContext(ctx context.Context, r *http.Request, service *goa.Service) (*EtcMethodContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := EtcMethodContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["ID"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
+		}
+	}
+	paramType := req.Params["type"]
+	if len(paramType) > 0 {
+		rawType := paramType[0]
+		if type_, err2 := strconv.Atoi(rawType); err2 == nil {
+			rctx.Type = type_
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("type", rawType, "integer"))
+		}
+		if !(rctx.Type == 1 || rctx.Type == 2 || rctx.Type == 3) {
+			err = goa.MergeErrors(err, goa.InvalidEnumValueError(`type`, rctx.Type, []interface{}{1, 2, 3}))
+		}
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *EtcMethodContext) OK(resp []byte) error {
+	ctx.ResponseData.Header().Set("Content-Type", "plain/text")
+	ctx.ResponseData.WriteHeader(200)
+	_, err := ctx.ResponseData.Write(resp)
+	return err
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *EtcMethodContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
 // FollowMethodContext provides the method follow action context.
 type FollowMethodContext struct {
 	context.Context
@@ -186,8 +242,20 @@ func NewListMethodContext(ctx context.Context, r *http.Request, service *goa.Ser
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *ListMethodContext) OK(r *Messagetype) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.messagetype+json")
+func (ctx *ListMethodContext) OK(r UsertypeCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.usertype+json; type=collection")
+	if r == nil {
+		r = UsertypeCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// OKTiny sends a HTTP response with status code 200.
+func (ctx *ListMethodContext) OKTiny(r UsertypeTinyCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.usertype+json; type=collection")
+	if r == nil {
+		r = UsertypeTinyCollection{}
+	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 

@@ -48,6 +48,15 @@ type (
 		PrettyPrint bool
 	}
 
+	// EtcMethodCommand is the command line data structure for the etc action of method
+	EtcMethodCommand struct {
+		// ID
+		ID int
+		// タイプ
+		Type        int
+		PrettyPrint bool
+	}
+
 	// FollowMethodCommand is the command line data structure for the follow action of method
 	FollowMethodCommand struct {
 		PrettyPrint bool
@@ -133,12 +142,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "follow",
-		Short: `フォロー操作`,
+		Use:   "etc",
+		Short: `ちょっと特殊ケース`,
 	}
-	tmp2 := new(FollowMethodCommand)
+	tmp2 := new(EtcMethodCommand)
 	sub = &cobra.Command{
-		Use:   `method [("/api/v1/method/users/follow"|"/api/v1/method/users/follow")]`,
+		Use:   `method ["/api/v1/method/users/ID/follow/TYPE"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
@@ -147,12 +156,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "hash",
-		Short: `ユーザー（ハッシュ）`,
+		Use:   "follow",
+		Short: `フォロー操作`,
 	}
-	tmp3 := new(HashResponseCommand)
+	tmp3 := new(FollowMethodCommand)
 	sub = &cobra.Command{
-		Use:   `response ["/api/v1/response/users/hash"]`,
+		Use:   `method [("/api/v1/method/users/follow"|"/api/v1/method/users/follow")]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
@@ -161,12 +170,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "hello",
-		Short: `挨拶する`,
+		Use:   "hash",
+		Short: `ユーザー（ハッシュ）`,
 	}
-	tmp4 := new(HelloActionsCommand)
+	tmp4 := new(HashResponseCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/api/v1/actions/hello"]`,
+		Use:   `response ["/api/v1/response/users/hash"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp4.Run(c, args) },
 	}
@@ -175,12 +184,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "id",
-		Short: `複数アクション（:ID）`,
+		Use:   "hello",
+		Short: `挨拶する`,
 	}
-	tmp5 := new(IDActionsCommand)
+	tmp5 := new(HelloActionsCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/api/v1/actions/ID"]`,
+		Use:   `actions ["/api/v1/actions/hello"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp5.Run(c, args) },
 	}
@@ -189,35 +198,35 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "list",
-		Short: `list action`,
+		Use:   "id",
+		Short: `複数アクション（:ID）`,
 	}
-	tmp6 := new(ListMethodCommand)
+	tmp6 := new(IDActionsCommand)
 	sub = &cobra.Command{
-		Use:   `method [("/api/v1/method/list"|"/api/v1/method/list/new"|"/api/v1/method/list/topic")]`,
+		Use:   `actions ["/api/v1/actions/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
 	tmp6.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp6.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp7 := new(ListResponseCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "list",
+		Short: `list action`,
+	}
+	tmp7 := new(ListMethodCommand)
 	sub = &cobra.Command{
-		Use:   `response ["/api/v1/response/users"]`,
+		Use:   `method [("/api/v1/method/list"|"/api/v1/method/list/new"|"/api/v1/method/list/topic")]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}
 	tmp7.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp7.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "method",
-		Short: `HTTPメソッド`,
-	}
-	tmp8 := new(MethodMethodCommand)
+	tmp8 := new(ListResponseCommand)
 	sub = &cobra.Command{
-		Use:   `method [("/api/v1/method/get"|"/api/v1/method/post"|"/api/v1/method/delete"|"/api/v1/method/put")]`,
+		Use:   `response ["/api/v1/response/users"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp8.Run(c, args) },
 	}
@@ -226,12 +235,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "ping",
-		Short: `サーバーとの導通確認`,
+		Use:   "method",
+		Short: `HTTPメソッド`,
 	}
-	tmp9 := new(PingActionsCommand)
+	tmp9 := new(MethodMethodCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/api/v1/actions/ping"]`,
+		Use:   `method [("/api/v1/method/get"|"/api/v1/method/post"|"/api/v1/method/delete"|"/api/v1/method/put")]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp9.Run(c, args) },
 	}
@@ -240,12 +249,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "security",
-		Short: `セキュリティの例です`,
+		Use:   "ping",
+		Short: `サーバーとの導通確認`,
 	}
-	tmp10 := new(SecuritySecurityCommand)
+	tmp10 := new(PingActionsCommand)
 	sub = &cobra.Command{
-		Use:   `security ["/api/v1/securiy"]`,
+		Use:   `actions ["/api/v1/actions/ping"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp10.Run(c, args) },
 	}
@@ -254,12 +263,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "show",
-		Short: `ユーザー（単数）`,
+		Use:   "security",
+		Short: `セキュリティの例です`,
 	}
-	tmp11 := new(ShowResponseCommand)
+	tmp11 := new(SecuritySecurityCommand)
 	sub = &cobra.Command{
-		Use:   `response ["/api/v1/response/users/ID"]`,
+		Use:   `security ["/api/v1/securiy"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp11.Run(c, args) },
 	}
@@ -268,17 +277,31 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "validation",
-		Short: `Validation`,
+		Use:   "show",
+		Short: `ユーザー（単数）`,
 	}
-	tmp12 := new(ValidationValidationCommand)
+	tmp12 := new(ShowResponseCommand)
 	sub = &cobra.Command{
-		Use:   `validation ["/api/v1/validation"]`,
+		Use:   `response ["/api/v1/response/users/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp12.Run(c, args) },
 	}
 	tmp12.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp12.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "validation",
+		Short: `Validation`,
+	}
+	tmp13 := new(ValidationValidationCommand)
+	sub = &cobra.Command{
+		Use:   `validation ["/api/v1/validation"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp13.Run(c, args) },
+	}
+	tmp13.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp13.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 
@@ -576,6 +599,34 @@ func (cmd *PingActionsCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *PingActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the EtcMethodCommand command.
+func (cmd *EtcMethodCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/api/v1/method/users/%v/follow/%v", cmd.ID, cmd.Type)
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.EtcMethod(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *EtcMethodCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "ID", id, `ID`)
+	var type_ int
+	cc.Flags().IntVar(&cmd.Type, "type", type_, `タイプ`)
 }
 
 // Run makes the HTTP request corresponding to the FollowMethodCommand command.

@@ -75,6 +75,8 @@ appengine:
 
 BASEURL:=http://localhost:8080/api/v1
 
+## action ##
+
 curl_action_id:
 	curl -v '$(BASEURL)/actions/$(ID)'
 
@@ -84,8 +86,12 @@ curl_action_ping:
 curl_action_hello:
 	curl -v '$(BASEURL)/actions/hello?name=$(name)'
 
+## validation ##
+
 curl_validation:
 	curl -v '$(BASEURL)/validation?ID=1&defaultType=&email=satak%40gmail.com&enumType=A&integerType=10&stringType=foo&reg=12abc'
+
+## response ##
 
 curl_response_users:
 	curl -v '$(BASEURL)/response/users'
@@ -98,3 +104,26 @@ curl_response_users_array:
 
 curl_response_users_hash:
 	curl -v '$(BASEURL)/response/users/hash'
+
+## method ##
+
+curl_method_follow:
+	curl -v -X PUT '$(BASEURL)/method/users/follow'
+
+curl_method_unfollow:
+	curl -v -X DELETE '$(BASEURL)/method/users/follow'
+
+curl_method_get:
+	curl -v '$(BASEURL)/method/get'
+
+curl_method_post:
+	curl -v -X POST '$(BASEURL)/method/post'
+
+curl_method_put:
+	curl -v -X PUT '$(BASEURL)/method/put'
+
+curl_method_delete:
+	curl -v -X DELETE '$(BASEURL)/method/delete'
+
+curl_method_etc:
+	curl -v '$(BASEURL)/method/users/1/follow/3'

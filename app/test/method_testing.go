@@ -24,6 +24,130 @@ import (
 	"net/url"
 )
 
+// EtcMethodBadRequest runs the method Etc of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func EtcMethodBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.MethodController, id int, type_ int) (http.ResponseWriter, error) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/api/v1/method/users/%v/follow/%v", id, type_),
+	}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["type"] = []string{fmt.Sprintf("%v", type_)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "MethodTest"), rw, req, prms)
+	etcCtx, _err := app.NewEtcMethodContext(goaCtx, req, service)
+	if _err != nil {
+		panic("invalid test data " + _err.Error()) // bug
+	}
+
+	// Perform action
+	_err = ctrl.Etc(etcCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 400 {
+		t.Errorf("invalid response status code: got %+v, expected 400", rw.Code)
+	}
+	var mt error
+	if resp != nil {
+		var ok bool
+		mt, ok = resp.(error)
+		if !ok {
+			t.Fatalf("invalid response media: got %+v, expected instance of error", resp)
+		}
+	}
+
+	// Return results
+	return rw, mt
+}
+
+// EtcMethodOK runs the method Etc of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func EtcMethodOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.MethodController, id int, type_ int) http.ResponseWriter {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/api/v1/method/users/%v/follow/%v", id, type_),
+	}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["type"] = []string{fmt.Sprintf("%v", type_)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "MethodTest"), rw, req, prms)
+	etcCtx, _err := app.NewEtcMethodContext(goaCtx, req, service)
+	if _err != nil {
+		panic("invalid test data " + _err.Error()) // bug
+	}
+
+	// Perform action
+	_err = ctrl.Etc(etcCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 200 {
+		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
+	}
+
+	// Return results
+	return rw
+}
+
 // FollowMethodBadRequest runs the method Follow of the given controller with the given parameters.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
@@ -379,7 +503,7 @@ func ListMethodBadRequest1(t goatest.TInterface, ctx context.Context, service *g
 	u := &url.URL{
 		Path: fmt.Sprintf("/api/v1/method/list/new"),
 	}
-	req, err := http.NewRequest("POST", u.String(), nil)
+	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
@@ -443,7 +567,7 @@ func ListMethodBadRequest2(t goatest.TInterface, ctx context.Context, service *g
 	u := &url.URL{
 		Path: fmt.Sprintf("/api/v1/method/list/topic"),
 	}
-	req, err := http.NewRequest("DELETE", u.String(), nil)
+	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
@@ -484,7 +608,7 @@ func ListMethodBadRequest2(t goatest.TInterface, ctx context.Context, service *g
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListMethodOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.MethodController) (http.ResponseWriter, *app.Messagetype) {
+func ListMethodOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.MethodController) (http.ResponseWriter, app.UsertypeCollection) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -531,12 +655,80 @@ func ListMethodOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.Messagetype
+	var mt app.UsertypeCollection
 	if resp != nil {
 		var ok bool
-		mt, ok = resp.(*app.Messagetype)
+		mt, ok = resp.(app.UsertypeCollection)
 		if !ok {
-			t.Fatalf("invalid response media: got %+v, expected instance of app.Messagetype", resp)
+			t.Fatalf("invalid response media: got %+v, expected instance of app.UsertypeCollection", resp)
+		}
+		_err = mt.Validate()
+		if _err != nil {
+			t.Errorf("invalid response media type: %s", _err)
+		}
+	}
+
+	// Return results
+	return rw, mt
+}
+
+// ListMethodOKTiny runs the method List of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func ListMethodOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.MethodController) (http.ResponseWriter, app.UsertypeTinyCollection) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/api/v1/method/list"),
+	}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "MethodTest"), rw, req, prms)
+	listCtx, _err := app.NewListMethodContext(goaCtx, req, service)
+	if _err != nil {
+		panic("invalid test data " + _err.Error()) // bug
+	}
+
+	// Perform action
+	_err = ctrl.List(listCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 200 {
+		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
+	}
+	var mt app.UsertypeTinyCollection
+	if resp != nil {
+		var ok bool
+		mt, ok = resp.(app.UsertypeTinyCollection)
+		if !ok {
+			t.Fatalf("invalid response media: got %+v, expected instance of app.UsertypeTinyCollection", resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -552,7 +744,7 @@ func ListMethodOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListMethodOK1(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.MethodController) (http.ResponseWriter, *app.Messagetype) {
+func ListMethodOK1(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.MethodController) (http.ResponseWriter, app.UsertypeCollection) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -575,7 +767,7 @@ func ListMethodOK1(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	u := &url.URL{
 		Path: fmt.Sprintf("/api/v1/method/list/new"),
 	}
-	req, err := http.NewRequest("POST", u.String(), nil)
+	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
@@ -599,12 +791,80 @@ func ListMethodOK1(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.Messagetype
+	var mt app.UsertypeCollection
 	if resp != nil {
 		var ok bool
-		mt, ok = resp.(*app.Messagetype)
+		mt, ok = resp.(app.UsertypeCollection)
 		if !ok {
-			t.Fatalf("invalid response media: got %+v, expected instance of app.Messagetype", resp)
+			t.Fatalf("invalid response media: got %+v, expected instance of app.UsertypeCollection", resp)
+		}
+		_err = mt.Validate()
+		if _err != nil {
+			t.Errorf("invalid response media type: %s", _err)
+		}
+	}
+
+	// Return results
+	return rw, mt
+}
+
+// ListMethodOK1Tiny runs the method List of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func ListMethodOK1Tiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.MethodController) (http.ResponseWriter, app.UsertypeTinyCollection) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/api/v1/method/list/new"),
+	}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "MethodTest"), rw, req, prms)
+	listCtx, _err := app.NewListMethodContext(goaCtx, req, service)
+	if _err != nil {
+		panic("invalid test data " + _err.Error()) // bug
+	}
+
+	// Perform action
+	_err = ctrl.List(listCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 200 {
+		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
+	}
+	var mt app.UsertypeTinyCollection
+	if resp != nil {
+		var ok bool
+		mt, ok = resp.(app.UsertypeTinyCollection)
+		if !ok {
+			t.Fatalf("invalid response media: got %+v, expected instance of app.UsertypeTinyCollection", resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -620,7 +880,7 @@ func ListMethodOK1(t goatest.TInterface, ctx context.Context, service *goa.Servi
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListMethodOK2(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.MethodController) (http.ResponseWriter, *app.Messagetype) {
+func ListMethodOK2(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.MethodController) (http.ResponseWriter, app.UsertypeCollection) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -643,7 +903,7 @@ func ListMethodOK2(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	u := &url.URL{
 		Path: fmt.Sprintf("/api/v1/method/list/topic"),
 	}
-	req, err := http.NewRequest("DELETE", u.String(), nil)
+	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
@@ -667,12 +927,80 @@ func ListMethodOK2(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.Messagetype
+	var mt app.UsertypeCollection
 	if resp != nil {
 		var ok bool
-		mt, ok = resp.(*app.Messagetype)
+		mt, ok = resp.(app.UsertypeCollection)
 		if !ok {
-			t.Fatalf("invalid response media: got %+v, expected instance of app.Messagetype", resp)
+			t.Fatalf("invalid response media: got %+v, expected instance of app.UsertypeCollection", resp)
+		}
+		_err = mt.Validate()
+		if _err != nil {
+			t.Errorf("invalid response media type: %s", _err)
+		}
+	}
+
+	// Return results
+	return rw, mt
+}
+
+// ListMethodOK2Tiny runs the method List of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func ListMethodOK2Tiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.MethodController) (http.ResponseWriter, app.UsertypeTinyCollection) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/api/v1/method/list/topic"),
+	}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "MethodTest"), rw, req, prms)
+	listCtx, _err := app.NewListMethodContext(goaCtx, req, service)
+	if _err != nil {
+		panic("invalid test data " + _err.Error()) // bug
+	}
+
+	// Perform action
+	_err = ctrl.List(listCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 200 {
+		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
+	}
+	var mt app.UsertypeTinyCollection
+	if resp != nil {
+		var ok bool
+		mt, ok = resp.(app.UsertypeTinyCollection)
+		if !ok {
+			t.Fatalf("invalid response media: got %+v, expected instance of app.UsertypeTinyCollection", resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {

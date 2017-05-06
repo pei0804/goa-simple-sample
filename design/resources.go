@@ -114,10 +114,10 @@ var _ = Resource("method", func() {
 		Description("リストを返す")
 		Routing(
 			GET("/list"),
-			POST("/list/new"),
-			DELETE("/list/topic"),
+			GET("/list/new"),
+			GET("/list/topic"),
 		)
-		Response(OK, MessageType)
+		Response(OK, CollectionOf(UserType))
 		Response(BadRequest, ErrorMedia)
 	})
 	Action("follow", func() {
@@ -127,6 +127,18 @@ var _ = Resource("method", func() {
 			DELETE("/users/follow"),
 		)
 		Response(OK, MessageType)
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("etc", func() {
+		Routing(GET("/users/:ID/follow/:type"))
+		Description("ちょっと特殊ケース")
+		Params(func() {
+			Param("ID", Integer, "ID")
+			Param("type", Integer, "タイプ", func() {
+				Enum(1, 2, 3)
+			})
+		})
+		Response(OK, "plain/text")
 		Response(BadRequest, ErrorMedia)
 	})
 })

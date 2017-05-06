@@ -187,6 +187,7 @@ func handleJsOrigin(h goa.Handler) goa.Handler {
 // MethodController is the controller interface for the Method actions.
 type MethodController interface {
 	goa.Muxer
+	Etc(*EtcMethodContext) error
 	Follow(*FollowMethodContext) error
 	List(*ListMethodContext) error
 	Method(*MethodMethodContext) error
@@ -196,6 +197,7 @@ type MethodController interface {
 func MountMethodController(service *goa.Service, ctrl MethodController) {
 	initService(service)
 	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/api/v1/method/users/:ID/follow/:type", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/method/users/follow", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/method/list", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/method/list/new", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
@@ -204,6 +206,22 @@ func MountMethodController(service *goa.Service, ctrl MethodController) {
 	service.Mux.Handle("OPTIONS", "/api/v1/method/post", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/method/delete", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/method/put", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewEtcMethodContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Etc(rctx)
+	}
+	h = handleMethodOrigin(h)
+	service.Mux.Handle("GET", "/api/v1/method/users/:ID/follow/:type", ctrl.MuxHandler("Etc", h, nil))
+	service.LogInfo("mount", "ctrl", "Method", "action", "Etc", "route", "GET /api/v1/method/users/:ID/follow/:type")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -238,10 +256,10 @@ func MountMethodController(service *goa.Service, ctrl MethodController) {
 	h = handleMethodOrigin(h)
 	service.Mux.Handle("GET", "/api/v1/method/list", ctrl.MuxHandler("List", h, nil))
 	service.LogInfo("mount", "ctrl", "Method", "action", "List", "route", "GET /api/v1/method/list")
-	service.Mux.Handle("POST", "/api/v1/method/list/new", ctrl.MuxHandler("List", h, nil))
-	service.LogInfo("mount", "ctrl", "Method", "action", "List", "route", "POST /api/v1/method/list/new")
-	service.Mux.Handle("DELETE", "/api/v1/method/list/topic", ctrl.MuxHandler("List", h, nil))
-	service.LogInfo("mount", "ctrl", "Method", "action", "List", "route", "DELETE /api/v1/method/list/topic")
+	service.Mux.Handle("GET", "/api/v1/method/list/new", ctrl.MuxHandler("List", h, nil))
+	service.LogInfo("mount", "ctrl", "Method", "action", "List", "route", "GET /api/v1/method/list/new")
+	service.Mux.Handle("GET", "/api/v1/method/list/topic", ctrl.MuxHandler("List", h, nil))
+	service.LogInfo("mount", "ctrl", "Method", "action", "List", "route", "GET /api/v1/method/list/topic")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request

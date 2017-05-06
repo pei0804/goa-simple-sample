@@ -306,13 +306,13 @@ paths:
       description: リストを返す
       operationId: method#list
       produces:
+      - application/vnd.usertype+json; type=collection
       - application/vnd.goa.error
-      - application/vnd.messagetype+json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Messagetype'
+            $ref: '#/definitions/UsertypeCollection'
         "400":
           description: Bad Request
           schema:
@@ -324,17 +324,17 @@ paths:
       tags:
       - method
   /api/v1/method/list/new:
-    post:
+    get:
       description: リストを返す
       operationId: method#list#1
       produces:
       - application/vnd.goa.error
-      - application/vnd.messagetype+json
+      - application/vnd.usertype+json; type=collection
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Messagetype'
+            $ref: '#/definitions/UsertypeCollection'
         "400":
           description: Bad Request
           schema:
@@ -346,17 +346,17 @@ paths:
       tags:
       - method
   /api/v1/method/list/topic:
-    delete:
+    get:
       description: リストを返す
       operationId: method#list#2
       produces:
       - application/vnd.goa.error
-      - application/vnd.messagetype+json
+      - application/vnd.usertype+json; type=collection
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Messagetype'
+            $ref: '#/definitions/UsertypeCollection'
         "400":
           description: Bad Request
           schema:
@@ -411,13 +411,48 @@ paths:
       summary: method method
       tags:
       - method
+  /api/v1/method/users/{ID}/follow/{type}:
+    get:
+      description: ちょっと特殊ケース
+      operationId: method#etc
+      parameters:
+      - description: ID
+        in: path
+        name: ID
+        required: true
+        type: integer
+      - description: タイプ
+        enum:
+        - 1
+        - 2
+        - 3
+        in: path
+        name: type
+        required: true
+        type: integer
+      produces:
+      - application/vnd.goa.error
+      - plain/text
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: etc method
+      tags:
+      - method
   /api/v1/method/users/follow:
     delete:
       description: フォロー操作
       operationId: method#follow#1
       produces:
-      - application/vnd.messagetype+json
       - application/vnd.goa.error
+      - application/vnd.messagetype+json
       responses:
         "200":
           description: OK
