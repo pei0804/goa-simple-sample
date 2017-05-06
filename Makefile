@@ -84,5 +84,17 @@ curl_action_ping:
 curl_action_hello:
 	curl -v '$(BASEURL)/actions/hello?name=$(name)'
 
-curl_action_validation:
+curl_validation:
 	curl -v '$(BASEURL)/validation?ID=1&defaultType=&email=satak%40gmail.com&enumType=A&integerType=10&stringType=foo&reg=12abc'
+
+curl_response_users:
+	curl -v '$(BASEURL)/response/users'
+
+curl_response_users_id:
+	curl -v '$(BASEURL)/response/users/1'
+
+curl_response_users_array:
+	curl -v '$(BASEURL)/response/users/array'
+
+curl_response_users_hash:
+	curl -v '$(BASEURL)/response/users/hash'

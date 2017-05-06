@@ -37,12 +37,48 @@ define(['axios'] , function (axios) {
     return client(cfg);
   }
 
-  // 複数値
-  // path is the request path, the format is "/api/v1/array"
+  // ユーザー（配列）
+  // path is the request path, the format is "/api/v1/response/users/array"
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
-  client.arrayArray = function (path, config) {
+  client.arrayResponse = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
+  // フォロー操作
+  // path is the request path, the format is "/api/v1/method/users/follow"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.followMethod = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'put',
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
+  // ユーザー（ハッシュ）
+  // path is the request path, the format is "/api/v1/response/users/hash"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.hashResponse = function (path, config) {
     cfg = {
       timeout: timeout,
       url: urlPrefix + path,
@@ -69,6 +105,42 @@ define(['axios'] , function (axios) {
       params: {
         name: name
       },
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
+  // リストを返す
+  // path is the request path, the format is "/api/v1/method/list"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.listMethod = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
+  // ユーザー（複数）
+  // path is the request path, the format is "/api/v1/response/users"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.listResponse = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
       responseType: 'json'
     };
     if (config) {
@@ -131,6 +203,24 @@ define(['axios'] , function (axios) {
     return client(cfg);
   }
 
+  // ユーザー（単数）
+  // path is the request path, the format is "/api/v1/response/users/:id"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.showResponse = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
   // Validation
   // path is the request path, the format is "/api/v1/validation"
   // ID, defaultType, email, enumType, integerType, reg, stringType are used to build the request query string.
@@ -151,24 +241,6 @@ define(['axios'] , function (axios) {
         reg: reg,
         stringType: stringType
       },
-      responseType: 'json'
-    };
-    if (config) {
-      cfg = merge(cfg, config);
-    }
-    return client(cfg);
-  }
-
-  // MediaTypeのバリエーション
-  // path is the request path, the format is "/api/v1/view/default"
-  // config is an optional object to be merged into the config built by the function prior to making the request.
-  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
-  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
-  client.viewView = function (path, config) {
-    cfg = {
-      timeout: timeout,
-      url: urlPrefix + path,
-      method: 'get',
       responseType: 'json'
     };
     if (config) {

@@ -135,36 +135,64 @@ func (ctx *PingActionsContext) BadRequest(r error) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }
 
-// ArrayArrayContext provides the array array action context.
-type ArrayArrayContext struct {
+// FollowMethodContext provides the method follow action context.
+type FollowMethodContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
 }
 
-// NewArrayArrayContext parses the incoming request URL and body, performs validations and creates the
-// context used by the array controller array action.
-func NewArrayArrayContext(ctx context.Context, r *http.Request, service *goa.Service) (*ArrayArrayContext, error) {
+// NewFollowMethodContext parses the incoming request URL and body, performs validations and creates the
+// context used by the method controller follow action.
+func NewFollowMethodContext(ctx context.Context, r *http.Request, service *goa.Service) (*FollowMethodContext, error) {
 	var err error
 	resp := goa.ContextResponse(ctx)
 	resp.Service = service
 	req := goa.ContextRequest(ctx)
 	req.Request = r
-	rctx := ArrayArrayContext{Context: ctx, ResponseData: resp, RequestData: req}
+	rctx := FollowMethodContext{Context: ctx, ResponseData: resp, RequestData: req}
 	return &rctx, err
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *ArrayArrayContext) OK(r ArraytypeCollection) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.arraytype+json; type=collection")
-	if r == nil {
-		r = ArraytypeCollection{}
-	}
+func (ctx *FollowMethodContext) OK(r *Messagetype) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.messagetype+json")
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
 // BadRequest sends a HTTP response with status code 400.
-func (ctx *ArrayArrayContext) BadRequest(r error) error {
+func (ctx *FollowMethodContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// ListMethodContext provides the method list action context.
+type ListMethodContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewListMethodContext parses the incoming request URL and body, performs validations and creates the
+// context used by the method controller list action.
+func NewListMethodContext(ctx context.Context, r *http.Request, service *goa.Service) (*ListMethodContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := ListMethodContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ListMethodContext) OK(r *Messagetype) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.messagetype+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *ListMethodContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }
@@ -196,6 +224,154 @@ func (ctx *MethodMethodContext) OK(r *Messagetype) error {
 
 // BadRequest sends a HTTP response with status code 400.
 func (ctx *MethodMethodContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// ArrayResponseContext provides the response array action context.
+type ArrayResponseContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewArrayResponseContext parses the incoming request URL and body, performs validations and creates the
+// context used by the response controller array action.
+func NewArrayResponseContext(ctx context.Context, r *http.Request, service *goa.Service) (*ArrayResponseContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := ArrayResponseContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ArrayResponseContext) OK(r []int) error {
+	ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *ArrayResponseContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// HashResponseContext provides the response hash action context.
+type HashResponseContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewHashResponseContext parses the incoming request URL and body, performs validations and creates the
+// context used by the response controller hash action.
+func NewHashResponseContext(ctx context.Context, r *http.Request, service *goa.Service) (*HashResponseContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := HashResponseContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *HashResponseContext) OK(r map[string]int) error {
+	ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *HashResponseContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// ListResponseContext provides the response list action context.
+type ListResponseContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewListResponseContext parses the incoming request URL and body, performs validations and creates the
+// context used by the response controller list action.
+func NewListResponseContext(ctx context.Context, r *http.Request, service *goa.Service) (*ListResponseContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := ListResponseContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ListResponseContext) OK(r UsertypeCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.usertype+json; type=collection")
+	if r == nil {
+		r = UsertypeCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// OKTiny sends a HTTP response with status code 200.
+func (ctx *ListResponseContext) OKTiny(r UsertypeTinyCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.usertype+json; type=collection")
+	if r == nil {
+		r = UsertypeTinyCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *ListResponseContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// ShowResponseContext provides the response show action context.
+type ShowResponseContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID string
+}
+
+// NewShowResponseContext parses the incoming request URL and body, performs validations and creates the
+// context used by the response controller show action.
+func NewShowResponseContext(ctx context.Context, r *http.Request, service *goa.Service) (*ShowResponseContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := ShowResponseContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		rctx.ID = rawID
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ShowResponseContext) OK(r *Usertype) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.usertype+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// OKTiny sends a HTTP response with status code 200.
+func (ctx *ShowResponseContext) OKTiny(r *UsertypeTiny) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.usertype+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *ShowResponseContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }
@@ -349,43 +525,6 @@ func (ctx *ValidationValidationContext) OK(r *Validationtype) error {
 
 // BadRequest sends a HTTP response with status code 400.
 func (ctx *ValidationValidationContext) BadRequest(r error) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
-	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
-}
-
-// ViewViewContext provides the view view action context.
-type ViewViewContext struct {
-	context.Context
-	*goa.ResponseData
-	*goa.RequestData
-}
-
-// NewViewViewContext parses the incoming request URL and body, performs validations and creates the
-// context used by the view controller view action.
-func NewViewViewContext(ctx context.Context, r *http.Request, service *goa.Service) (*ViewViewContext, error) {
-	var err error
-	resp := goa.ContextResponse(ctx)
-	resp.Service = service
-	req := goa.ContextRequest(ctx)
-	req.Request = r
-	rctx := ViewViewContext{Context: ctx, ResponseData: resp, RequestData: req}
-	return &rctx, err
-}
-
-// OK sends a HTTP response with status code 200.
-func (ctx *ViewViewContext) OK(r *Viewtype) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.viewtype+json")
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
-}
-
-// OKTiny sends a HTTP response with status code 200.
-func (ctx *ViewViewContext) OKTiny(r *ViewtypeTiny) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.viewtype+json")
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
-}
-
-// BadRequest sends a HTTP response with status code 400.
-func (ctx *ViewViewContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }

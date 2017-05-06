@@ -110,29 +110,63 @@ var _ = Resource("method", func() {
 		Response(OK, MessageType)
 		Response(BadRequest, ErrorMedia)
 	})
-})
-
-var _ = Resource("view", func() {
-	BasePath("/view")
-	Action("view", func() {
-		Description("MediaTypeのバリエーション")
+	Action("list", func() {
+		Description("リストを返す")
 		Routing(
-			GET("/default"),
-			GET("/tiny"),
+			GET("/list"),
+			POST("/list/new"),
+			DELETE("/list/topic"),
 		)
-		Response(OK, ViewType)
+		Response(OK, MessageType)
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("follow", func() {
+		Description("フォロー操作")
+		Routing(
+			PUT("/users/follow"),
+			DELETE("/users/follow"),
+		)
+		Response(OK, MessageType)
 		Response(BadRequest, ErrorMedia)
 	})
 })
 
-var _ = Resource("array", func() {
-	BasePath("/array")
-	Action("array", func() {
-		Description("複数値")
+var _ = Resource("response", func() {
+	BasePath("/response")
+	Action("list", func() {
+		Description("ユーザー（複数）")
 		Routing(
-			GET("/"),
+			GET("/users"),
 		)
-		Response(OK, CollectionOf(ArrayType))
+		// 複数返す
+		Response(OK, CollectionOf(UserType))
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("show", func() {
+		Description("ユーザー（単数）")
+		Routing(
+			GET("/users/:id"),
+		)
+		// 単一
+		Response(OK, UserType)
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("hash", func() {
+		Description("ユーザー（ハッシュ）")
+		Routing(
+			GET("/users/hash"),
+		)
+		// 連想配列
+		Response(OK, HashOf(String, Integer))
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("array", func() {
+		Description("ユーザー（配列）")
+		Routing(
+			GET("/users/array"),
+		)
+		// 配列
+		Response(OK, ArrayOf(Integer))
 		Response(BadRequest, ErrorMedia)
 	})
 })

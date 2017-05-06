@@ -124,62 +124,6 @@ func handleActionsOrigin(h goa.Handler) goa.Handler {
 	}
 }
 
-// ArrayController is the controller interface for the Array actions.
-type ArrayController interface {
-	goa.Muxer
-	Array(*ArrayArrayContext) error
-}
-
-// MountArrayController "mounts" a Array resource controller on the given service.
-func MountArrayController(service *goa.Service, ctrl ArrayController) {
-	initService(service)
-	var h goa.Handler
-	service.Mux.Handle("OPTIONS", "/api/v1/array", ctrl.MuxHandler("preflight", handleArrayOrigin(cors.HandlePreflight()), nil))
-
-	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
-		// Check if there was an error loading the request
-		if err := goa.ContextError(ctx); err != nil {
-			return err
-		}
-		// Build the context
-		rctx, err := NewArrayArrayContext(ctx, req, service)
-		if err != nil {
-			return err
-		}
-		return ctrl.Array(rctx)
-	}
-	h = handleArrayOrigin(h)
-	service.Mux.Handle("GET", "/api/v1/array", ctrl.MuxHandler("Array", h, nil))
-	service.LogInfo("mount", "ctrl", "Array", "action", "Array", "route", "GET /api/v1/array")
-}
-
-// handleArrayOrigin applies the CORS response headers corresponding to the origin.
-func handleArrayOrigin(h goa.Handler) goa.Handler {
-
-	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
-		origin := req.Header.Get("Origin")
-		if origin == "" {
-			// Not a CORS request
-			return h(ctx, rw, req)
-		}
-		if cors.MatchOrigin(origin, "http://localhost:8080/swagger") {
-			ctx = goa.WithLogContext(ctx, "origin", origin)
-			rw.Header().Set("Access-Control-Allow-Origin", origin)
-			rw.Header().Set("Vary", "Origin")
-			rw.Header().Set("Access-Control-Expose-Headers", "X-Time")
-			rw.Header().Set("Access-Control-Max-Age", "600")
-			rw.Header().Set("Access-Control-Allow-Credentials", "true")
-			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
-				// We are handling a preflight request
-				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-			}
-			return h(ctx, rw, req)
-		}
-
-		return h(ctx, rw, req)
-	}
-}
-
 // JsController is the controller interface for the Js actions.
 type JsController interface {
 	goa.Muxer
@@ -243,6 +187,8 @@ func handleJsOrigin(h goa.Handler) goa.Handler {
 // MethodController is the controller interface for the Method actions.
 type MethodController interface {
 	goa.Muxer
+	Follow(*FollowMethodContext) error
+	List(*ListMethodContext) error
 	Method(*MethodMethodContext) error
 }
 
@@ -250,10 +196,52 @@ type MethodController interface {
 func MountMethodController(service *goa.Service, ctrl MethodController) {
 	initService(service)
 	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/api/v1/method/users/follow", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/method/list", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/method/list/new", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/method/list/topic", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/method/get", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/method/post", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/method/delete", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/method/put", ctrl.MuxHandler("preflight", handleMethodOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewFollowMethodContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Follow(rctx)
+	}
+	h = handleMethodOrigin(h)
+	service.Mux.Handle("PUT", "/api/v1/method/users/follow", ctrl.MuxHandler("Follow", h, nil))
+	service.LogInfo("mount", "ctrl", "Method", "action", "Follow", "route", "PUT /api/v1/method/users/follow")
+	service.Mux.Handle("DELETE", "/api/v1/method/users/follow", ctrl.MuxHandler("Follow", h, nil))
+	service.LogInfo("mount", "ctrl", "Method", "action", "Follow", "route", "DELETE /api/v1/method/users/follow")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewListMethodContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.List(rctx)
+	}
+	h = handleMethodOrigin(h)
+	service.Mux.Handle("GET", "/api/v1/method/list", ctrl.MuxHandler("List", h, nil))
+	service.LogInfo("mount", "ctrl", "Method", "action", "List", "route", "GET /api/v1/method/list")
+	service.Mux.Handle("POST", "/api/v1/method/list/new", ctrl.MuxHandler("List", h, nil))
+	service.LogInfo("mount", "ctrl", "Method", "action", "List", "route", "POST /api/v1/method/list/new")
+	service.Mux.Handle("DELETE", "/api/v1/method/list/topic", ctrl.MuxHandler("List", h, nil))
+	service.LogInfo("mount", "ctrl", "Method", "action", "List", "route", "DELETE /api/v1/method/list/topic")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -280,6 +268,116 @@ func MountMethodController(service *goa.Service, ctrl MethodController) {
 
 // handleMethodOrigin applies the CORS response headers corresponding to the origin.
 func handleMethodOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "http://localhost:8080/swagger") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Vary", "Origin")
+			rw.Header().Set("Access-Control-Expose-Headers", "X-Time")
+			rw.Header().Set("Access-Control-Max-Age", "600")
+			rw.Header().Set("Access-Control-Allow-Credentials", "true")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
+}
+
+// ResponseController is the controller interface for the Response actions.
+type ResponseController interface {
+	goa.Muxer
+	Array(*ArrayResponseContext) error
+	Hash(*HashResponseContext) error
+	List(*ListResponseContext) error
+	Show(*ShowResponseContext) error
+}
+
+// MountResponseController "mounts" a Response resource controller on the given service.
+func MountResponseController(service *goa.Service, ctrl ResponseController) {
+	initService(service)
+	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/api/v1/response/users/array", ctrl.MuxHandler("preflight", handleResponseOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/response/users/hash", ctrl.MuxHandler("preflight", handleResponseOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/response/users", ctrl.MuxHandler("preflight", handleResponseOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/response/users/:id", ctrl.MuxHandler("preflight", handleResponseOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewArrayResponseContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Array(rctx)
+	}
+	h = handleResponseOrigin(h)
+	service.Mux.Handle("GET", "/api/v1/response/users/array", ctrl.MuxHandler("Array", h, nil))
+	service.LogInfo("mount", "ctrl", "Response", "action", "Array", "route", "GET /api/v1/response/users/array")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewHashResponseContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Hash(rctx)
+	}
+	h = handleResponseOrigin(h)
+	service.Mux.Handle("GET", "/api/v1/response/users/hash", ctrl.MuxHandler("Hash", h, nil))
+	service.LogInfo("mount", "ctrl", "Response", "action", "Hash", "route", "GET /api/v1/response/users/hash")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewListResponseContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.List(rctx)
+	}
+	h = handleResponseOrigin(h)
+	service.Mux.Handle("GET", "/api/v1/response/users", ctrl.MuxHandler("List", h, nil))
+	service.LogInfo("mount", "ctrl", "Response", "action", "List", "route", "GET /api/v1/response/users")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewShowResponseContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Show(rctx)
+	}
+	h = handleResponseOrigin(h)
+	service.Mux.Handle("GET", "/api/v1/response/users/:id", ctrl.MuxHandler("Show", h, nil))
+	service.LogInfo("mount", "ctrl", "Response", "action", "Show", "route", "GET /api/v1/response/users/:id")
+}
+
+// handleResponseOrigin applies the CORS response headers corresponding to the origin.
+func handleResponseOrigin(h goa.Handler) goa.Handler {
 
 	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		origin := req.Header.Get("Origin")
@@ -458,65 +556,6 @@ func MountValidationController(service *goa.Service, ctrl ValidationController) 
 
 // handleValidationOrigin applies the CORS response headers corresponding to the origin.
 func handleValidationOrigin(h goa.Handler) goa.Handler {
-
-	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
-		origin := req.Header.Get("Origin")
-		if origin == "" {
-			// Not a CORS request
-			return h(ctx, rw, req)
-		}
-		if cors.MatchOrigin(origin, "http://localhost:8080/swagger") {
-			ctx = goa.WithLogContext(ctx, "origin", origin)
-			rw.Header().Set("Access-Control-Allow-Origin", origin)
-			rw.Header().Set("Vary", "Origin")
-			rw.Header().Set("Access-Control-Expose-Headers", "X-Time")
-			rw.Header().Set("Access-Control-Max-Age", "600")
-			rw.Header().Set("Access-Control-Allow-Credentials", "true")
-			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
-				// We are handling a preflight request
-				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-			}
-			return h(ctx, rw, req)
-		}
-
-		return h(ctx, rw, req)
-	}
-}
-
-// ViewController is the controller interface for the View actions.
-type ViewController interface {
-	goa.Muxer
-	View(*ViewViewContext) error
-}
-
-// MountViewController "mounts" a View resource controller on the given service.
-func MountViewController(service *goa.Service, ctrl ViewController) {
-	initService(service)
-	var h goa.Handler
-	service.Mux.Handle("OPTIONS", "/api/v1/view/default", ctrl.MuxHandler("preflight", handleViewOrigin(cors.HandlePreflight()), nil))
-	service.Mux.Handle("OPTIONS", "/api/v1/view/tiny", ctrl.MuxHandler("preflight", handleViewOrigin(cors.HandlePreflight()), nil))
-
-	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
-		// Check if there was an error loading the request
-		if err := goa.ContextError(ctx); err != nil {
-			return err
-		}
-		// Build the context
-		rctx, err := NewViewViewContext(ctx, req, service)
-		if err != nil {
-			return err
-		}
-		return ctrl.View(rctx)
-	}
-	h = handleViewOrigin(h)
-	service.Mux.Handle("GET", "/api/v1/view/default", ctrl.MuxHandler("View", h, nil))
-	service.LogInfo("mount", "ctrl", "View", "action", "View", "route", "GET /api/v1/view/default")
-	service.Mux.Handle("GET", "/api/v1/view/tiny", ctrl.MuxHandler("View", h, nil))
-	service.LogInfo("mount", "ctrl", "View", "action", "View", "route", "GET /api/v1/view/tiny")
-}
-
-// handleViewOrigin applies the CORS response headers corresponding to the origin.
-func handleViewOrigin(h goa.Handler) goa.Handler {
 
 	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		origin := req.Header.Get("Origin")

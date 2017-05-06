@@ -58,20 +58,30 @@ var ViewType = MediaType("application/vnd.viewType+json", func() {
 	})
 })
 
-var ArrayType = MediaType("application/vnd.arrayType+json", func() {
+var UserType = MediaType("application/vnd.userType+json", func() {
 	Description("example")
 	Attributes(func() {
 		Attribute("ID", Integer, "ID", func() {
 			Example(1)
 		})
-		Attribute("value", String, "値", func() {
+		Attribute("name", String, "名前", func() {
 			Example("hoge")
 		})
-		Required("ID", "value")
+		Attribute("email", String, "メールアドレス", func() {
+			Example("satak47cpc@gmail.com")
+		})
+		Required("ID", "name", "email")
 	})
+	// 特別な指定がない場合はdefaultのMediaType
 	View("default", func() {
 		Attribute("ID")
-		Attribute("value")
+		Attribute("name")
+		Attribute("email")
+	})
+	// tinyという名前の場合は、簡潔なレスポンスフォーマットにすることが出来る
+	View("tiny", func() {
+		Attribute("ID")
+		Attribute("name")
 	})
 })
 

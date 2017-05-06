@@ -20,6 +20,7 @@ import (
 	"github.com/tikasan/goa-simple-sample/client"
 	"golang.org/x/net/context"
 	"log"
+	"net/url"
 	"os"
 	"path"
 	"strconv"
@@ -47,13 +48,39 @@ type (
 		PrettyPrint bool
 	}
 
-	// ArrayArrayCommand is the command line data structure for the array action of array
-	ArrayArrayCommand struct {
+	// FollowMethodCommand is the command line data structure for the follow action of method
+	FollowMethodCommand struct {
+		PrettyPrint bool
+	}
+
+	// ListMethodCommand is the command line data structure for the list action of method
+	ListMethodCommand struct {
 		PrettyPrint bool
 	}
 
 	// MethodMethodCommand is the command line data structure for the method action of method
 	MethodMethodCommand struct {
+		PrettyPrint bool
+	}
+
+	// ArrayResponseCommand is the command line data structure for the array action of response
+	ArrayResponseCommand struct {
+		PrettyPrint bool
+	}
+
+	// HashResponseCommand is the command line data structure for the hash action of response
+	HashResponseCommand struct {
+		PrettyPrint bool
+	}
+
+	// ListResponseCommand is the command line data structure for the list action of response
+	ListResponseCommand struct {
+		PrettyPrint bool
+	}
+
+	// ShowResponseCommand is the command line data structure for the show action of response
+	ShowResponseCommand struct {
+		ID          string
 		PrettyPrint bool
 	}
 
@@ -81,11 +108,6 @@ type (
 		PrettyPrint bool
 	}
 
-	// ViewViewCommand is the command line data structure for the view action of view
-	ViewViewCommand struct {
-		PrettyPrint bool
-	}
-
 	// DownloadCommand is the command line data structure for the download command.
 	DownloadCommand struct {
 		// OutFile is the path to the download output file.
@@ -98,11 +120,11 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	var command, sub *cobra.Command
 	command = &cobra.Command{
 		Use:   "array",
-		Short: `複数値`,
+		Short: `ユーザー（配列）`,
 	}
-	tmp1 := new(ArrayArrayCommand)
+	tmp1 := new(ArrayResponseCommand)
 	sub = &cobra.Command{
-		Use:   `array ["/api/v1/array"]`,
+		Use:   `response ["/api/v1/response/users/array"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp1.Run(c, args) },
 	}
@@ -111,12 +133,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "hello",
-		Short: `挨拶する`,
+		Use:   "follow",
+		Short: `フォロー操作`,
 	}
-	tmp2 := new(HelloActionsCommand)
+	tmp2 := new(FollowMethodCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/api/v1/actions/hello"]`,
+		Use:   `method [("/api/v1/method/users/follow"|"/api/v1/method/users/follow")]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
@@ -125,12 +147,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "id",
-		Short: `複数アクション（:ID）`,
+		Use:   "hash",
+		Short: `ユーザー（ハッシュ）`,
 	}
-	tmp3 := new(IDActionsCommand)
+	tmp3 := new(HashResponseCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/api/v1/actions/ID"]`,
+		Use:   `response ["/api/v1/response/users/hash"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
@@ -139,12 +161,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "method",
-		Short: `HTTPメソッド`,
+		Use:   "hello",
+		Short: `挨拶する`,
 	}
-	tmp4 := new(MethodMethodCommand)
+	tmp4 := new(HelloActionsCommand)
 	sub = &cobra.Command{
-		Use:   `method [("/api/v1/method/get"|"/api/v1/method/post"|"/api/v1/method/delete"|"/api/v1/method/put")]`,
+		Use:   `actions ["/api/v1/actions/hello"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp4.Run(c, args) },
 	}
@@ -153,12 +175,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "ping",
-		Short: `サーバーとの導通確認`,
+		Use:   "id",
+		Short: `複数アクション（:ID）`,
 	}
-	tmp5 := new(PingActionsCommand)
+	tmp5 := new(IDActionsCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/api/v1/actions/ping"]`,
+		Use:   `actions ["/api/v1/actions/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp5.Run(c, args) },
 	}
@@ -167,26 +189,21 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "security",
-		Short: `セキュリティの例です`,
+		Use:   "list",
+		Short: `list action`,
 	}
-	tmp6 := new(SecuritySecurityCommand)
+	tmp6 := new(ListMethodCommand)
 	sub = &cobra.Command{
-		Use:   `security ["/api/v1/securiy"]`,
+		Use:   `method [("/api/v1/method/list"|"/api/v1/method/list/new"|"/api/v1/method/list/topic")]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
 	tmp6.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp6.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "validation",
-		Short: `Validation`,
-	}
-	tmp7 := new(ValidationValidationCommand)
+	tmp7 := new(ListResponseCommand)
 	sub = &cobra.Command{
-		Use:   `validation ["/api/v1/validation"]`,
+		Use:   `response ["/api/v1/response/users"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}
@@ -195,17 +212,73 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "view",
-		Short: `MediaTypeのバリエーション`,
+		Use:   "method",
+		Short: `HTTPメソッド`,
 	}
-	tmp8 := new(ViewViewCommand)
+	tmp8 := new(MethodMethodCommand)
 	sub = &cobra.Command{
-		Use:   `view [("/api/v1/view/default"|"/api/v1/view/tiny")]`,
+		Use:   `method [("/api/v1/method/get"|"/api/v1/method/post"|"/api/v1/method/delete"|"/api/v1/method/put")]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp8.Run(c, args) },
 	}
 	tmp8.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp8.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "ping",
+		Short: `サーバーとの導通確認`,
+	}
+	tmp9 := new(PingActionsCommand)
+	sub = &cobra.Command{
+		Use:   `actions ["/api/v1/actions/ping"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp9.Run(c, args) },
+	}
+	tmp9.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp9.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "security",
+		Short: `セキュリティの例です`,
+	}
+	tmp10 := new(SecuritySecurityCommand)
+	sub = &cobra.Command{
+		Use:   `security ["/api/v1/securiy"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp10.Run(c, args) },
+	}
+	tmp10.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp10.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "show",
+		Short: `ユーザー（単数）`,
+	}
+	tmp11 := new(ShowResponseCommand)
+	sub = &cobra.Command{
+		Use:   `response ["/api/v1/response/users/ID"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp11.Run(c, args) },
+	}
+	tmp11.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp11.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "validation",
+		Short: `Validation`,
+	}
+	tmp12 := new(ValidationValidationCommand)
+	sub = &cobra.Command{
+		Use:   `validation ["/api/v1/validation"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp12.Run(c, args) },
+	}
+	tmp12.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp12.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 
@@ -505,17 +578,17 @@ func (cmd *PingActionsCommand) Run(c *client.Client, args []string) error {
 func (cmd *PingActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 }
 
-// Run makes the HTTP request corresponding to the ArrayArrayCommand command.
-func (cmd *ArrayArrayCommand) Run(c *client.Client, args []string) error {
+// Run makes the HTTP request corresponding to the FollowMethodCommand command.
+func (cmd *FollowMethodCommand) Run(c *client.Client, args []string) error {
 	var path string
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = "/api/v1/array"
+		path = "/api/v1/method/users/follow"
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.ArrayArray(ctx, path)
+	resp, err := c.FollowMethod(ctx, path)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -526,7 +599,31 @@ func (cmd *ArrayArrayCommand) Run(c *client.Client, args []string) error {
 }
 
 // RegisterFlags registers the command flags with the command line.
-func (cmd *ArrayArrayCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+func (cmd *FollowMethodCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the ListMethodCommand command.
+func (cmd *ListMethodCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/api/v1/method/list"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.ListMethod(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *ListMethodCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 }
 
 // Run makes the HTTP request corresponding to the MethodMethodCommand command.
@@ -551,6 +648,104 @@ func (cmd *MethodMethodCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *MethodMethodCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the ArrayResponseCommand command.
+func (cmd *ArrayResponseCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/api/v1/response/users/array"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.ArrayResponse(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *ArrayResponseCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the HashResponseCommand command.
+func (cmd *HashResponseCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/api/v1/response/users/hash"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.HashResponse(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *HashResponseCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the ListResponseCommand command.
+func (cmd *ListResponseCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/api/v1/response/users"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.ListResponse(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *ListResponseCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the ShowResponseCommand command.
+func (cmd *ShowResponseCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/api/v1/response/users/%v", url.QueryEscape(cmd.ID))
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.ShowResponse(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *ShowResponseCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var id string
+	cc.Flags().StringVar(&cmd.ID, "id", id, ``)
 }
 
 // Run makes the HTTP request corresponding to the SecuritySecurityCommand command.
@@ -612,28 +807,4 @@ func (cmd *ValidationValidationCommand) RegisterFlags(cc *cobra.Command, c *clie
 	cc.Flags().StringVar(&cmd.Reg, "reg", reg, `正規表現`)
 	var stringType string
 	cc.Flags().StringVar(&cmd.StringType, "stringType", stringType, `文字（1~10文字）`)
-}
-
-// Run makes the HTTP request corresponding to the ViewViewCommand command.
-func (cmd *ViewViewCommand) Run(c *client.Client, args []string) error {
-	var path string
-	if len(args) > 0 {
-		path = args[0]
-	} else {
-		path = "/api/v1/view/default"
-	}
-	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
-	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.ViewView(ctx, path)
-	if err != nil {
-		goa.LogError(ctx, "failed", "err", err)
-		return err
-	}
-
-	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
-	return nil
-}
-
-// RegisterFlags registers the command flags with the command line.
-func (cmd *ViewViewCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 }

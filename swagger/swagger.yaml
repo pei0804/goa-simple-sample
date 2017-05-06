@@ -4,39 +4,6 @@ consumes:
 - application/gob
 - application/x-gob
 definitions:
-  Arraytype:
-    description: example (default view)
-    example:
-      ID: 1
-      value: hoge
-    properties:
-      ID:
-        description: ID
-        example: 1
-        format: int64
-        type: integer
-      value:
-        description: 値
-        example: hoge
-        type: string
-    required:
-    - ID
-    - value
-    title: 'Mediatype identifier: application/vnd.arraytype+json; view=default'
-    type: object
-  ArraytypeCollection:
-    description: ArraytypeCollection is the media type for an array of Arraytype (default
-      view)
-    example:
-    - ID: 1
-      value: hoge
-    - ID: 1
-      value: hoge
-    items:
-      $ref: '#/definitions/Arraytype'
-    title: 'Mediatype identifier: application/vnd.arraytype+json; type=collection;
-      view=default'
-    type: array
   Integertype:
     description: example (default view)
     example:
@@ -64,6 +31,47 @@ definitions:
     - message
     title: 'Mediatype identifier: application/vnd.messagetype+json; view=default'
     type: object
+  Usertype:
+    description: example (default view)
+    example:
+      ID: 1
+      email: satak47cpc@gmail.com
+      name: hoge
+    properties:
+      ID:
+        description: ID
+        example: 1
+        format: int64
+        type: integer
+      email:
+        description: メールアドレス
+        example: satak47cpc@gmail.com
+        type: string
+      name:
+        description: 名前
+        example: hoge
+        type: string
+    required:
+    - ID
+    - name
+    - email
+    title: 'Mediatype identifier: application/vnd.usertype+json; view=default'
+    type: object
+  UsertypeCollection:
+    description: UsertypeCollection is the media type for an array of Usertype (default
+      view)
+    example:
+    - ID: 1
+      email: satak47cpc@gmail.com
+      name: hoge
+    - ID: 1
+      email: satak47cpc@gmail.com
+      name: hoge
+    items:
+      $ref: '#/definitions/Usertype'
+    title: 'Mediatype identifier: application/vnd.usertype+json; type=collection;
+      view=default'
+    type: array
   Validationtype:
     description: example (default view)
     example:
@@ -114,26 +122,6 @@ definitions:
     - defaultType
     - reg
     title: 'Mediatype identifier: application/vnd.validationtype+json; view=default'
-    type: object
-  Viewtype:
-    description: example (default view)
-    example:
-      ID: 1
-      value: hoge
-    properties:
-      ID:
-        description: ID
-        example: 1
-        format: int64
-        type: integer
-      value:
-        description: 値
-        example: hoge
-        type: string
-    required:
-    - ID
-    - value
-    title: 'Mediatype identifier: application/vnd.viewtype+json; view=default'
     type: object
   error:
     description: Error response media type (default view)
@@ -269,28 +257,6 @@ paths:
       summary: ping actions
       tags:
       - actions
-  /api/v1/array:
-    get:
-      description: 複数値
-      operationId: array#array
-      produces:
-      - application/vnd.goa.error
-      - application/vnd.arraytype+json; type=collection
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ArraytypeCollection'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/error'
-      schemes:
-      - http
-      - https
-      summary: array array
-      tags:
-      - array
   /api/v1/method/delete:
     delete:
       description: HTTPメソッド
@@ -318,8 +284,8 @@ paths:
       description: HTTPメソッド
       operationId: method#method
       produces:
-      - application/vnd.messagetype+json
       - application/vnd.goa.error
+      - application/vnd.messagetype+json
       responses:
         "200":
           description: OK
@@ -333,6 +299,72 @@ paths:
       - http
       - https
       summary: method method
+      tags:
+      - method
+  /api/v1/method/list:
+    get:
+      description: リストを返す
+      operationId: method#list
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.messagetype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: list method
+      tags:
+      - method
+  /api/v1/method/list/new:
+    post:
+      description: リストを返す
+      operationId: method#list#1
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.messagetype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: list method
+      tags:
+      - method
+  /api/v1/method/list/topic:
+    delete:
+      description: リストを返す
+      operationId: method#list#2
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.messagetype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: list method
       tags:
       - method
   /api/v1/method/post:
@@ -379,6 +411,138 @@ paths:
       summary: method method
       tags:
       - method
+  /api/v1/method/users/follow:
+    delete:
+      description: フォロー操作
+      operationId: method#follow#1
+      produces:
+      - application/vnd.messagetype+json
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: follow method
+      tags:
+      - method
+    put:
+      description: フォロー操作
+      operationId: method#follow
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.messagetype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Messagetype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: follow method
+      tags:
+      - method
+  /api/v1/response/users:
+    get:
+      description: ユーザー（複数）
+      operationId: response#list
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.usertype+json; type=collection
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UsertypeCollection'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: list response
+      tags:
+      - response
+  /api/v1/response/users/{id}:
+    get:
+      description: ユーザー（単数）
+      operationId: response#show
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.usertype+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Usertype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: show response
+      tags:
+      - response
+  /api/v1/response/users/array:
+    get:
+      description: ユーザー（配列）
+      operationId: response#array
+      produces:
+      - application/vnd.goa.error
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: array response
+      tags:
+      - response
+  /api/v1/response/users/hash:
+    get:
+      description: ユーザー（ハッシュ）
+      operationId: response#hash
+      produces:
+      - application/vnd.goa.error
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: hash response
+      tags:
+      - response
   /api/v1/securiy:
     get:
       description: セキュリティの例です
@@ -455,8 +619,8 @@ paths:
         required: true
         type: string
       produces:
-      - application/vnd.validationtype+json
       - application/vnd.goa.error
+      - application/vnd.validationtype+json
       responses:
         "200":
           description: OK
@@ -472,50 +636,6 @@ paths:
       summary: validation validation
       tags:
       - validation
-  /api/v1/view/default:
-    get:
-      description: MediaTypeのバリエーション
-      operationId: view#view
-      produces:
-      - application/vnd.goa.error
-      - application/vnd.viewtype+json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/Viewtype'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/error'
-      schemes:
-      - http
-      - https
-      summary: view view
-      tags:
-      - view
-  /api/v1/view/tiny:
-    get:
-      description: MediaTypeのバリエーション
-      operationId: view#view#1
-      produces:
-      - application/vnd.goa.error
-      - application/vnd.viewtype+json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/Viewtype'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/error'
-      schemes:
-      - http
-      - https
-      summary: view view
-      tags:
-      - view
   /js/{filepath}:
     get:
       operationId: js#/js/*filepath

@@ -9,3 +9,14 @@
 // The content of this file is auto-generated, DO NOT MODIFY
 
 package app
+
+import (
+	"fmt"
+	"strings"
+)
+
+// ResponseHref returns the resource href.
+func ResponseHref(id interface{}) string {
+	paramid := strings.TrimLeftFunc(fmt.Sprintf("%v", id), func(r rune) bool { return r == '/' })
+	return fmt.Sprintf("/api/v1/response/users/%v", paramid)
+}
