@@ -34,7 +34,7 @@ func (c *ActionsController) ID(ctx *app.IDActionsContext) error {
 	// MediaType IntegerTypeでレスポンス
 	res := &app.Integertype{}
 	/*
-		IDはInteger型
+		IDはInteger型で
 		Attribute("ID", Integer, "ID", func() {
 			Example(1)
 		})

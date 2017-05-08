@@ -4,6 +4,46 @@ consumes:
 - application/gob
 - application/x-gob
 definitions:
+  Account:
+    description: celler account (default view)
+    example:
+      ID: 1
+      email: example@gmail.com
+      name: 山田　太郎
+    properties:
+      ID:
+        description: ID
+        example: 1
+        format: int64
+        type: integer
+      email:
+        description: メールアドレス
+        example: example@gmail.com
+        type: string
+      name:
+        description: 名前
+        example: 山田　太郎
+        type: string
+    required:
+    - ID
+    - name
+    - email
+    title: 'Mediatype identifier: application/vnd.account+json; view=default'
+    type: object
+  AccountCollection:
+    description: AccountCollection is the media type for an array of Account (default
+      view)
+    example:
+    - ID: 1
+      email: example@gmail.com
+      name: 山田　太郎
+    - ID: 1
+      email: example@gmail.com
+      name: 山田　太郎
+    items:
+      $ref: '#/definitions/Account'
+    title: 'Mediatype identifier: application/vnd.account+json; type=collection; view=default'
+    type: array
   Integertype:
     description: example (default view)
     example:
@@ -61,9 +101,6 @@ definitions:
     description: UsertypeCollection is the media type for an array of Usertype (default
       view)
     example:
-    - ID: 1
-      email: satak47cpc@gmail.com
-      name: hoge
     - ID: 1
       email: satak47cpc@gmail.com
       name: hoge
@@ -176,6 +213,55 @@ info:
   title: tikasan/goa-simple-sample
   version: ""
 paths:
+  /api/v1/accounts/users:
+    get:
+      description: アカウント（複数）
+      operationId: accounts#list
+      produces:
+      - application/vnd.account+json; type=collection
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/AccountCollection'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: list accounts
+      tags:
+      - accounts
+  /api/v1/accounts/users/{id}:
+    get:
+      description: アカウント（単数）
+      operationId: accounts#show
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.account+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Account'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: show accounts
+      tags:
+      - accounts
   /api/v1/actions/{ID}:
     get:
       description: 複数アクション（:ID）
@@ -306,8 +392,8 @@ paths:
       description: リストを返す
       operationId: method#list
       produces:
-      - application/vnd.usertype+json; type=collection
       - application/vnd.goa.error
+      - application/vnd.usertype+json; type=collection
       responses:
         "200":
           description: OK
@@ -472,8 +558,8 @@ paths:
       description: フォロー操作
       operationId: method#follow
       produces:
-      - application/vnd.goa.error
       - application/vnd.messagetype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK

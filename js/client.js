@@ -131,6 +131,24 @@ define(['axios'] , function (axios) {
     return client(cfg);
   }
 
+  // アカウント（複数）
+  // path is the request path, the format is "/api/v1/accounts/users"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.listAccounts = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
   // リストを返す
   // path is the request path, the format is "/api/v1/method/list"
   // config is an optional object to be merged into the config built by the function prior to making the request.
@@ -209,6 +227,24 @@ define(['axios'] , function (axios) {
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
   client.securitySecurity = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
+  // アカウント（単数）
+  // path is the request path, the format is "/api/v1/accounts/users/:id"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.showAccounts = function (path, config) {
     cfg = {
       timeout: timeout,
       url: urlPrefix + path,

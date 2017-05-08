@@ -18,6 +18,77 @@ import (
 	"unicode/utf8"
 )
 
+// ListAccountsContext provides the accounts list action context.
+type ListAccountsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewListAccountsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the accounts controller list action.
+func NewListAccountsContext(ctx context.Context, r *http.Request, service *goa.Service) (*ListAccountsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := ListAccountsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ListAccountsContext) OK(r AccountCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json; type=collection")
+	if r == nil {
+		r = AccountCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *ListAccountsContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// ShowAccountsContext provides the accounts show action context.
+type ShowAccountsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID string
+}
+
+// NewShowAccountsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the accounts controller show action.
+func NewShowAccountsContext(ctx context.Context, r *http.Request, service *goa.Service) (*ShowAccountsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := ShowAccountsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		rctx.ID = rawID
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ShowAccountsContext) OK(r *Account) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *ShowAccountsContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
 // IDActionsContext provides the actions ID action context.
 type IDActionsContext struct {
 	context.Context

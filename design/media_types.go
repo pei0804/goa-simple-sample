@@ -101,3 +101,64 @@ var ValidationType = MediaType("application/vnd.validationType+json", func() {
 		Attribute("reg")
 	})
 })
+
+//-------gorma--------
+
+var Account = MediaType("application/vnd.account+json", func() {
+	Description("celler account")
+	Attributes(func() {
+		Attribute("ID", Integer, "ID", func() {
+			Example(1)
+		})
+		Attribute("name", String, "名前", func() {
+			Example("山田　太郎")
+		})
+		Attribute("email", String, "メールアドレス", func() {
+			Example("example@gmail.com")
+		})
+	})
+	Required("ID", "name", "email")
+	View("default", func() {
+		Attribute("ID")
+		Attribute("name")
+		Attribute("email")
+	})
+})
+
+var Bottle = MediaType("application/vnd.bottle+json", func() {
+	Description("celler bottles")
+	Attributes(func() {
+		Attribute("ID", Integer, "ID", func() {
+			Example(1)
+		})
+		Attribute("name", String, "ボトル名", func() {
+			Example("シャルドネ")
+		})
+		Attribute("quantity", Integer, "数量", func() {
+			Example(4)
+		})
+	})
+	Required("ID", "name", "quantity")
+	View("default", func() {
+		Attribute("ID")
+		Attribute("name")
+		Attribute("quantity")
+	})
+})
+
+var Category = MediaType("application/vnd.category+json", func() {
+	Description("celler account")
+	Attributes(func() {
+		Attribute("ID", Integer, "ID", func() {
+			Example(1)
+		})
+		Attribute("name", String, "名前", func() {
+			Example("ワイン")
+		})
+	})
+	Required("ID", "name")
+	View("default", func() {
+		Attribute("ID")
+		Attribute("name")
+	})
+})

@@ -36,6 +36,10 @@ generate:
 	@goagen schema -d $(REPO)/design
 	@go build -o build
 
+model:
+	@rm -rf models
+	@goagen --design=$(REPO)/design gen --pkg-path=github.com/goadesign/gorma
+
 swaggerUI:
 	@open http://localhost:8080/swagger/index.html
 
@@ -74,6 +78,43 @@ appengine:
 	@gorep -path="./" \
           -from="../tool/cli" \
           -to="$(REPO)/tool/cli"
+
+##### Database ######
+
+DBNAME:=celler
+ENV:=development
+
+migrate/init:
+	mysql -u celler -h localhost --protocol tcp -e "create database \`$(DBNAME)\`" -p
+
+migrate/up:
+	sql-migrate up -env=$(ENV)
+
+migrate/down:
+	sql-migrate down -env=$(ENV)
+
+migrate/status:
+	sql-migrate status -env=$(ENV)
+
+migrate/dry:
+	sql-migrate up -dryrun -env=$(ENV)
+
+##### Docker ######
+
+docker/build: Dockerfile docker-compose.yml
+	docker-compose build
+
+docker/start:
+	docker-compose up -d
+
+docker/stop:
+	docker-compose down
+
+docker/logs:
+	docker-compose logs
+
+docker/clean:
+	docker-compose rm
 
 ##### Curls ######
 

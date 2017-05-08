@@ -15,6 +15,116 @@ import (
 	"net/http"
 )
 
+// celler account (default view)
+//
+// Identifier: application/vnd.account+json; view=default
+type Account struct {
+	// ID
+	ID int `form:"ID" json:"ID" xml:"ID"`
+	// メールアドレス
+	Email string `form:"email" json:"email" xml:"email"`
+	// 名前
+	Name string `form:"name" json:"name" xml:"name"`
+}
+
+// Validate validates the Account media type instance.
+func (mt *Account) Validate() (err error) {
+
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if mt.Email == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "email"))
+	}
+	return
+}
+
+// DecodeAccount decodes the Account instance encoded in resp body.
+func (c *Client) DecodeAccount(resp *http.Response) (*Account, error) {
+	var decoded Account
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// AccountCollection is the media type for an array of Account (default view)
+//
+// Identifier: application/vnd.account+json; type=collection; view=default
+type AccountCollection []*Account
+
+// Validate validates the AccountCollection media type instance.
+func (mt AccountCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// DecodeAccountCollection decodes the AccountCollection instance encoded in resp body.
+func (c *Client) DecodeAccountCollection(resp *http.Response) (AccountCollection, error) {
+	var decoded AccountCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
+// celler bottles (default view)
+//
+// Identifier: application/vnd.bottle+json; view=default
+type Bottle struct {
+	// ID
+	ID int `form:"ID" json:"ID" xml:"ID"`
+	// ボトル名
+	Name string `form:"name" json:"name" xml:"name"`
+	// 数量
+	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
+}
+
+// Validate validates the Bottle media type instance.
+func (mt *Bottle) Validate() (err error) {
+
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+
+	return
+}
+
+// DecodeBottle decodes the Bottle instance encoded in resp body.
+func (c *Client) DecodeBottle(resp *http.Response) (*Bottle, error) {
+	var decoded Bottle
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// celler account (default view)
+//
+// Identifier: application/vnd.category+json; view=default
+type Category struct {
+	// ID
+	ID int `form:"ID" json:"ID" xml:"ID"`
+	// 名前
+	Name string `form:"name" json:"name" xml:"name"`
+}
+
+// Validate validates the Category media type instance.
+func (mt *Category) Validate() (err error) {
+
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	return
+}
+
+// DecodeCategory decodes the Category instance encoded in resp body.
+func (c *Client) DecodeCategory(resp *http.Response) (*Category, error) {
+	var decoded Category
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
 // DecodeErrorResponse decodes the ErrorResponse instance encoded in resp body.
 func (c *Client) DecodeErrorResponse(resp *http.Response) (*goa.ErrorResponse, error) {
 	var decoded goa.ErrorResponse
@@ -209,47 +319,6 @@ func (mt *Validationtype) Validate() (err error) {
 // DecodeValidationtype decodes the Validationtype instance encoded in resp body.
 func (c *Client) DecodeValidationtype(resp *http.Response) (*Validationtype, error) {
 	var decoded Validationtype
-	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
-	return &decoded, err
-}
-
-// example (default view)
-//
-// Identifier: application/vnd.viewtype+json; view=default
-type Viewtype struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
-	// 値
-	Value string `form:"value" json:"value" xml:"value"`
-}
-
-// Validate validates the Viewtype media type instance.
-func (mt *Viewtype) Validate() (err error) {
-
-	if mt.Value == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "value"))
-	}
-	return
-}
-
-// example (tiny view)
-//
-// Identifier: application/vnd.viewtype+json; view=tiny
-type ViewtypeTiny struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
-}
-
-// DecodeViewtype decodes the Viewtype instance encoded in resp body.
-func (c *Client) DecodeViewtype(resp *http.Response) (*Viewtype, error) {
-	var decoded Viewtype
-	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
-	return &decoded, err
-}
-
-// DecodeViewtypeTiny decodes the ViewtypeTiny instance encoded in resp body.
-func (c *Client) DecodeViewtypeTiny(resp *http.Response) (*ViewtypeTiny, error) {
-	var decoded ViewtypeTiny
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }

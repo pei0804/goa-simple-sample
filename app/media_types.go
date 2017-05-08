@@ -14,6 +14,88 @@ import (
 	"github.com/goadesign/goa"
 )
 
+// celler account (default view)
+//
+// Identifier: application/vnd.account+json; view=default
+type Account struct {
+	// ID
+	ID int `form:"ID" json:"ID" xml:"ID"`
+	// メールアドレス
+	Email string `form:"email" json:"email" xml:"email"`
+	// 名前
+	Name string `form:"name" json:"name" xml:"name"`
+}
+
+// Validate validates the Account media type instance.
+func (mt *Account) Validate() (err error) {
+
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if mt.Email == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "email"))
+	}
+	return
+}
+
+// AccountCollection is the media type for an array of Account (default view)
+//
+// Identifier: application/vnd.account+json; type=collection; view=default
+type AccountCollection []*Account
+
+// Validate validates the AccountCollection media type instance.
+func (mt AccountCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// celler bottles (default view)
+//
+// Identifier: application/vnd.bottle+json; view=default
+type Bottle struct {
+	// ID
+	ID int `form:"ID" json:"ID" xml:"ID"`
+	// ボトル名
+	Name string `form:"name" json:"name" xml:"name"`
+	// 数量
+	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
+}
+
+// Validate validates the Bottle media type instance.
+func (mt *Bottle) Validate() (err error) {
+
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+
+	return
+}
+
+// celler account (default view)
+//
+// Identifier: application/vnd.category+json; view=default
+type Category struct {
+	// ID
+	ID int `form:"ID" json:"ID" xml:"ID"`
+	// 名前
+	Name string `form:"name" json:"name" xml:"name"`
+}
+
+// Validate validates the Category media type instance.
+func (mt *Category) Validate() (err error) {
+
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	return
+}
+
 // example (default view)
 //
 // Identifier: application/vnd.integertype+json; view=default
@@ -154,31 +236,4 @@ func (mt *Validationtype) Validate() (err error) {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "reg"))
 	}
 	return
-}
-
-// example (default view)
-//
-// Identifier: application/vnd.viewtype+json; view=default
-type Viewtype struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
-	// 値
-	Value string `form:"value" json:"value" xml:"value"`
-}
-
-// Validate validates the Viewtype media type instance.
-func (mt *Viewtype) Validate() (err error) {
-
-	if mt.Value == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "value"))
-	}
-	return
-}
-
-// example (tiny view)
-//
-// Identifier: application/vnd.viewtype+json; view=tiny
-type ViewtypeTiny struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
 }

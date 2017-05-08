@@ -235,3 +235,23 @@ var _ = Resource("validation", func() {
 		Response(BadRequest, ErrorMedia)
 	})
 })
+
+var _ = Resource("accounts", func() {
+	BasePath("/accounts")
+	Action("list", func() {
+		Description("アカウント（複数）")
+		Routing(
+			GET("/users"),
+		)
+		Response(OK, CollectionOf(Account))
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("show", func() {
+		Description("アカウント（単数）")
+		Routing(
+			GET("/users/:id"),
+		)
+		Response(OK, Account)
+		Response(BadRequest, ErrorMedia)
+	})
+})
