@@ -18,6 +18,93 @@ import (
 	"unicode/utf8"
 )
 
+// AddAccountsContext provides the accounts add action context.
+type AddAccountsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Email *string
+	Name  *string
+}
+
+// NewAddAccountsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the accounts controller add action.
+func NewAddAccountsContext(ctx context.Context, r *http.Request, service *goa.Service) (*AddAccountsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := AddAccountsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramEmail := req.Params["email"]
+	if len(paramEmail) > 0 {
+		rawEmail := paramEmail[0]
+		rctx.Email = &rawEmail
+		if rctx.Email != nil {
+			if err2 := goa.ValidateFormat(goa.FormatEmail, *rctx.Email); err2 != nil {
+				err = goa.MergeErrors(err, goa.InvalidFormatError(`email`, *rctx.Email, goa.FormatEmail, err2))
+			}
+		}
+	}
+	paramName := req.Params["name"]
+	if len(paramName) > 0 {
+		rawName := paramName[0]
+		rctx.Name = &rawName
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *AddAccountsContext) OK(r *Account) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *AddAccountsContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// DeleteAccountsContext provides the accounts delete action context.
+type DeleteAccountsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID string
+}
+
+// NewDeleteAccountsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the accounts controller delete action.
+func NewDeleteAccountsContext(ctx context.Context, r *http.Request, service *goa.Service) (*DeleteAccountsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := DeleteAccountsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["ID"]
+	if len(paramID) == 0 {
+		rctx.ID = ""
+	} else {
+		rawID := paramID[0]
+		rctx.ID = rawID
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *DeleteAccountsContext) OK(r *Account) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *DeleteAccountsContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
 // ListAccountsContext provides the accounts list action context.
 type ListAccountsContext struct {
 	context.Context
@@ -85,6 +172,62 @@ func (ctx *ShowAccountsContext) OK(r *Account) error {
 
 // BadRequest sends a HTTP response with status code 400.
 func (ctx *ShowAccountsContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// UpdateAccountsContext provides the accounts update action context.
+type UpdateAccountsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID    string
+	Email string
+	Name  string
+}
+
+// NewUpdateAccountsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the accounts controller update action.
+func NewUpdateAccountsContext(ctx context.Context, r *http.Request, service *goa.Service) (*UpdateAccountsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := UpdateAccountsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["ID"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		rctx.ID = rawID
+	}
+	paramEmail := req.Params["email"]
+	if len(paramEmail) == 0 {
+		rctx.Email = ""
+	} else {
+		rawEmail := paramEmail[0]
+		rctx.Email = rawEmail
+		if err2 := goa.ValidateFormat(goa.FormatEmail, rctx.Email); err2 != nil {
+			err = goa.MergeErrors(err, goa.InvalidFormatError(`email`, rctx.Email, goa.FormatEmail, err2))
+		}
+	}
+	paramName := req.Params["name"]
+	if len(paramName) == 0 {
+		rctx.Name = ""
+	} else {
+		rawName := paramName[0]
+		rctx.Name = rawName
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *UpdateAccountsContext) OK(r *Account) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *UpdateAccountsContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }

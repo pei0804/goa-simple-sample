@@ -37,12 +37,53 @@ define(['axios'] , function (axios) {
     return client(cfg);
   }
 
+  // 追加
+  // path is the request path, the format is "/api/v1/accounts"
+  // email, name are used to build the request query string.
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.addAccounts = function (path, email, name, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
+      params: {
+        email: email,
+        name: name
+      },
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
   // ユーザー（配列）
   // path is the request path, the format is "/api/v1/response/users/array"
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
   client.arrayResponse = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
+  // 削除
+  // path is the request path, the format is "/api/v1/accounts/users/:ID"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.deleteAccounts = function (path, config) {
     cfg = {
       timeout: timeout,
       url: urlPrefix + path,
@@ -131,8 +172,8 @@ define(['axios'] , function (axios) {
     return client(cfg);
   }
 
-  // アカウント（複数）
-  // path is the request path, the format is "/api/v1/accounts/users"
+  // 複数
+  // path is the request path, the format is "/api/v1/accounts"
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
@@ -239,8 +280,8 @@ define(['axios'] , function (axios) {
     return client(cfg);
   }
 
-  // アカウント（単数）
-  // path is the request path, the format is "/api/v1/accounts/users/:id"
+  // 単数
+  // path is the request path, the format is "/api/v1/accounts/:id"
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
@@ -267,6 +308,29 @@ define(['axios'] , function (axios) {
       timeout: timeout,
       url: urlPrefix + path,
       method: 'get',
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
+  // 更新
+  // path is the request path, the format is "/api/v1/accounts/users/:ID"
+  // email, name are used to build the request query string.
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.updateAccounts = function (path, email, name, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
+      params: {
+        email: email,
+        name: name
+      },
       responseType: 'json'
     };
     if (config) {

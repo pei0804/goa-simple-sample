@@ -213,9 +213,9 @@ info:
   title: tikasan/goa-simple-sample
   version: ""
 paths:
-  /api/v1/accounts/users:
+  /api/v1/accounts:
     get:
-      description: アカウント（複数）
+      description: 複数
       operationId: accounts#list
       produces:
       - application/vnd.account+json; type=collection
@@ -235,9 +235,9 @@ paths:
       summary: list accounts
       tags:
       - accounts
-  /api/v1/accounts/users/{id}:
+  /api/v1/accounts/{id}:
     get:
-      description: アカウント（単数）
+      description: 単数
       operationId: accounts#show
       parameters:
       - in: path
@@ -262,6 +262,46 @@ paths:
       summary: show accounts
       tags:
       - accounts
+  /api/v1/accounts/users/{ID}:
+    get:
+      description: 更新
+      operationId: accounts#update
+      parameters:
+      - in: path
+        name: ID
+        required: true
+        type: string
+      - default: ""
+        description: 名前
+        format: email
+        in: query
+        name: email
+        required: false
+        type: string
+      - default: ""
+        description: 名前
+        in: query
+        name: name
+        required: false
+        type: string
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.account+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Account'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: update accounts
+      tags:
+      - accounts
   /api/v1/actions/{ID}:
     get:
       description: 複数アクション（:ID）
@@ -273,8 +313,8 @@ paths:
         required: true
         type: integer
       produces:
-      - application/vnd.goa.error
       - application/vnd.integertype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -558,8 +598,8 @@ paths:
       description: フォロー操作
       operationId: method#follow
       produces:
-      - application/vnd.messagetype+json
       - application/vnd.goa.error
+      - application/vnd.messagetype+json
       responses:
         "200":
           description: OK
@@ -607,8 +647,8 @@ paths:
         required: true
         type: string
       produces:
-      - application/vnd.goa.error
       - application/vnd.usertype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -740,8 +780,8 @@ paths:
         required: true
         type: string
       produces:
-      - application/vnd.goa.error
       - application/vnd.validationtype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK

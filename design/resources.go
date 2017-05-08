@@ -239,18 +239,68 @@ var _ = Resource("validation", func() {
 var _ = Resource("accounts", func() {
 	BasePath("/accounts")
 	Action("list", func() {
-		Description("アカウント（複数）")
+		Description("複数")
 		Routing(
-			GET("/users"),
+			GET("/"),
 		)
 		Response(OK, CollectionOf(Account))
 		Response(BadRequest, ErrorMedia)
 	})
 	Action("show", func() {
-		Description("アカウント（単数）")
+		Description("単数")
 		Routing(
-			GET("/users/:id"),
+			GET("/:id"),
 		)
+		Response(OK, Account)
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("add", func() {
+		Description("追加")
+		Routing(
+			GET("/"),
+		)
+		Params(func() {
+			Param("name", String, "名前", func() {
+				Example("山田 太郎")
+			})
+			Param("email", String, "名前", func() {
+				Format("email")
+				Example("example@gmail.com")
+			})
+		})
+		Response(OK, Account)
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("delete", func() {
+		Description("削除")
+		Routing(
+			GET("/users/:ID"),
+		)
+		Params(func() {
+			Param("ID", String, "名前", func() {
+				Default("")
+				Example("山田 太郎")
+			})
+		})
+		Response(OK, Account)
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("update", func() {
+		Description("更新")
+		Routing(
+			GET("/users/:ID"),
+		)
+		Params(func() {
+			Param("name", String, "名前", func() {
+				Default("")
+				Example("山田 太郎")
+			})
+			Param("email", String, "名前", func() {
+				Format("email")
+				Default("")
+				Example("example@gmail.com")
+			})
+		})
 		Response(OK, Account)
 		Response(BadRequest, ErrorMedia)
 	})

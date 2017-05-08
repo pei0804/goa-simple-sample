@@ -35,16 +35,52 @@ func initService(service *goa.Service) {
 // AccountsController is the controller interface for the Accounts actions.
 type AccountsController interface {
 	goa.Muxer
+	Add(*AddAccountsContext) error
+	Delete(*DeleteAccountsContext) error
 	List(*ListAccountsContext) error
 	Show(*ShowAccountsContext) error
+	Update(*UpdateAccountsContext) error
 }
 
 // MountAccountsController "mounts" a Accounts resource controller on the given service.
 func MountAccountsController(service *goa.Service, ctrl AccountsController) {
 	initService(service)
 	var h goa.Handler
-	service.Mux.Handle("OPTIONS", "/api/v1/accounts/users", ctrl.MuxHandler("preflight", handleAccountsOrigin(cors.HandlePreflight()), nil))
-	service.Mux.Handle("OPTIONS", "/api/v1/accounts/users/:id", ctrl.MuxHandler("preflight", handleAccountsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/accounts", ctrl.MuxHandler("preflight", handleAccountsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/accounts/users/:ID", ctrl.MuxHandler("preflight", handleAccountsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/accounts/:id", ctrl.MuxHandler("preflight", handleAccountsOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewAddAccountsContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Add(rctx)
+	}
+	h = handleAccountsOrigin(h)
+	service.Mux.Handle("GET", "/api/v1/accounts", ctrl.MuxHandler("Add", h, nil))
+	service.LogInfo("mount", "ctrl", "Accounts", "action", "Add", "route", "GET /api/v1/accounts")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewDeleteAccountsContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Delete(rctx)
+	}
+	h = handleAccountsOrigin(h)
+	service.Mux.Handle("GET", "/api/v1/accounts/users/:ID", ctrl.MuxHandler("Delete", h, nil))
+	service.LogInfo("mount", "ctrl", "Accounts", "action", "Delete", "route", "GET /api/v1/accounts/users/:ID")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -59,8 +95,8 @@ func MountAccountsController(service *goa.Service, ctrl AccountsController) {
 		return ctrl.List(rctx)
 	}
 	h = handleAccountsOrigin(h)
-	service.Mux.Handle("GET", "/api/v1/accounts/users", ctrl.MuxHandler("List", h, nil))
-	service.LogInfo("mount", "ctrl", "Accounts", "action", "List", "route", "GET /api/v1/accounts/users")
+	service.Mux.Handle("GET", "/api/v1/accounts", ctrl.MuxHandler("List", h, nil))
+	service.LogInfo("mount", "ctrl", "Accounts", "action", "List", "route", "GET /api/v1/accounts")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -75,8 +111,24 @@ func MountAccountsController(service *goa.Service, ctrl AccountsController) {
 		return ctrl.Show(rctx)
 	}
 	h = handleAccountsOrigin(h)
-	service.Mux.Handle("GET", "/api/v1/accounts/users/:id", ctrl.MuxHandler("Show", h, nil))
-	service.LogInfo("mount", "ctrl", "Accounts", "action", "Show", "route", "GET /api/v1/accounts/users/:id")
+	service.Mux.Handle("GET", "/api/v1/accounts/:id", ctrl.MuxHandler("Show", h, nil))
+	service.LogInfo("mount", "ctrl", "Accounts", "action", "Show", "route", "GET /api/v1/accounts/:id")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewUpdateAccountsContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Update(rctx)
+	}
+	h = handleAccountsOrigin(h)
+	service.Mux.Handle("GET", "/api/v1/accounts/users/:ID", ctrl.MuxHandler("Update", h, nil))
+	service.LogInfo("mount", "ctrl", "Accounts", "action", "Update", "route", "GET /api/v1/accounts/users/:ID")
 }
 
 // handleAccountsOrigin applies the CORS response headers corresponding to the origin.

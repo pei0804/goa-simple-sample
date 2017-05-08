@@ -18,7 +18,7 @@ import (
 // AccountsHref returns the resource href.
 func AccountsHref(id interface{}) string {
 	paramid := strings.TrimLeftFunc(fmt.Sprintf("%v", id), func(r rune) bool { return r == '/' })
-	return fmt.Sprintf("/api/v1/accounts/users/%v", paramid)
+	return fmt.Sprintf("/api/v1/accounts/%v", paramid)
 }
 
 // ResponseHref returns the resource href.

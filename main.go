@@ -8,9 +8,9 @@ import (
 
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
+	"github.com/tikasan/eventory/database"
 	"github.com/tikasan/goa-simple-sample/app"
 	"github.com/tikasan/goa-simple-sample/controller"
-	"github.com/tikasan/goa-simple-sample/database"
 )
 
 func main() {
@@ -33,15 +33,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("cannot open database configuration. exit. %s", err)
 	}
-	dbcon, err := cs.Open(*env)
+	_, err = cs.Open(*env)
 	if err != nil {
 		log.Fatalf("database initialization failed: %s", err)
 	}
 
 	// Mount "accounts" controller
-	c := controller.NewAccountsController(service, dbcon)
-	app.MountAccountsController(service, c)
+	//c := controller.NewAccountsController(service, dbcon)
+	//app.MountAccountsController(service, c)
 	// Mount "actions" controller
+
 	c2 := controller.NewActionsController(service)
 	app.MountActionsController(service, c2)
 	// Mount "js" controller
