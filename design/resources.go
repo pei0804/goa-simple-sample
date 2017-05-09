@@ -181,6 +181,15 @@ var _ = Resource("response", func() {
 		Response(OK, ArrayOf(Integer))
 		Response(BadRequest, ErrorMedia)
 	})
+	Action("nested", func() {
+		Description("ネストしたMediaType")
+		Routing(
+			GET("/users/nested"),
+		)
+		// ネストした要素を返す
+		Response(OK, ArticleType)
+		Response(BadRequest, ErrorMedia)
+	})
 })
 
 var _ = Resource("validation", func() {
@@ -249,8 +258,13 @@ var _ = Resource("accounts", func() {
 	Action("show", func() {
 		Description("単数")
 		Routing(
-			GET("/:id"),
+			GET("/:ID"),
 		)
+		Params(func() {
+			Param("ID", Integer, "ID", func() {
+				Example(1)
+			})
+		})
 		Response(OK, Account)
 		Response(BadRequest, ErrorMedia)
 	})
@@ -277,9 +291,8 @@ var _ = Resource("accounts", func() {
 			GET("/users/:ID"),
 		)
 		Params(func() {
-			Param("ID", String, "名前", func() {
-				Default("")
-				Example("山田 太郎")
+			Param("ID", Integer, "名前", func() {
+				Example(1)
 			})
 		})
 		Response(OK, Account)

@@ -25,6 +25,7 @@ var IntegerType = MediaType("application/vnd.integerType+json", func() {
 		Attribute("ID")
 	})
 })
+
 var MessageType = MediaType("application/vnd.messageType+json", func() {
 	Description("example")
 	Attributes(func() {
@@ -100,6 +101,30 @@ var ValidationType = MediaType("application/vnd.validationType+json", func() {
 		Attribute("defaultType")
 		Attribute("reg")
 	})
+})
+
+var ResponseFormat = Type("response", func() {
+	Attribute("status", Integer, func() {
+		Default(200)
+	})
+	Required("status")
+})
+
+var Data = Type("data", func() {
+	Attribute("title", String)
+	Attribute("body", String)
+	Required("title", "body")
+})
+
+var ArticleType = MediaType("application/vnd.articleType+json", func() {
+	Description("example")
+	Attribute("data", ArrayOf(Data))
+	Attribute("response", ResponseFormat)
+	View("default", func() {
+		Attribute("data")
+		Attribute("response")
+	})
+	Required("data", "response")
 })
 
 //-------gorma--------

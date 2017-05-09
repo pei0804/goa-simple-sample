@@ -71,7 +71,7 @@ type DeleteAccountsContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	ID string
+	ID int
 }
 
 // NewDeleteAccountsContext parses the incoming request URL and body, performs validations and creates the
@@ -84,11 +84,13 @@ func NewDeleteAccountsContext(ctx context.Context, r *http.Request, service *goa
 	req.Request = r
 	rctx := DeleteAccountsContext{Context: ctx, ResponseData: resp, RequestData: req}
 	paramID := req.Params["ID"]
-	if len(paramID) == 0 {
-		rctx.ID = ""
-	} else {
+	if len(paramID) > 0 {
 		rawID := paramID[0]
-		rctx.ID = rawID
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
+		}
 	}
 	return &rctx, err
 }
@@ -144,7 +146,7 @@ type ShowAccountsContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	ID string
+	ID int
 }
 
 // NewShowAccountsContext parses the incoming request URL and body, performs validations and creates the
@@ -156,10 +158,14 @@ func NewShowAccountsContext(ctx context.Context, r *http.Request, service *goa.S
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := ShowAccountsContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramID := req.Params["id"]
+	paramID := req.Params["ID"]
 	if len(paramID) > 0 {
 		rawID := paramID[0]
-		rctx.ID = rawID
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
+		}
 	}
 	return &rctx, err
 }
@@ -611,6 +617,37 @@ func (ctx *ListResponseContext) OKTiny(r UsertypeTinyCollection) error {
 
 // BadRequest sends a HTTP response with status code 400.
 func (ctx *ListResponseContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NestedResponseContext provides the response nested action context.
+type NestedResponseContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewNestedResponseContext parses the incoming request URL and body, performs validations and creates the
+// context used by the response controller nested action.
+func NewNestedResponseContext(ctx context.Context, r *http.Request, service *goa.Service) (*NestedResponseContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := NestedResponseContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *NestedResponseContext) OK(r *Articletype) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.articletype+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *NestedResponseContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }

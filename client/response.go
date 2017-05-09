@@ -104,6 +104,35 @@ func (c *Client) NewListResponseRequest(ctx context.Context, path string) (*http
 	return req, nil
 }
 
+// NestedResponsePath computes a request path to the nested action of response.
+func NestedResponsePath() string {
+
+	return fmt.Sprintf("/api/v1/response/users/nested")
+}
+
+// ネストしたMediaType
+func (c *Client) NestedResponse(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewNestedResponseRequest(ctx, path)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewNestedResponseRequest create the request corresponding to the nested action endpoint of the response resource.
+func (c *Client) NewNestedResponseRequest(ctx context.Context, path string) (*http.Request, error) {
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "https"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
 // ShowResponsePath computes a request path to the show action of response.
 func ShowResponsePath(id string) string {
 	param0 := id

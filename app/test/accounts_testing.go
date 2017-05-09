@@ -196,7 +196,7 @@ func AddAccountsOK(t goatest.TInterface, ctx context.Context, service *goa.Servi
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func DeleteAccountsBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.AccountsController, id string) (http.ResponseWriter, error) {
+func DeleteAccountsBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.AccountsController, id int) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -261,7 +261,7 @@ func DeleteAccountsBadRequest(t goatest.TInterface, ctx context.Context, service
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func DeleteAccountsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.AccountsController, id string) (http.ResponseWriter, *app.Account) {
+func DeleteAccountsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.AccountsController, id int) (http.ResponseWriter, *app.Account) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -462,7 +462,7 @@ func ListAccountsOK(t goatest.TInterface, ctx context.Context, service *goa.Serv
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ShowAccountsBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.AccountsController, id string) (http.ResponseWriter, error) {
+func ShowAccountsBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.AccountsController, id int) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -490,7 +490,7 @@ func ShowAccountsBadRequest(t goatest.TInterface, ctx context.Context, service *
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	prms["ID"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -527,7 +527,7 @@ func ShowAccountsBadRequest(t goatest.TInterface, ctx context.Context, service *
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ShowAccountsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.AccountsController, id string) (http.ResponseWriter, *app.Account) {
+func ShowAccountsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.AccountsController, id int) (http.ResponseWriter, *app.Account) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -555,7 +555,7 @@ func ShowAccountsOK(t goatest.TInterface, ctx context.Context, service *goa.Serv
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	prms["ID"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}

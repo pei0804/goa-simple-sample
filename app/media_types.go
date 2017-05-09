@@ -55,6 +55,32 @@ func (mt AccountCollection) Validate() (err error) {
 	return
 }
 
+// example (default view)
+//
+// Identifier: application/vnd.articletype+json; view=default
+type Articletype struct {
+	Data     []*Data   `form:"data" json:"data" xml:"data"`
+	Response *Response `form:"response" json:"response" xml:"response"`
+}
+
+// Validate validates the Articletype media type instance.
+func (mt *Articletype) Validate() (err error) {
+	if mt.Data == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "data"))
+	}
+	if mt.Response == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "response"))
+	}
+	for _, e := range mt.Data {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
 // celler bottles (default view)
 //
 // Identifier: application/vnd.bottle+json; view=default

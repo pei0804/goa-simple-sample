@@ -77,3 +77,14 @@ func (c *ResponseController) Show(ctx *app.ShowResponseContext) error {
 	res.Email = "satak47cpc@gmail.com"
 	return ctx.OK(res)
 }
+
+// Nested runs the show action.
+func (c *ResponseController) Nested(ctx *app.NestedResponseContext) error {
+	// ResponseController_Show: start_implement
+
+	// Put your logic here
+
+	//ResponseController_Show: end_implement
+	res := &app.Articletype{}
+	return ctx.OK(res)
+}

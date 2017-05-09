@@ -8,9 +8,9 @@ import (
 
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
-	"github.com/tikasan/eventory/database"
 	"github.com/tikasan/goa-simple-sample/app"
 	"github.com/tikasan/goa-simple-sample/controller"
+	"github.com/tikasan/goa-simple-sample/database"
 )
 
 func main() {
@@ -24,25 +24,27 @@ func main() {
 	service.Use(middleware.Recover())
 
 	var (
-		port = flag.String("port", ":8080", "addr to bind")
-		env  = flag.String("env", "development", "application envirionment (production, development etc.)")
+		port  = flag.String("port", ":8080", "addr to bind")
+		env   = flag.String("env", "development", "application envirionment (production, development etc.)")
+		dbrun = flag.Bool("dbrun", false, "database run mode")
 	)
 	flag.Parse()
 
-	cs, err := database.NewConfigsFromFile("dbconfig.yml")
-	if err != nil {
-		log.Fatalf("cannot open database configuration. exit. %s", err)
-	}
-	_, err = cs.Open(*env)
-	if err != nil {
-		log.Fatalf("database initialization failed: %s", err)
+	if *dbrun {
+		cs, err := database.NewConfigsFromFile("dbconfig.yml")
+		if err != nil {
+			log.Fatalf("cannot open database configuration. exit. %s", err)
+		}
+		dbcon, err := cs.Open(*env)
+		if err != nil {
+			log.Fatalf("database initialization failed: %s", err)
+		}
+		// Mount "accounts" controller
+		c := controller.NewAccountsController(service, dbcon)
+		app.MountAccountsController(service, c)
 	}
 
-	// Mount "accounts" controller
-	//c := controller.NewAccountsController(service, dbcon)
-	//app.MountAccountsController(service, c)
 	// Mount "actions" controller
-
 	c2 := controller.NewActionsController(service)
 	app.MountActionsController(service, c2)
 	// Mount "js" controller

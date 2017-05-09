@@ -15,6 +15,7 @@ import (
 	"golang.org/x/net/context"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 // AddAccountsPath computes a request path to the add action of accounts.
@@ -55,8 +56,8 @@ func (c *Client) NewAddAccountsRequest(ctx context.Context, path string, email *
 }
 
 // DeleteAccountsPath computes a request path to the delete action of accounts.
-func DeleteAccountsPath(id string) string {
-	param0 := id
+func DeleteAccountsPath(id int) string {
+	param0 := strconv.Itoa(id)
 
 	return fmt.Sprintf("/api/v1/accounts/users/%s", param0)
 }
@@ -114,8 +115,8 @@ func (c *Client) NewListAccountsRequest(ctx context.Context, path string) (*http
 }
 
 // ShowAccountsPath computes a request path to the show action of accounts.
-func ShowAccountsPath(id string) string {
-	param0 := id
+func ShowAccountsPath(id int) string {
+	param0 := strconv.Itoa(id)
 
 	return fmt.Sprintf("/api/v1/accounts/%s", param0)
 }

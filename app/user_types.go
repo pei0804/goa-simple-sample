@@ -9,3 +9,88 @@
 // The content of this file is auto-generated, DO NOT MODIFY
 
 package app
+
+import (
+	"github.com/goadesign/goa"
+)
+
+// data user type.
+type data struct {
+	Body  *string `form:"body,omitempty" json:"body,omitempty" xml:"body,omitempty"`
+	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+}
+
+// Validate validates the data type instance.
+func (ut *data) Validate() (err error) {
+	if ut.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "title"))
+	}
+	if ut.Body == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "body"))
+	}
+	return
+}
+
+// Publicize creates Data from data
+func (ut *data) Publicize() *Data {
+	var pub Data
+	if ut.Body != nil {
+		pub.Body = *ut.Body
+	}
+	if ut.Title != nil {
+		pub.Title = *ut.Title
+	}
+	return &pub
+}
+
+// Data user type.
+type Data struct {
+	Body  string `form:"body" json:"body" xml:"body"`
+	Title string `form:"title" json:"title" xml:"title"`
+}
+
+// Validate validates the Data type instance.
+func (ut *Data) Validate() (err error) {
+	if ut.Title == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "title"))
+	}
+	if ut.Body == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "body"))
+	}
+	return
+}
+
+// response user type.
+type response struct {
+	Status *int `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
+}
+
+// Finalize sets the default values for response type instance.
+func (ut *response) Finalize() {
+	var defaultStatus = 200
+	if ut.Status == nil {
+		ut.Status = &defaultStatus
+	}
+}
+
+// Validate validates the response type instance.
+func (ut *response) Validate() (err error) {
+	if ut.Status == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "status"))
+	}
+	return
+}
+
+// Publicize creates Response from response
+func (ut *response) Publicize() *Response {
+	var pub Response
+	if ut.Status != nil {
+		pub.Status = *ut.Status
+	}
+	return &pub
+}
+
+// Response user type.
+type Response struct {
+	Status int `form:"status" json:"status" xml:"status"`
+}

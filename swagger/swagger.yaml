@@ -44,6 +44,29 @@ definitions:
       $ref: '#/definitions/Account'
     title: 'Mediatype identifier: application/vnd.account+json; type=collection; view=default'
     type: array
+  Articletype:
+    description: example (default view)
+    example:
+      data:
+      - body: Impedit omnis eius.
+        title: Quo quaerat.
+      response:
+        status: 7.279075e+18
+    properties:
+      data:
+        example:
+        - body: Impedit omnis eius.
+          title: Quo quaerat.
+        items:
+          $ref: '#/definitions/data'
+        type: array
+      response:
+        $ref: '#/definitions/response'
+    required:
+    - data
+    - response
+    title: 'Mediatype identifier: application/vnd.articletype+json; view=default'
+    type: object
   Integertype:
     description: example (default view)
     example:
@@ -104,6 +127,9 @@ definitions:
     - ID: 1
       email: satak47cpc@gmail.com
       name: hoge
+    - ID: 1
+      email: satak47cpc@gmail.com
+      name: hoge
     items:
       $ref: '#/definitions/Usertype'
     title: 'Mediatype identifier: application/vnd.usertype+json; type=collection;
@@ -160,6 +186,22 @@ definitions:
     - reg
     title: 'Mediatype identifier: application/vnd.validationtype+json; view=default'
     type: object
+  data:
+    example:
+      body: Impedit omnis eius.
+      title: Quo quaerat.
+    properties:
+      body:
+        example: Impedit omnis eius.
+        type: string
+      title:
+        example: Quo quaerat.
+        type: string
+    required:
+    - title
+    - body
+    title: data
+    type: object
   error:
     description: Error response media type (default view)
     example:
@@ -197,6 +239,19 @@ definitions:
         type: string
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
+  response:
+    example:
+      status: 7.279075e+18
+    properties:
+      status:
+        default: 200
+        example: 7.279075e+18
+        format: int64
+        type: integer
+    required:
+    - status
+    title: response
+    type: object
 externalDocs:
   description: wiki
   url: https://github.com/tikasan/goa-simple-sample/wiki
@@ -218,8 +273,8 @@ paths:
       description: 複数
       operationId: accounts#list
       produces:
-      - application/vnd.account+json; type=collection
       - application/vnd.goa.error
+      - application/vnd.account+json; type=collection
       responses:
         "200":
           description: OK
@@ -235,15 +290,16 @@ paths:
       summary: list accounts
       tags:
       - accounts
-  /api/v1/accounts/{id}:
+  /api/v1/accounts/{ID}:
     get:
       description: 単数
       operationId: accounts#show
       parameters:
-      - in: path
-        name: id
+      - description: ID
+        in: path
+        name: ID
         required: true
-        type: string
+        type: integer
       produces:
       - application/vnd.goa.error
       - application/vnd.account+json
@@ -313,8 +369,8 @@ paths:
         required: true
         type: integer
       produces:
-      - application/vnd.integertype+json
       - application/vnd.goa.error
+      - application/vnd.integertype+json
       responses:
         "200":
           description: OK
@@ -647,8 +703,8 @@ paths:
         required: true
         type: string
       produces:
-      - application/vnd.usertype+json
       - application/vnd.goa.error
+      - application/vnd.usertype+json
       responses:
         "200":
           description: OK
@@ -704,13 +760,35 @@ paths:
       summary: hash response
       tags:
       - response
+  /api/v1/response/users/nested:
+    get:
+      description: ネストしたMediaType
+      operationId: response#nested
+      produces:
+      - application/vnd.articletype+json
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Articletype'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: nested response
+      tags:
+      - response
   /api/v1/securiy:
     get:
       description: セキュリティの例です
       operationId: security#security
       produces:
-      - application/vnd.goa.error
       - application/vnd.messagetype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -780,8 +858,8 @@ paths:
         required: true
         type: string
       produces:
-      - application/vnd.validationtype+json
       - application/vnd.goa.error
+      - application/vnd.validationtype+json
       responses:
         "200":
           description: OK

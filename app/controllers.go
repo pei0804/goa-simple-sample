@@ -48,7 +48,7 @@ func MountAccountsController(service *goa.Service, ctrl AccountsController) {
 	var h goa.Handler
 	service.Mux.Handle("OPTIONS", "/api/v1/accounts", ctrl.MuxHandler("preflight", handleAccountsOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/accounts/users/:ID", ctrl.MuxHandler("preflight", handleAccountsOrigin(cors.HandlePreflight()), nil))
-	service.Mux.Handle("OPTIONS", "/api/v1/accounts/:id", ctrl.MuxHandler("preflight", handleAccountsOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/accounts/:ID", ctrl.MuxHandler("preflight", handleAccountsOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -111,8 +111,8 @@ func MountAccountsController(service *goa.Service, ctrl AccountsController) {
 		return ctrl.Show(rctx)
 	}
 	h = handleAccountsOrigin(h)
-	service.Mux.Handle("GET", "/api/v1/accounts/:id", ctrl.MuxHandler("Show", h, nil))
-	service.LogInfo("mount", "ctrl", "Accounts", "action", "Show", "route", "GET /api/v1/accounts/:id")
+	service.Mux.Handle("GET", "/api/v1/accounts/:ID", ctrl.MuxHandler("Show", h, nil))
+	service.LogInfo("mount", "ctrl", "Accounts", "action", "Show", "route", "GET /api/v1/accounts/:ID")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -443,6 +443,7 @@ type ResponseController interface {
 	Array(*ArrayResponseContext) error
 	Hash(*HashResponseContext) error
 	List(*ListResponseContext) error
+	Nested(*NestedResponseContext) error
 	Show(*ShowResponseContext) error
 }
 
@@ -453,6 +454,7 @@ func MountResponseController(service *goa.Service, ctrl ResponseController) {
 	service.Mux.Handle("OPTIONS", "/api/v1/response/users/array", ctrl.MuxHandler("preflight", handleResponseOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/response/users/hash", ctrl.MuxHandler("preflight", handleResponseOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/response/users", ctrl.MuxHandler("preflight", handleResponseOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/response/users/nested", ctrl.MuxHandler("preflight", handleResponseOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/response/users/:id", ctrl.MuxHandler("preflight", handleResponseOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
@@ -502,6 +504,22 @@ func MountResponseController(service *goa.Service, ctrl ResponseController) {
 	h = handleResponseOrigin(h)
 	service.Mux.Handle("GET", "/api/v1/response/users", ctrl.MuxHandler("List", h, nil))
 	service.LogInfo("mount", "ctrl", "Response", "action", "List", "route", "GET /api/v1/response/users")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewNestedResponseContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Nested(rctx)
+	}
+	h = handleResponseOrigin(h)
+	service.Mux.Handle("GET", "/api/v1/response/users/nested", ctrl.MuxHandler("Nested", h, nil))
+	service.LogInfo("mount", "ctrl", "Response", "action", "Nested", "route", "GET /api/v1/response/users/nested")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request

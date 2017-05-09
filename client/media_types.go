@@ -70,6 +70,39 @@ func (c *Client) DecodeAccountCollection(resp *http.Response) (AccountCollection
 	return decoded, err
 }
 
+// example (default view)
+//
+// Identifier: application/vnd.articletype+json; view=default
+type Articletype struct {
+	Data     []*Data   `form:"data" json:"data" xml:"data"`
+	Response *Response `form:"response" json:"response" xml:"response"`
+}
+
+// Validate validates the Articletype media type instance.
+func (mt *Articletype) Validate() (err error) {
+	if mt.Data == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "data"))
+	}
+	if mt.Response == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "response"))
+	}
+	for _, e := range mt.Data {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// DecodeArticletype decodes the Articletype instance encoded in resp body.
+func (c *Client) DecodeArticletype(resp *http.Response) (*Articletype, error) {
+	var decoded Articletype
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
 // celler bottles (default view)
 //
 // Identifier: application/vnd.bottle+json; view=default

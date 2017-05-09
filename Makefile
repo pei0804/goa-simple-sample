@@ -5,6 +5,7 @@ REPO:=github.com/tikasan/goa-simple-sample
 init: depend bootstrap
 gen: clean generate
 rerun: clean generate run
+rerundb: clean generate rundb
 
 depend:
 	@which goagen || go get -v github.com/goadesign/goa/goagen
@@ -45,6 +46,9 @@ swaggerUI:
 
 run:
 	@go run main.go
+
+rundb:
+	@go run main.go --dbrun
 
 ##### Appengine targets ######
 
