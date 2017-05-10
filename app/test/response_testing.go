@@ -468,7 +468,7 @@ func ListResponseOKTiny(t goatest.TInterface, ctx context.Context, service *goa.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func NestedResponseBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ResponseController) (http.ResponseWriter, error) {
+func NestedResponseBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ResponseController, test string) (http.ResponseWriter, *app.Error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -488,14 +488,24 @@ func NestedResponseBadRequest(t goatest.TInterface, ctx context.Context, service
 
 	// Setup request context
 	rw := httptest.NewRecorder()
+	query := url.Values{}
+	{
+		sliceVal := []string{test}
+		query["test"] = sliceVal
+	}
 	u := &url.URL{
-		Path: fmt.Sprintf("/api/v1/response/users/nested"),
+		Path:     fmt.Sprintf("/api/v1/response/users/nested"),
+		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
+	{
+		sliceVal := []string{test}
+		prms["test"] = sliceVal
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -515,12 +525,16 @@ func NestedResponseBadRequest(t goatest.TInterface, ctx context.Context, service
 	if rw.Code != 400 {
 		t.Errorf("invalid response status code: got %+v, expected 400", rw.Code)
 	}
-	var mt error
+	var mt *app.Error
 	if resp != nil {
 		var ok bool
-		mt, ok = resp.(error)
+		mt, ok = resp.(*app.Error)
 		if !ok {
-			t.Fatalf("invalid response media: got %+v, expected instance of error", resp)
+			t.Fatalf("invalid response media: got %+v, expected instance of app.Error", resp)
+		}
+		_err = mt.Validate()
+		if _err != nil {
+			t.Errorf("invalid response media type: %s", _err)
 		}
 	}
 
@@ -532,7 +546,7 @@ func NestedResponseBadRequest(t goatest.TInterface, ctx context.Context, service
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func NestedResponseOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ResponseController) (http.ResponseWriter, *app.Articletype) {
+func NestedResponseOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ResponseController, test string) (http.ResponseWriter, *app.Articletype) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -552,14 +566,24 @@ func NestedResponseOK(t goatest.TInterface, ctx context.Context, service *goa.Se
 
 	// Setup request context
 	rw := httptest.NewRecorder()
+	query := url.Values{}
+	{
+		sliceVal := []string{test}
+		query["test"] = sliceVal
+	}
 	u := &url.URL{
-		Path: fmt.Sprintf("/api/v1/response/users/nested"),
+		Path:     fmt.Sprintf("/api/v1/response/users/nested"),
+		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
+	{
+		sliceVal := []string{test}
+		prms["test"] = sliceVal
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}

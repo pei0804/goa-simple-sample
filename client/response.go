@@ -111,8 +111,8 @@ func NestedResponsePath() string {
 }
 
 // ネストしたMediaType
-func (c *Client) NestedResponse(ctx context.Context, path string) (*http.Response, error) {
-	req, err := c.NewNestedResponseRequest(ctx, path)
+func (c *Client) NestedResponse(ctx context.Context, path string, test string) (*http.Response, error) {
+	req, err := c.NewNestedResponseRequest(ctx, path, test)
 	if err != nil {
 		return nil, err
 	}
@@ -120,12 +120,15 @@ func (c *Client) NestedResponse(ctx context.Context, path string) (*http.Respons
 }
 
 // NewNestedResponseRequest create the request corresponding to the nested action endpoint of the response resource.
-func (c *Client) NewNestedResponseRequest(ctx context.Context, path string) (*http.Request, error) {
+func (c *Client) NewNestedResponseRequest(ctx context.Context, path string, test string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "https"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	values := u.Query()
+	values.Set("test", test)
+	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err

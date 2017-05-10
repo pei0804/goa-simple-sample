@@ -19,10 +19,10 @@ import (
 //
 // Identifier: application/vnd.account+json; view=default
 type Account struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
 	// メールアドレス
 	Email string `form:"email" json:"email" xml:"email"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
 	// 名前
 	Name string `form:"name" json:"name" xml:"name"`
 }
@@ -39,9 +39,40 @@ func (mt *Account) Validate() (err error) {
 	return
 }
 
+// celler account (link view)
+//
+// Identifier: application/vnd.account+json; view=link
+type AccountLink struct {
+	// メールアドレス
+	Email string `form:"email" json:"email" xml:"email"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
+	// 名前
+	Name string `form:"name" json:"name" xml:"name"`
+}
+
+// Validate validates the AccountLink media type instance.
+func (mt *AccountLink) Validate() (err error) {
+
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if mt.Email == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "email"))
+	}
+	return
+}
+
 // DecodeAccount decodes the Account instance encoded in resp body.
 func (c *Client) DecodeAccount(resp *http.Response) (*Account, error) {
 	var decoded Account
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// DecodeAccountLink decodes the AccountLink instance encoded in resp body.
+func (c *Client) DecodeAccountLink(resp *http.Response) (*AccountLink, error) {
+	var decoded AccountLink
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
@@ -63,9 +94,33 @@ func (mt AccountCollection) Validate() (err error) {
 	return
 }
 
+// AccountCollection is the media type for an array of Account (link view)
+//
+// Identifier: application/vnd.account+json; type=collection; view=link
+type AccountLinkCollection []*AccountLink
+
+// Validate validates the AccountLinkCollection media type instance.
+func (mt AccountLinkCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
 // DecodeAccountCollection decodes the AccountCollection instance encoded in resp body.
 func (c *Client) DecodeAccountCollection(resp *http.Response) (AccountCollection, error) {
 	var decoded AccountCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
+// DecodeAccountLinkCollection decodes the AccountLinkCollection instance encoded in resp body.
+func (c *Client) DecodeAccountLinkCollection(resp *http.Response) (AccountLinkCollection, error) {
+	var decoded AccountLinkCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }
@@ -74,8 +129,8 @@ func (c *Client) DecodeAccountCollection(resp *http.Response) (AccountCollection
 //
 // Identifier: application/vnd.articletype+json; view=default
 type Articletype struct {
-	Data     []*Data   `form:"data" json:"data" xml:"data"`
-	Response *Response `form:"response" json:"response" xml:"response"`
+	Data     []*Data `form:"data" json:"data" xml:"data"`
+	Response *OK     `form:"response" json:"response" xml:"response"`
 }
 
 // Validate validates the Articletype media type instance.
@@ -107,8 +162,10 @@ func (c *Client) DecodeArticletype(resp *http.Response) (*Articletype, error) {
 //
 // Identifier: application/vnd.bottle+json; view=default
 type Bottle struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
+	// Links to related resources
+	Links *BottleLinks `form:"links,omitempty" json:"links,omitempty" xml:"links,omitempty"`
 	// ボトル名
 	Name string `form:"name" json:"name" xml:"name"`
 	// 数量
@@ -122,6 +179,26 @@ func (mt *Bottle) Validate() (err error) {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
 	}
 
+	if mt.Links != nil {
+		if err2 := mt.Links.Validate(); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
+// BottleLinks contains links to related resources of Bottle.
+type BottleLinks struct {
+	Account *AccountLink `form:"account,omitempty" json:"account,omitempty" xml:"account,omitempty"`
+}
+
+// Validate validates the BottleLinks type instance.
+func (ut *BottleLinks) Validate() (err error) {
+	if ut.Account != nil {
+		if err2 := ut.Account.Validate(); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
 	return
 }
 
@@ -132,12 +209,51 @@ func (c *Client) DecodeBottle(resp *http.Response) (*Bottle, error) {
 	return &decoded, err
 }
 
+// BottleCollection is the media type for an array of Bottle (default view)
+//
+// Identifier: application/vnd.bottle+json; type=collection; view=default
+type BottleCollection []*Bottle
+
+// Validate validates the BottleCollection media type instance.
+func (mt BottleCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// BottleLinksArray contains links to related resources of BottleCollection.
+type BottleLinksArray []*BottleLinks
+
+// Validate validates the BottleLinksArray type instance.
+func (ut BottleLinksArray) Validate() (err error) {
+	for _, e := range ut {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// DecodeBottleCollection decodes the BottleCollection instance encoded in resp body.
+func (c *Client) DecodeBottleCollection(resp *http.Response) (BottleCollection, error) {
+	var decoded BottleCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
 // celler account (default view)
 //
 // Identifier: application/vnd.category+json; view=default
 type Category struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
 	// 名前
 	Name string `form:"name" json:"name" xml:"name"`
 }
@@ -158,6 +274,33 @@ func (c *Client) DecodeCategory(resp *http.Response) (*Category, error) {
 	return &decoded, err
 }
 
+// Error media type (default view)
+//
+// Identifier: application/vnd.error+json; view=default
+type Error struct {
+	Response *ErrorValue `form:"response" json:"response" xml:"response"`
+}
+
+// Validate validates the Error media type instance.
+func (mt *Error) Validate() (err error) {
+	if mt.Response == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "response"))
+	}
+	if mt.Response != nil {
+		if err2 := mt.Response.Validate(); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
+// DecodeError decodes the Error instance encoded in resp body.
+func (c *Client) DecodeError(resp *http.Response) (*Error, error) {
+	var decoded Error
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
 // DecodeErrorResponse decodes the ErrorResponse instance encoded in resp body.
 func (c *Client) DecodeErrorResponse(resp *http.Response) (*goa.ErrorResponse, error) {
 	var decoded goa.ErrorResponse
@@ -169,8 +312,8 @@ func (c *Client) DecodeErrorResponse(resp *http.Response) (*goa.ErrorResponse, e
 //
 // Identifier: application/vnd.integertype+json; view=default
 type Integertype struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
 }
 
 // DecodeIntegertype decodes the Integertype instance encoded in resp body.
@@ -207,10 +350,10 @@ func (c *Client) DecodeMessagetype(resp *http.Response) (*Messagetype, error) {
 //
 // Identifier: application/vnd.usertype+json; view=default
 type Usertype struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
 	// メールアドレス
 	Email string `form:"email" json:"email" xml:"email"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
 	// 名前
 	Name string `form:"name" json:"name" xml:"name"`
 }
@@ -231,8 +374,8 @@ func (mt *Usertype) Validate() (err error) {
 //
 // Identifier: application/vnd.usertype+json; view=tiny
 type UsertypeTiny struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
 	// 名前
 	Name string `form:"name" json:"name" xml:"name"`
 }
@@ -312,14 +455,14 @@ func (c *Client) DecodeUsertypeTinyCollection(resp *http.Response) (UsertypeTiny
 //
 // Identifier: application/vnd.validationtype+json; view=default
 type Validationtype struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
 	// デフォルト値
 	DefaultType string `form:"defaultType" json:"defaultType" xml:"defaultType"`
 	// メールアドレス
 	Email string `form:"email" json:"email" xml:"email"`
 	// 列挙型
 	EnumType string `form:"enumType" json:"enumType" xml:"enumType"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
 	// 数字（1〜10）
 	IntegerType int `form:"integerType" json:"integerType" xml:"integerType"`
 	// デフォルト値

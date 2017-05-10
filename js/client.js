@@ -47,10 +47,33 @@ define(['axios'] , function (axios) {
     cfg = {
       timeout: timeout,
       url: urlPrefix + path,
-      method: 'get',
+      method: 'post',
       params: {
         email: email,
         name: name
+      },
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
+  // 追加
+  // path is the request path, the format is "/api/v1/bottles"
+  // name, quantity are used to build the request query string.
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.addBottles = function (path, name, quantity, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'post',
+      params: {
+        name: name,
+        quantity: quantity
       },
       responseType: 'json'
     };
@@ -79,7 +102,7 @@ define(['axios'] , function (axios) {
   }
 
   // 削除
-  // path is the request path, the format is "/api/v1/accounts/users/:ID"
+  // path is the request path, the format is "/api/v1/accounts/:ID"
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
@@ -87,7 +110,25 @@ define(['axios'] , function (axios) {
     cfg = {
       timeout: timeout,
       url: urlPrefix + path,
-      method: 'get',
+      method: 'delete',
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
+  // 削除
+  // path is the request path, the format is "/api/v1/bottles/:ID"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.deleteBottles = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'delete',
       responseType: 'json'
     };
     if (config) {
@@ -190,6 +231,24 @@ define(['axios'] , function (axios) {
     return client(cfg);
   }
 
+  // 複数
+  // path is the request path, the format is "/api/v1/bottles"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.listBottles = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
   // リストを返す
   // path is the request path, the format is "/api/v1/method/list"
   // config is an optional object to be merged into the config built by the function prior to making the request.
@@ -246,14 +305,18 @@ define(['axios'] , function (axios) {
 
   // ネストしたMediaType
   // path is the request path, the format is "/api/v1/response/users/nested"
+  // test is used to build the request query string.
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
-  client.nestedResponse = function (path, config) {
+  client.nestedResponse = function (path, test, config) {
     cfg = {
       timeout: timeout,
       url: urlPrefix + path,
       method: 'get',
+      params: {
+        test: test
+      },
       responseType: 'json'
     };
     if (config) {
@@ -316,6 +379,24 @@ define(['axios'] , function (axios) {
     return client(cfg);
   }
 
+  // 単数
+  // path is the request path, the format is "/api/v1/bottles/:ID"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.showBottles = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
   // ユーザー（単数）
   // path is the request path, the format is "/api/v1/response/users/:id"
   // config is an optional object to be merged into the config built by the function prior to making the request.
@@ -335,7 +416,7 @@ define(['axios'] , function (axios) {
   }
 
   // 更新
-  // path is the request path, the format is "/api/v1/accounts/users/:ID"
+  // path is the request path, the format is "/api/v1/accounts/:ID"
   // email, name are used to build the request query string.
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
@@ -344,10 +425,33 @@ define(['axios'] , function (axios) {
     cfg = {
       timeout: timeout,
       url: urlPrefix + path,
-      method: 'get',
+      method: 'put',
       params: {
         email: email,
         name: name
+      },
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
+  // 更新
+  // path is the request path, the format is "/api/v1/bottles/:ID"
+  // name, quantity are used to build the request query string.
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.updateBottles = function (path, name, quantity, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'put',
+      params: {
+        name: name,
+        quantity: quantity
       },
       responseType: 'json'
     };

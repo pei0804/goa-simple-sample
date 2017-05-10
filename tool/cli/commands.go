@@ -86,6 +86,44 @@ type (
 		PrettyPrint bool
 	}
 
+	// AddBottlesCommand is the command line data structure for the add action of bottles
+	AddBottlesCommand struct {
+		// ボトル名
+		Name string
+		// 数量
+		Quantity    int
+		PrettyPrint bool
+	}
+
+	// DeleteBottlesCommand is the command line data structure for the delete action of bottles
+	DeleteBottlesCommand struct {
+		// 名前
+		ID          int
+		PrettyPrint bool
+	}
+
+	// ListBottlesCommand is the command line data structure for the list action of bottles
+	ListBottlesCommand struct {
+		PrettyPrint bool
+	}
+
+	// ShowBottlesCommand is the command line data structure for the show action of bottles
+	ShowBottlesCommand struct {
+		// ID
+		ID          int
+		PrettyPrint bool
+	}
+
+	// UpdateBottlesCommand is the command line data structure for the update action of bottles
+	UpdateBottlesCommand struct {
+		ID string
+		// ボトル名
+		Name string
+		// 数量
+		Quantity    int
+		PrettyPrint bool
+	}
+
 	// EtcMethodCommand is the command line data structure for the etc action of method
 	EtcMethodCommand struct {
 		// ID
@@ -127,6 +165,7 @@ type (
 
 	// NestedResponseCommand is the command line data structure for the nested action of response
 	NestedResponseCommand struct {
+		Test        string
 		PrettyPrint bool
 	}
 
@@ -172,7 +211,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	var command, sub *cobra.Command
 	command = &cobra.Command{
 		Use:   "add",
-		Short: `追加`,
+		Short: `add action`,
 	}
 	tmp1 := new(AddAccountsCommand)
 	sub = &cobra.Command{
@@ -183,14 +222,9 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	tmp1.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp1.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "array",
-		Short: `ユーザー（配列）`,
-	}
-	tmp2 := new(ArrayResponseCommand)
+	tmp2 := new(AddBottlesCommand)
 	sub = &cobra.Command{
-		Use:   `response ["/api/v1/response/users/array"]`,
+		Use:   `bottles ["/api/v1/bottles"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
@@ -199,12 +233,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "delete",
-		Short: `削除`,
+		Use:   "array",
+		Short: `ユーザー（配列）`,
 	}
-	tmp3 := new(DeleteAccountsCommand)
+	tmp3 := new(ArrayResponseCommand)
 	sub = &cobra.Command{
-		Use:   `accounts ["/api/v1/accounts/users/ID"]`,
+		Use:   `response ["/api/v1/response/users/array"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
@@ -213,26 +247,21 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "etc",
-		Short: `ちょっと特殊ケース`,
+		Use:   "delete",
+		Short: `delete action`,
 	}
-	tmp4 := new(EtcMethodCommand)
+	tmp4 := new(DeleteAccountsCommand)
 	sub = &cobra.Command{
-		Use:   `method ["/api/v1/method/users/ID/follow/TYPE"]`,
+		Use:   `accounts ["/api/v1/accounts/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp4.Run(c, args) },
 	}
 	tmp4.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp4.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "follow",
-		Short: `フォロー操作`,
-	}
-	tmp5 := new(FollowMethodCommand)
+	tmp5 := new(DeleteBottlesCommand)
 	sub = &cobra.Command{
-		Use:   `method [("/api/v1/method/users/follow"|"/api/v1/method/users/follow")]`,
+		Use:   `bottles ["/api/v1/bottles/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp5.Run(c, args) },
 	}
@@ -241,12 +270,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "hash",
-		Short: `ユーザー（ハッシュ）`,
+		Use:   "etc",
+		Short: `ちょっと特殊ケース`,
 	}
-	tmp6 := new(HashResponseCommand)
+	tmp6 := new(EtcMethodCommand)
 	sub = &cobra.Command{
-		Use:   `response ["/api/v1/response/users/hash"]`,
+		Use:   `method ["/api/v1/method/users/ID/follow/TYPE"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
@@ -255,12 +284,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "hello",
-		Short: `挨拶する`,
+		Use:   "follow",
+		Short: `フォロー操作`,
 	}
-	tmp7 := new(HelloActionsCommand)
+	tmp7 := new(FollowMethodCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/api/v1/actions/hello"]`,
+		Use:   `method [("/api/v1/method/users/follow"|"/api/v1/method/users/follow")]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}
@@ -269,12 +298,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "id",
-		Short: `複数アクション（:ID）`,
+		Use:   "hash",
+		Short: `ユーザー（ハッシュ）`,
 	}
-	tmp8 := new(IDActionsCommand)
+	tmp8 := new(HashResponseCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/api/v1/actions/ID"]`,
+		Use:   `response ["/api/v1/response/users/hash"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp8.Run(c, args) },
 	}
@@ -283,72 +312,67 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "list",
-		Short: `list action`,
+		Use:   "hello",
+		Short: `挨拶する`,
 	}
-	tmp9 := new(ListAccountsCommand)
+	tmp9 := new(HelloActionsCommand)
 	sub = &cobra.Command{
-		Use:   `accounts ["/api/v1/accounts"]`,
+		Use:   `actions ["/api/v1/actions/hello"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp9.Run(c, args) },
 	}
 	tmp9.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp9.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp10 := new(ListMethodCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "id",
+		Short: `複数アクション（:ID）`,
+	}
+	tmp10 := new(IDActionsCommand)
 	sub = &cobra.Command{
-		Use:   `method [("/api/v1/method/list"|"/api/v1/method/list/new"|"/api/v1/method/list/topic")]`,
+		Use:   `actions ["/api/v1/actions/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp10.Run(c, args) },
 	}
 	tmp10.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp10.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp11 := new(ListResponseCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "list",
+		Short: `list action`,
+	}
+	tmp11 := new(ListAccountsCommand)
 	sub = &cobra.Command{
-		Use:   `response ["/api/v1/response/users"]`,
+		Use:   `accounts ["/api/v1/accounts"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp11.Run(c, args) },
 	}
 	tmp11.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp11.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "method",
-		Short: `HTTPメソッド`,
-	}
-	tmp12 := new(MethodMethodCommand)
+	tmp12 := new(ListBottlesCommand)
 	sub = &cobra.Command{
-		Use:   `method [("/api/v1/method/get"|"/api/v1/method/post"|"/api/v1/method/delete"|"/api/v1/method/put")]`,
+		Use:   `bottles ["/api/v1/bottles"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp12.Run(c, args) },
 	}
 	tmp12.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp12.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "nested",
-		Short: `ネストしたMediaType`,
-	}
-	tmp13 := new(NestedResponseCommand)
+	tmp13 := new(ListMethodCommand)
 	sub = &cobra.Command{
-		Use:   `response ["/api/v1/response/users/nested"]`,
+		Use:   `method [("/api/v1/method/list"|"/api/v1/method/list/new"|"/api/v1/method/list/topic")]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp13.Run(c, args) },
 	}
 	tmp13.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp13.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "ping",
-		Short: `サーバーとの導通確認`,
-	}
-	tmp14 := new(PingActionsCommand)
+	tmp14 := new(ListResponseCommand)
 	sub = &cobra.Command{
-		Use:   `actions ["/api/v1/actions/ping"]`,
+		Use:   `response ["/api/v1/response/users"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp14.Run(c, args) },
 	}
@@ -357,12 +381,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "security",
-		Short: `セキュリティの例です`,
+		Use:   "method",
+		Short: `HTTPメソッド`,
 	}
-	tmp15 := new(SecuritySecurityCommand)
+	tmp15 := new(MethodMethodCommand)
 	sub = &cobra.Command{
-		Use:   `security ["/api/v1/securiy"]`,
+		Use:   `method [("/api/v1/method/get"|"/api/v1/method/post"|"/api/v1/method/delete"|"/api/v1/method/put")]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp15.Run(c, args) },
 	}
@@ -371,21 +395,26 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "show",
-		Short: `show action`,
+		Use:   "nested",
+		Short: `ネストしたMediaType`,
 	}
-	tmp16 := new(ShowAccountsCommand)
+	tmp16 := new(NestedResponseCommand)
 	sub = &cobra.Command{
-		Use:   `accounts ["/api/v1/accounts/ID"]`,
+		Use:   `response ["/api/v1/response/users/nested"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp16.Run(c, args) },
 	}
 	tmp16.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp16.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp17 := new(ShowResponseCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "ping",
+		Short: `サーバーとの導通確認`,
+	}
+	tmp17 := new(PingActionsCommand)
 	sub = &cobra.Command{
-		Use:   `response ["/api/v1/response/users/ID"]`,
+		Use:   `actions ["/api/v1/actions/ping"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp17.Run(c, args) },
 	}
@@ -394,12 +423,12 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "update",
-		Short: `更新`,
+		Use:   "security",
+		Short: `セキュリティの例です`,
 	}
-	tmp18 := new(UpdateAccountsCommand)
+	tmp18 := new(SecuritySecurityCommand)
 	sub = &cobra.Command{
-		Use:   `accounts ["/api/v1/accounts/users/ID"]`,
+		Use:   `security ["/api/v1/securiy"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp18.Run(c, args) },
 	}
@@ -408,17 +437,72 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "validation",
-		Short: `Validation`,
+		Use:   "show",
+		Short: `show action`,
 	}
-	tmp19 := new(ValidationValidationCommand)
+	tmp19 := new(ShowAccountsCommand)
 	sub = &cobra.Command{
-		Use:   `validation ["/api/v1/validation"]`,
+		Use:   `accounts ["/api/v1/accounts/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp19.Run(c, args) },
 	}
 	tmp19.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp19.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	tmp20 := new(ShowBottlesCommand)
+	sub = &cobra.Command{
+		Use:   `bottles ["/api/v1/bottles/ID"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp20.Run(c, args) },
+	}
+	tmp20.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp20.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	tmp21 := new(ShowResponseCommand)
+	sub = &cobra.Command{
+		Use:   `response ["/api/v1/response/users/ID"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp21.Run(c, args) },
+	}
+	tmp21.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp21.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "update",
+		Short: `update action`,
+	}
+	tmp22 := new(UpdateAccountsCommand)
+	sub = &cobra.Command{
+		Use:   `accounts ["/api/v1/accounts/ID"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp22.Run(c, args) },
+	}
+	tmp22.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp22.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	tmp23 := new(UpdateBottlesCommand)
+	sub = &cobra.Command{
+		Use:   `bottles ["/api/v1/bottles/ID"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp23.Run(c, args) },
+	}
+	tmp23.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp23.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "validation",
+		Short: `Validation`,
+	}
+	tmp24 := new(ValidationValidationCommand)
+	sub = &cobra.Command{
+		Use:   `validation ["/api/v1/validation"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp24.Run(c, args) },
+	}
+	tmp24.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp24.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 
@@ -652,7 +736,7 @@ func (cmd *AddAccountsCommand) Run(c *client.Client, args []string) error {
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.AddAccounts(ctx, path, stringFlagVal("email", cmd.Email), stringFlagVal("name", cmd.Name))
+	resp, err := c.AddAccounts(ctx, path, cmd.Email, cmd.Name)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -676,7 +760,7 @@ func (cmd *DeleteAccountsCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = fmt.Sprintf("/api/v1/accounts/users/%v", cmd.ID)
+		path = fmt.Sprintf("/api/v1/accounts/%v", cmd.ID)
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -752,7 +836,7 @@ func (cmd *UpdateAccountsCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = fmt.Sprintf("/api/v1/accounts/users/%v", url.QueryEscape(cmd.ID))
+		path = fmt.Sprintf("/api/v1/accounts/%v", url.QueryEscape(cmd.ID))
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -850,6 +934,140 @@ func (cmd *PingActionsCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *PingActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the AddBottlesCommand command.
+func (cmd *AddBottlesCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/api/v1/bottles"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.AddBottles(ctx, path, cmd.Name, cmd.Quantity)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *AddBottlesCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var name string
+	cc.Flags().StringVar(&cmd.Name, "name", name, `ボトル名`)
+	var quantity int
+	cc.Flags().IntVar(&cmd.Quantity, "quantity", quantity, `数量`)
+}
+
+// Run makes the HTTP request corresponding to the DeleteBottlesCommand command.
+func (cmd *DeleteBottlesCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/api/v1/bottles/%v", cmd.ID)
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.DeleteBottles(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *DeleteBottlesCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "ID", id, `名前`)
+}
+
+// Run makes the HTTP request corresponding to the ListBottlesCommand command.
+func (cmd *ListBottlesCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/api/v1/bottles"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.ListBottles(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *ListBottlesCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the ShowBottlesCommand command.
+func (cmd *ShowBottlesCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/api/v1/bottles/%v", cmd.ID)
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.ShowBottles(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *ShowBottlesCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "ID", id, `ID`)
+}
+
+// Run makes the HTTP request corresponding to the UpdateBottlesCommand command.
+func (cmd *UpdateBottlesCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/api/v1/bottles/%v", url.QueryEscape(cmd.ID))
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.UpdateBottles(ctx, path, stringFlagVal("name", cmd.Name), intFlagVal("quantity", cmd.Quantity))
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *UpdateBottlesCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var id string
+	cc.Flags().StringVar(&cmd.ID, "ID", id, ``)
+	var name string
+	cc.Flags().StringVar(&cmd.Name, "name", name, `ボトル名`)
+	var quantity int
+	cc.Flags().IntVar(&cmd.Quantity, "quantity", quantity, `数量`)
 }
 
 // Run makes the HTTP request corresponding to the EtcMethodCommand command.
@@ -1034,7 +1252,7 @@ func (cmd *NestedResponseCommand) Run(c *client.Client, args []string) error {
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.NestedResponse(ctx, path)
+	resp, err := c.NestedResponse(ctx, path, cmd.Test)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -1046,6 +1264,8 @@ func (cmd *NestedResponseCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *NestedResponseCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var test string
+	cc.Flags().StringVar(&cmd.Test, "test", test, ``)
 }
 
 // Run makes the HTTP request corresponding to the ShowResponseCommand command.

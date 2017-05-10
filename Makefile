@@ -120,6 +120,9 @@ docker/logs:
 docker/clean:
 	docker-compose rm
 
+docker/ssh:
+	docker exec -it celler /bin/bash
+
 ##### Curls ######
 
 BASEURL:=http://localhost:8080/api/v1

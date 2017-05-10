@@ -43,6 +43,7 @@ func (m *CategoryDB) ListCategory(ctx context.Context) []*app.Category {
 // CategoryToCategory loads a Category and builds the default view of media type Category.
 func (m *Category) CategoryToCategory() *app.Category {
 	category := &app.Category{}
+	category.ID = m.ID
 	category.Name = m.Name
 
 	return category

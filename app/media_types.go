@@ -18,16 +18,40 @@ import (
 //
 // Identifier: application/vnd.account+json; view=default
 type Account struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
 	// メールアドレス
 	Email string `form:"email" json:"email" xml:"email"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
 	// 名前
 	Name string `form:"name" json:"name" xml:"name"`
 }
 
 // Validate validates the Account media type instance.
 func (mt *Account) Validate() (err error) {
+
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if mt.Email == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "email"))
+	}
+	return
+}
+
+// celler account (link view)
+//
+// Identifier: application/vnd.account+json; view=link
+type AccountLink struct {
+	// メールアドレス
+	Email string `form:"email" json:"email" xml:"email"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
+	// 名前
+	Name string `form:"name" json:"name" xml:"name"`
+}
+
+// Validate validates the AccountLink media type instance.
+func (mt *AccountLink) Validate() (err error) {
 
 	if mt.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
@@ -55,12 +79,29 @@ func (mt AccountCollection) Validate() (err error) {
 	return
 }
 
+// AccountCollection is the media type for an array of Account (link view)
+//
+// Identifier: application/vnd.account+json; type=collection; view=link
+type AccountLinkCollection []*AccountLink
+
+// Validate validates the AccountLinkCollection media type instance.
+func (mt AccountLinkCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
 // example (default view)
 //
 // Identifier: application/vnd.articletype+json; view=default
 type Articletype struct {
-	Data     []*Data   `form:"data" json:"data" xml:"data"`
-	Response *Response `form:"response" json:"response" xml:"response"`
+	Data     []*Data `form:"data" json:"data" xml:"data"`
+	Response *OK     `form:"response" json:"response" xml:"response"`
 }
 
 // Validate validates the Articletype media type instance.
@@ -85,8 +126,10 @@ func (mt *Articletype) Validate() (err error) {
 //
 // Identifier: application/vnd.bottle+json; view=default
 type Bottle struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
+	// Links to related resources
+	Links *BottleLinks `form:"links,omitempty" json:"links,omitempty" xml:"links,omitempty"`
 	// ボトル名
 	Name string `form:"name" json:"name" xml:"name"`
 	// 数量
@@ -100,6 +143,58 @@ func (mt *Bottle) Validate() (err error) {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
 	}
 
+	if mt.Links != nil {
+		if err2 := mt.Links.Validate(); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
+// BottleLinks contains links to related resources of Bottle.
+type BottleLinks struct {
+	Account *AccountLink `form:"account,omitempty" json:"account,omitempty" xml:"account,omitempty"`
+}
+
+// Validate validates the BottleLinks type instance.
+func (ut *BottleLinks) Validate() (err error) {
+	if ut.Account != nil {
+		if err2 := ut.Account.Validate(); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
+// BottleCollection is the media type for an array of Bottle (default view)
+//
+// Identifier: application/vnd.bottle+json; type=collection; view=default
+type BottleCollection []*Bottle
+
+// Validate validates the BottleCollection media type instance.
+func (mt BottleCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// BottleLinksArray contains links to related resources of BottleCollection.
+type BottleLinksArray []*BottleLinks
+
+// Validate validates the BottleLinksArray type instance.
+func (ut BottleLinksArray) Validate() (err error) {
+	for _, e := range ut {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
 	return
 }
 
@@ -107,8 +202,8 @@ func (mt *Bottle) Validate() (err error) {
 //
 // Identifier: application/vnd.category+json; view=default
 type Category struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
 	// 名前
 	Name string `form:"name" json:"name" xml:"name"`
 }
@@ -122,12 +217,32 @@ func (mt *Category) Validate() (err error) {
 	return
 }
 
+// Error media type (default view)
+//
+// Identifier: application/vnd.error+json; view=default
+type Error struct {
+	Response *ErrorValue `form:"response" json:"response" xml:"response"`
+}
+
+// Validate validates the Error media type instance.
+func (mt *Error) Validate() (err error) {
+	if mt.Response == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "response"))
+	}
+	if mt.Response != nil {
+		if err2 := mt.Response.Validate(); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
 // example (default view)
 //
 // Identifier: application/vnd.integertype+json; view=default
 type Integertype struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
 }
 
 // example (default view)
@@ -150,10 +265,10 @@ func (mt *Messagetype) Validate() (err error) {
 //
 // Identifier: application/vnd.usertype+json; view=default
 type Usertype struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
 	// メールアドレス
 	Email string `form:"email" json:"email" xml:"email"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
 	// 名前
 	Name string `form:"name" json:"name" xml:"name"`
 }
@@ -174,8 +289,8 @@ func (mt *Usertype) Validate() (err error) {
 //
 // Identifier: application/vnd.usertype+json; view=tiny
 type UsertypeTiny struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
 	// 名前
 	Name string `form:"name" json:"name" xml:"name"`
 }
@@ -227,14 +342,14 @@ func (mt UsertypeTinyCollection) Validate() (err error) {
 //
 // Identifier: application/vnd.validationtype+json; view=default
 type Validationtype struct {
-	// ID
-	ID int `form:"ID" json:"ID" xml:"ID"`
 	// デフォルト値
 	DefaultType string `form:"defaultType" json:"defaultType" xml:"defaultType"`
 	// メールアドレス
 	Email string `form:"email" json:"email" xml:"email"`
 	// 列挙型
 	EnumType string `form:"enumType" json:"enumType" xml:"enumType"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
 	// 数字（1〜10）
 	IntegerType int `form:"integerType" json:"integerType" xml:"integerType"`
 	// デフォルト値

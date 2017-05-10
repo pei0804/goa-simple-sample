@@ -7,25 +7,25 @@ definitions:
   Account:
     description: celler account (default view)
     example:
-      ID: 1
       email: example@gmail.com
+      id: 1
       name: 山田　太郎
     properties:
-      ID:
-        description: ID
-        example: 1
-        format: int64
-        type: integer
       email:
         description: メールアドレス
         example: example@gmail.com
         type: string
+      id:
+        description: id
+        example: 1
+        format: int64
+        type: integer
       name:
         description: 名前
         example: 山田　太郎
         type: string
     required:
-    - ID
+    - id
     - name
     - email
     title: 'Mediatype identifier: application/vnd.account+json; view=default'
@@ -34,16 +34,42 @@ definitions:
     description: AccountCollection is the media type for an array of Account (default
       view)
     example:
-    - ID: 1
-      email: example@gmail.com
+    - email: example@gmail.com
+      id: 1
       name: 山田　太郎
-    - ID: 1
-      email: example@gmail.com
+    - email: example@gmail.com
+      id: 1
       name: 山田　太郎
     items:
       $ref: '#/definitions/Account'
     title: 'Mediatype identifier: application/vnd.account+json; type=collection; view=default'
     type: array
+  AccountLink:
+    description: celler account (link view)
+    example:
+      email: example@gmail.com
+      id: 1
+      name: 山田　太郎
+    properties:
+      email:
+        description: メールアドレス
+        example: example@gmail.com
+        type: string
+      id:
+        description: id
+        example: 1
+        format: int64
+        type: integer
+      name:
+        description: 名前
+        example: 山田　太郎
+        type: string
+    required:
+    - id
+    - name
+    - email
+    title: 'Mediatype identifier: application/vnd.account+json; view=link'
+    type: object
   Articletype:
     description: example (default view)
     example:
@@ -61,24 +87,108 @@ definitions:
           $ref: '#/definitions/data'
         type: array
       response:
-        $ref: '#/definitions/response'
+        $ref: '#/definitions/ok'
     required:
     - data
     - response
     title: 'Mediatype identifier: application/vnd.articletype+json; view=default'
     type: object
+  Bottle:
+    description: celler bottles (default view)
+    example:
+      id: 1
+      links:
+        account:
+          email: example@gmail.com
+          id: 1
+          name: 山田　太郎
+      name: シャルドネ
+      quantity: 4
+    properties:
+      id:
+        description: id
+        example: 1
+        format: int64
+        type: integer
+      links:
+        $ref: '#/definitions/BottleLinks'
+      name:
+        description: ボトル名
+        example: シャルドネ
+        type: string
+      quantity:
+        description: 数量
+        example: 4
+        format: int64
+        type: integer
+    required:
+    - id
+    - name
+    - quantity
+    title: 'Mediatype identifier: application/vnd.bottle+json; view=default'
+    type: object
+  BottleCollection:
+    description: BottleCollection is the media type for an array of Bottle (default
+      view)
+    example:
+    - id: 1
+      links:
+        account:
+          email: example@gmail.com
+          id: 1
+          name: 山田　太郎
+      name: シャルドネ
+      quantity: 4
+    - id: 1
+      links:
+        account:
+          email: example@gmail.com
+          id: 1
+          name: 山田　太郎
+      name: シャルドネ
+      quantity: 4
+    items:
+      $ref: '#/definitions/Bottle'
+    title: 'Mediatype identifier: application/vnd.bottle+json; type=collection; view=default'
+    type: array
+  BottleLinks:
+    description: BottleLinks contains links to related resources of Bottle.
+    example:
+      account:
+        email: example@gmail.com
+        id: 1
+        name: 山田　太郎
+    properties:
+      account:
+        $ref: '#/definitions/AccountLink'
+    title: BottleLinks
+    type: object
+  Error:
+    description: Error media type (default view)
+    example:
+      response:
+        code: bad_request
+        detail: xxx is nil
+        status: 400
+    properties:
+      response:
+        $ref: '#/definitions/errorValue'
+    required:
+    - response
+    title: 'Mediatype identifier: application/vnd.error+json; view=default'
+    type: object
   Integertype:
     description: example (default view)
     example:
-      ID: 1
+      id: 1
     properties:
-      ID:
-        description: ID
+      id:
+        description: id
         example: 1
         format: int64
         type: integer
     required:
-    - ID
+    - id
     title: 'Mediatype identifier: application/vnd.integertype+json; view=default'
     type: object
   Messagetype:
@@ -97,25 +207,25 @@ definitions:
   Usertype:
     description: example (default view)
     example:
-      ID: 1
       email: satak47cpc@gmail.com
+      id: 1
       name: hoge
     properties:
-      ID:
-        description: ID
-        example: 1
-        format: int64
-        type: integer
       email:
         description: メールアドレス
         example: satak47cpc@gmail.com
         type: string
+      id:
+        description: id
+        example: 1
+        format: int64
+        type: integer
       name:
         description: 名前
         example: hoge
         type: string
     required:
-    - ID
+    - id
     - name
     - email
     title: 'Mediatype identifier: application/vnd.usertype+json; view=default'
@@ -124,11 +234,8 @@ definitions:
     description: UsertypeCollection is the media type for an array of Usertype (default
       view)
     example:
-    - ID: 1
-      email: satak47cpc@gmail.com
-      name: hoge
-    - ID: 1
-      email: satak47cpc@gmail.com
+    - email: satak47cpc@gmail.com
+      id: 1
       name: hoge
     items:
       $ref: '#/definitions/Usertype'
@@ -138,19 +245,14 @@ definitions:
   Validationtype:
     description: example (default view)
     example:
-      ID: 1
       defaultType: でふぉ
       email: example@gmail.com
       enumType: A
+      id: 1
       integerType: 5
       reg: 12abc
       stringType: あいうえお
     properties:
-      ID:
-        description: ID
-        example: 1
-        format: int64
-        type: integer
       defaultType:
         description: デフォルト値
         example: でふぉ
@@ -163,6 +265,11 @@ definitions:
         description: 列挙型
         example: A
         type: string
+      id:
+        description: id
+        example: 1
+        format: int64
+        type: integer
       integerType:
         description: 数字（1〜10）
         example: 5
@@ -177,7 +284,7 @@ definitions:
         example: あいうえお
         type: string
     required:
-    - ID
+    - id
     - integerType
     - stringType
     - email
@@ -239,7 +346,29 @@ definitions:
         type: string
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
-  response:
+  errorValue:
+    example:
+      code: bad_request
+      detail: xxx is nil
+      status: 400
+    properties:
+      code:
+        example: bad_request
+        type: string
+      detail:
+        example: xxx is nil
+        type: string
+      status:
+        example: 400
+        format: int64
+        type: integer
+    required:
+    - status
+    - code
+    - detail
+    title: errorValue
+    type: object
+  ok:
     example:
       status: 7.279075e+18
     properties:
@@ -250,7 +379,7 @@ definitions:
         type: integer
     required:
     - status
-    title: response
+    title: ok
     type: object
 externalDocs:
   description: wiki
@@ -290,7 +419,67 @@ paths:
       summary: list accounts
       tags:
       - accounts
+    post:
+      description: 追加
+      operationId: accounts#add
+      parameters:
+      - description: 名前
+        format: email
+        in: query
+        name: email
+        required: true
+        type: string
+      - description: 名前
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.account+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Account'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: add accounts
+      tags:
+      - accounts
   /api/v1/accounts/{ID}:
+    delete:
+      description: 削除
+      operationId: accounts#delete
+      parameters:
+      - description: 名前
+        in: path
+        name: ID
+        required: true
+        type: integer
+      produces:
+      - application/vnd.goa.error
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      - https
+      summary: delete accounts
+      tags:
+      - accounts
     get:
       description: 単数
       operationId: accounts#show
@@ -312,14 +501,15 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/error'
+        "404":
+          description: Not Found
       schemes:
       - http
       - https
       summary: show accounts
       tags:
       - accounts
-  /api/v1/accounts/users/{ID}:
-    get:
+    put:
       description: 更新
       operationId: accounts#update
       parameters:
@@ -342,16 +532,16 @@ paths:
         type: string
       produces:
       - application/vnd.goa.error
-      - application/vnd.account+json
+      - text/plain
       responses:
         "200":
           description: OK
-          schema:
-            $ref: '#/definitions/Account'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/error'
+        "404":
+          description: Not Found
       schemes:
       - http
       - https
@@ -439,6 +629,152 @@ paths:
       summary: ping actions
       tags:
       - actions
+  /api/v1/bottles:
+    get:
+      description: 複数
+      operationId: bottles#list
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.bottle+json; type=collection
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BottleCollection'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: list bottles
+      tags:
+      - bottles
+    post:
+      description: 追加
+      operationId: bottles#add
+      parameters:
+      - default: ""
+        description: ボトル名
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 数量
+        in: query
+        name: quantity
+        required: true
+        type: integer
+      produces:
+      - application/vnd.goa.error
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: add bottles
+      tags:
+      - bottles
+  /api/v1/bottles/{ID}:
+    delete:
+      description: 削除
+      operationId: bottles#delete
+      parameters:
+      - description: 名前
+        in: path
+        name: ID
+        required: true
+        type: integer
+      produces:
+      - application/vnd.goa.error
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      - https
+      summary: delete bottles
+      tags:
+      - bottles
+    get:
+      description: 単数
+      operationId: bottles#show
+      parameters:
+      - description: ID
+        in: path
+        name: ID
+        required: true
+        type: integer
+      produces:
+      - application/vnd.goa.error
+      - application/vnd.bottle+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Bottle'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      - https
+      summary: show bottles
+      tags:
+      - bottles
+    put:
+      description: 更新
+      operationId: bottles#update
+      parameters:
+      - in: path
+        name: ID
+        required: true
+        type: string
+      - default: ""
+        description: ボトル名
+        in: query
+        name: name
+        required: false
+        type: string
+      - description: 数量
+        in: query
+        name: quantity
+        required: false
+        type: integer
+      produces:
+      - application/vnd.goa.error
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      - https
+      summary: update bottles
+      tags:
+      - bottles
   /api/v1/method/delete:
     delete:
       description: HTTPメソッド
@@ -488,8 +824,8 @@ paths:
       description: リストを返す
       operationId: method#list
       produces:
-      - application/vnd.goa.error
       - application/vnd.usertype+json; type=collection
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -532,8 +868,8 @@ paths:
       description: リストを返す
       operationId: method#list#2
       produces:
-      - application/vnd.goa.error
       - application/vnd.usertype+json; type=collection
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -764,9 +1100,15 @@ paths:
     get:
       description: ネストしたMediaType
       operationId: response#nested
+      parameters:
+      - in: query
+        minLength: 1
+        name: test
+        required: true
+        type: string
       produces:
+      - application/vnd.error+json
       - application/vnd.articletype+json
-      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -775,7 +1117,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/Error'
       schemes:
       - http
       - https
@@ -787,8 +1129,8 @@ paths:
       description: セキュリティの例です
       operationId: security#security
       produces:
-      - application/vnd.messagetype+json
       - application/vnd.goa.error
+      - application/vnd.messagetype+json
       responses:
         "200":
           description: OK
@@ -937,8 +1279,12 @@ produces:
 - application/gob
 - application/x-gob
 responses:
+  Created:
+    description: Created
   NotFound:
     description: Not Found
+  OK:
+    description: OK
   Unauthorized:
     description: Unauthorized
 schemes:

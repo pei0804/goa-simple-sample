@@ -40,8 +40,10 @@ func main() {
 			log.Fatalf("database initialization failed: %s", err)
 		}
 		// Mount "accounts" controller
-		c := controller.NewAccountsController(service, dbcon)
-		app.MountAccountsController(service, c)
+		a := controller.NewAccountsController(service, dbcon)
+		app.MountAccountsController(service, a)
+		b := controller.NewBottlesController(service, dbcon)
+		app.MountBottlesController(service, b)
 	}
 
 	// Mount "actions" controller

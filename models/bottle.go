@@ -24,6 +24,7 @@ type Bottle struct {
 	AccountID        int              // Belongs To Account
 	BottleCategories []BottleCategory // has many BottleCategories
 	Name             string
+	Quantity         int
 	CreatedAt        time.Time  // timestamp
 	DeletedAt        *time.Time // nullable timestamp (soft delete)
 	UpdatedAt        time.Time  // timestamp

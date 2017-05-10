@@ -23,8 +23,8 @@ type AddAccountsContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	Email *string
-	Name  *string
+	Email string
+	Name  string
 }
 
 // NewAddAccountsContext parses the incoming request URL and body, performs validations and creates the
@@ -37,25 +37,33 @@ func NewAddAccountsContext(ctx context.Context, r *http.Request, service *goa.Se
 	req.Request = r
 	rctx := AddAccountsContext{Context: ctx, ResponseData: resp, RequestData: req}
 	paramEmail := req.Params["email"]
-	if len(paramEmail) > 0 {
+	if len(paramEmail) == 0 {
+		err = goa.MergeErrors(err, goa.MissingParamError("email"))
+	} else {
 		rawEmail := paramEmail[0]
-		rctx.Email = &rawEmail
-		if rctx.Email != nil {
-			if err2 := goa.ValidateFormat(goa.FormatEmail, *rctx.Email); err2 != nil {
-				err = goa.MergeErrors(err, goa.InvalidFormatError(`email`, *rctx.Email, goa.FormatEmail, err2))
-			}
+		rctx.Email = rawEmail
+		if err2 := goa.ValidateFormat(goa.FormatEmail, rctx.Email); err2 != nil {
+			err = goa.MergeErrors(err, goa.InvalidFormatError(`email`, rctx.Email, goa.FormatEmail, err2))
 		}
 	}
 	paramName := req.Params["name"]
-	if len(paramName) > 0 {
+	if len(paramName) == 0 {
+		err = goa.MergeErrors(err, goa.MissingParamError("name"))
+	} else {
 		rawName := paramName[0]
-		rctx.Name = &rawName
+		rctx.Name = rawName
 	}
 	return &rctx, err
 }
 
 // OK sends a HTTP response with status code 200.
 func (ctx *AddAccountsContext) OK(r *Account) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// OKLink sends a HTTP response with status code 200.
+func (ctx *AddAccountsContext) OKLink(r *AccountLink) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json")
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
@@ -96,15 +104,23 @@ func NewDeleteAccountsContext(ctx context.Context, r *http.Request, service *goa
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *DeleteAccountsContext) OK(r *Account) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json")
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+func (ctx *DeleteAccountsContext) OK(resp []byte) error {
+	ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+	ctx.ResponseData.WriteHeader(200)
+	_, err := ctx.ResponseData.Write(resp)
+	return err
 }
 
 // BadRequest sends a HTTP response with status code 400.
 func (ctx *DeleteAccountsContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *DeleteAccountsContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
 }
 
 // ListAccountsContext provides the accounts list action context.
@@ -131,6 +147,15 @@ func (ctx *ListAccountsContext) OK(r AccountCollection) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json; type=collection")
 	if r == nil {
 		r = AccountCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// OKLink sends a HTTP response with status code 200.
+func (ctx *ListAccountsContext) OKLink(r AccountLinkCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json; type=collection")
+	if r == nil {
+		r = AccountLinkCollection{}
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
@@ -176,10 +201,22 @@ func (ctx *ShowAccountsContext) OK(r *Account) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
+// OKLink sends a HTTP response with status code 200.
+func (ctx *ShowAccountsContext) OKLink(r *AccountLink) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
 // BadRequest sends a HTTP response with status code 400.
 func (ctx *ShowAccountsContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *ShowAccountsContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
 }
 
 // UpdateAccountsContext provides the accounts update action context.
@@ -227,15 +264,23 @@ func NewUpdateAccountsContext(ctx context.Context, r *http.Request, service *goa
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *UpdateAccountsContext) OK(r *Account) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json")
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+func (ctx *UpdateAccountsContext) OK(resp []byte) error {
+	ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+	ctx.ResponseData.WriteHeader(200)
+	_, err := ctx.ResponseData.Write(resp)
+	return err
 }
 
 // BadRequest sends a HTTP response with status code 400.
 func (ctx *UpdateAccountsContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *UpdateAccountsContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
 }
 
 // IDActionsContext provides the actions ID action context.
@@ -353,6 +398,252 @@ func (ctx *PingActionsContext) OK(r *Messagetype) error {
 func (ctx *PingActionsContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// AddBottlesContext provides the bottles add action context.
+type AddBottlesContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Name     string
+	Quantity int
+}
+
+// NewAddBottlesContext parses the incoming request URL and body, performs validations and creates the
+// context used by the bottles controller add action.
+func NewAddBottlesContext(ctx context.Context, r *http.Request, service *goa.Service) (*AddBottlesContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := AddBottlesContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramName := req.Params["name"]
+	if len(paramName) == 0 {
+		rctx.Name = ""
+	} else {
+		rawName := paramName[0]
+		rctx.Name = rawName
+	}
+	paramQuantity := req.Params["quantity"]
+	if len(paramQuantity) == 0 {
+		err = goa.MergeErrors(err, goa.MissingParamError("quantity"))
+	} else {
+		rawQuantity := paramQuantity[0]
+		if quantity, err2 := strconv.Atoi(rawQuantity); err2 == nil {
+			rctx.Quantity = quantity
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("quantity", rawQuantity, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// Created sends a HTTP response with status code 201.
+func (ctx *AddBottlesContext) Created() error {
+	ctx.ResponseData.WriteHeader(201)
+	return nil
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *AddBottlesContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// DeleteBottlesContext provides the bottles delete action context.
+type DeleteBottlesContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID int
+}
+
+// NewDeleteBottlesContext parses the incoming request URL and body, performs validations and creates the
+// context used by the bottles controller delete action.
+func NewDeleteBottlesContext(ctx context.Context, r *http.Request, service *goa.Service) (*DeleteBottlesContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := DeleteBottlesContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["ID"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *DeleteBottlesContext) OK(resp []byte) error {
+	ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+	ctx.ResponseData.WriteHeader(200)
+	_, err := ctx.ResponseData.Write(resp)
+	return err
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *DeleteBottlesContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *DeleteBottlesContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
+// ListBottlesContext provides the bottles list action context.
+type ListBottlesContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewListBottlesContext parses the incoming request URL and body, performs validations and creates the
+// context used by the bottles controller list action.
+func NewListBottlesContext(ctx context.Context, r *http.Request, service *goa.Service) (*ListBottlesContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := ListBottlesContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ListBottlesContext) OK(r BottleCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.bottle+json; type=collection")
+	if r == nil {
+		r = BottleCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *ListBottlesContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// ShowBottlesContext provides the bottles show action context.
+type ShowBottlesContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID int
+}
+
+// NewShowBottlesContext parses the incoming request URL and body, performs validations and creates the
+// context used by the bottles controller show action.
+func NewShowBottlesContext(ctx context.Context, r *http.Request, service *goa.Service) (*ShowBottlesContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := ShowBottlesContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["ID"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ShowBottlesContext) OK(r *Bottle) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.bottle+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *ShowBottlesContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *ShowBottlesContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
+// UpdateBottlesContext provides the bottles update action context.
+type UpdateBottlesContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID       string
+	Name     string
+	Quantity *int
+}
+
+// NewUpdateBottlesContext parses the incoming request URL and body, performs validations and creates the
+// context used by the bottles controller update action.
+func NewUpdateBottlesContext(ctx context.Context, r *http.Request, service *goa.Service) (*UpdateBottlesContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := UpdateBottlesContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["ID"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		rctx.ID = rawID
+	}
+	paramName := req.Params["name"]
+	if len(paramName) == 0 {
+		rctx.Name = ""
+	} else {
+		rawName := paramName[0]
+		rctx.Name = rawName
+	}
+	paramQuantity := req.Params["quantity"]
+	if len(paramQuantity) > 0 {
+		rawQuantity := paramQuantity[0]
+		if quantity, err2 := strconv.Atoi(rawQuantity); err2 == nil {
+			tmp8 := quantity
+			tmp7 := &tmp8
+			rctx.Quantity = tmp7
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("quantity", rawQuantity, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *UpdateBottlesContext) OK(resp []byte) error {
+	ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+	ctx.ResponseData.WriteHeader(200)
+	_, err := ctx.ResponseData.Write(resp)
+	return err
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *UpdateBottlesContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *UpdateBottlesContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
 }
 
 // EtcMethodContext provides the method etc action context.
@@ -626,6 +917,7 @@ type NestedResponseContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
+	Test string
 }
 
 // NewNestedResponseContext parses the incoming request URL and body, performs validations and creates the
@@ -637,6 +929,16 @@ func NewNestedResponseContext(ctx context.Context, r *http.Request, service *goa
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := NestedResponseContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramTest := req.Params["test"]
+	if len(paramTest) == 0 {
+		err = goa.MergeErrors(err, goa.MissingParamError("test"))
+	} else {
+		rawTest := paramTest[0]
+		rctx.Test = rawTest
+		if utf8.RuneCountInString(rctx.Test) < 1 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError(`test`, rctx.Test, utf8.RuneCountInString(rctx.Test), 1, true))
+		}
+	}
 	return &rctx, err
 }
 
@@ -647,8 +949,8 @@ func (ctx *NestedResponseContext) OK(r *Articletype) error {
 }
 
 // BadRequest sends a HTTP response with status code 400.
-func (ctx *NestedResponseContext) BadRequest(r error) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+func (ctx *NestedResponseContext) BadRequest(r *Error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.error+json")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }
 

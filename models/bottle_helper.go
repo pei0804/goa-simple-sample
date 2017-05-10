@@ -26,7 +26,7 @@ func (m *BottleDB) ListBottle(ctx context.Context, accountID int) []*app.Bottle 
 
 	var native []*Bottle
 	var objs []*app.Bottle
-	err := m.Db.Scopes(BottleFilterByAccount(accountID, m.Db)).Table(m.TableName()).Find(&native).Error
+	err := m.Db.Scopes(BottleFilterByAccount(accountID, m.Db)).Table(m.TableName()).Preload("Account").Find(&native).Error
 
 	if err != nil {
 		goa.LogError(ctx, "error listing Bottle", "error", err.Error())
@@ -43,7 +43,12 @@ func (m *BottleDB) ListBottle(ctx context.Context, accountID int) []*app.Bottle 
 // BottleToBottle loads a Bottle and builds the default view of media type Bottle.
 func (m *Bottle) BottleToBottle() *app.Bottle {
 	bottle := &app.Bottle{}
+	bottle.Links = &app.BottleLinks{}
+	tmp1 := m.Account.AccountToAccountLink()
+	bottle.Links.Account = tmp1
+	bottle.ID = m.ID
 	bottle.Name = m.Name
+	bottle.Quantity = m.Quantity
 
 	return bottle
 }

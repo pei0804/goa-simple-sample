@@ -11,23 +11,22 @@
 package models
 
 import (
-	"time"
-
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
 	"github.com/tikasan/goa-simple-sample/app"
 	"golang.org/x/net/context"
+	"time"
 )
 
 // celler account
 type Account struct {
 	ID        int      `gorm:"primary_key"` // primary key
 	Bottles   []Bottle // has many Bottles
-	DeletedAt *time.Time
 	Email     string
 	Name      string
-	CreatedAt time.Time // timestamp
-	UpdatedAt time.Time // timestamp
+	CreatedAt time.Time  // timestamp
+	DeletedAt *time.Time // nullable timestamp (soft delete)
+	UpdatedAt time.Time  // timestamp
 }
 
 // TableName overrides the table name settings in Gorm to force a specific table name
@@ -64,6 +63,9 @@ type AccountStorage interface {
 
 	ListAccount(ctx context.Context) []*app.Account
 	OneAccount(ctx context.Context, id int) (*app.Account, error)
+
+	ListAccountLink(ctx context.Context) []*app.AccountLink
+	OneAccountLink(ctx context.Context, id int) (*app.AccountLink, error)
 }
 
 // TableName overrides the table name settings in Gorm to force a specific table name

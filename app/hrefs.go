@@ -21,6 +21,12 @@ func AccountsHref(id interface{}) string {
 	return fmt.Sprintf("/api/v1/accounts/%v", paramid)
 }
 
+// BottlesHref returns the resource href.
+func BottlesHref(id interface{}) string {
+	paramid := strings.TrimLeftFunc(fmt.Sprintf("%v", id), func(r rune) bool { return r == '/' })
+	return fmt.Sprintf("/api/v1/bottles/%v", paramid)
+}
+
 // ResponseHref returns the resource href.
 func ResponseHref(id interface{}) string {
 	paramid := strings.TrimLeftFunc(fmt.Sprintf("%v", id), func(r rune) bool { return r == '/' })

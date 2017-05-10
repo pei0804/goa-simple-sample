@@ -60,37 +60,92 @@ func (ut *Data) Validate() (err error) {
 	return
 }
 
-// response user type.
-type response struct {
-	Status *int `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
+// errorValue user type.
+type errorValue struct {
+	Code   *string `form:"code,omitempty" json:"code,omitempty" xml:"code,omitempty"`
+	Detail *string `form:"detail,omitempty" json:"detail,omitempty" xml:"detail,omitempty"`
+	Status *int    `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
 }
 
-// Finalize sets the default values for response type instance.
-func (ut *response) Finalize() {
-	var defaultStatus = 200
-	if ut.Status == nil {
-		ut.Status = &defaultStatus
-	}
-}
-
-// Validate validates the response type instance.
-func (ut *response) Validate() (err error) {
+// Validate validates the errorValue type instance.
+func (ut *errorValue) Validate() (err error) {
 	if ut.Status == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "status"))
+	}
+	if ut.Code == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "code"))
+	}
+	if ut.Detail == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "detail"))
 	}
 	return
 }
 
-// Publicize creates Response from response
-func (ut *response) Publicize() *Response {
-	var pub Response
+// Publicize creates ErrorValue from errorValue
+func (ut *errorValue) Publicize() *ErrorValue {
+	var pub ErrorValue
+	if ut.Code != nil {
+		pub.Code = *ut.Code
+	}
+	if ut.Detail != nil {
+		pub.Detail = *ut.Detail
+	}
 	if ut.Status != nil {
 		pub.Status = *ut.Status
 	}
 	return &pub
 }
 
-// Response user type.
-type Response struct {
+// ErrorValue user type.
+type ErrorValue struct {
+	Code   string `form:"code" json:"code" xml:"code"`
+	Detail string `form:"detail" json:"detail" xml:"detail"`
+	Status int    `form:"status" json:"status" xml:"status"`
+}
+
+// Validate validates the ErrorValue type instance.
+func (ut *ErrorValue) Validate() (err error) {
+
+	if ut.Code == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "code"))
+	}
+	if ut.Detail == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "detail"))
+	}
+	return
+}
+
+// ok user type.
+type ok struct {
+	Status *int `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
+}
+
+// Finalize sets the default values for ok type instance.
+func (ut *ok) Finalize() {
+	var defaultStatus = 200
+	if ut.Status == nil {
+		ut.Status = &defaultStatus
+	}
+}
+
+// Validate validates the ok type instance.
+func (ut *ok) Validate() (err error) {
+	if ut.Status == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "status"))
+	}
+	return
+}
+
+// Publicize creates OK from ok
+func (ut *ok) Publicize() *OK {
+	var pub OK
+	if ut.Status != nil {
+		pub.Status = *ut.Status
+	}
+	return &pub
+}
+
+// OK user type.
+type OK struct {
 	Status int `form:"status" json:"status" xml:"status"`
 }

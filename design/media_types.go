@@ -12,17 +12,17 @@ var IntegerType = MediaType("application/vnd.integerType+json", func() {
 	Description("example")
 	// どのような値があるか（複数定義出来る）
 	Attributes(func() {
-		// IDはInteger型
-		Attribute("ID", Integer, "ID", func() {
+		// idはInteger型
+		Attribute("id", Integer, "id", func() {
 			// 返すレスポンスの例
 			Example(1)
 		})
 		// レスポンスに必須な要素（基本は全て必須にした方が楽）
-		Required("ID")
+		Required("id")
 	})
 	// 返すレスポンスのフォーマット（別記事で紹介予定）
 	View("default", func() {
-		Attribute("ID")
+		Attribute("id")
 	})
 })
 
@@ -42,7 +42,7 @@ var MessageType = MediaType("application/vnd.messageType+json", func() {
 var UserType = MediaType("application/vnd.userType+json", func() {
 	Description("example")
 	Attributes(func() {
-		Attribute("ID", Integer, "ID", func() {
+		Attribute("id", Integer, "id", func() {
 			Example(1)
 		})
 		Attribute("name", String, "名前", func() {
@@ -51,17 +51,17 @@ var UserType = MediaType("application/vnd.userType+json", func() {
 		Attribute("email", String, "メールアドレス", func() {
 			Example("satak47cpc@gmail.com")
 		})
-		Required("ID", "name", "email")
+		Required("id", "name", "email")
 	})
 	// 特別な指定がない場合はdefaultのMediaType
 	View("default", func() {
-		Attribute("ID")
+		Attribute("id")
 		Attribute("name")
 		Attribute("email")
 	})
 	// tinyという名前の場合は、簡潔なレスポンスフォーマットにすることが出来る
 	View("tiny", func() {
-		Attribute("ID")
+		Attribute("id")
 		Attribute("name")
 	})
 })
@@ -69,7 +69,7 @@ var UserType = MediaType("application/vnd.userType+json", func() {
 var ValidationType = MediaType("application/vnd.validationType+json", func() {
 	Description("example")
 	Attributes(func() {
-		Attribute("ID", Integer, "ID", func() {
+		Attribute("id", Integer, "id", func() {
 			Example(1)
 		})
 		Attribute("integerType", Integer, "数字（1〜10）", func() {
@@ -91,9 +91,9 @@ var ValidationType = MediaType("application/vnd.validationType+json", func() {
 			Example("12abc")
 		})
 	})
-	Required("ID", "integerType", "stringType", "email", "enumType", "defaultType", "reg")
+	Required("id", "integerType", "stringType", "email", "enumType", "defaultType", "reg")
 	View("default", func() {
-		Attribute("ID")
+		Attribute("id")
 		Attribute("integerType")
 		Attribute("stringType")
 		Attribute("email")
@@ -103,11 +103,32 @@ var ValidationType = MediaType("application/vnd.validationType+json", func() {
 	})
 })
 
-var ResponseFormat = Type("response", func() {
+var OKMedia = Type("ok", func() {
 	Attribute("status", Integer, func() {
 		Default(200)
 	})
 	Required("status")
+})
+
+var ErrorValue = Type("errorValue", func() {
+	Attribute("status", Integer, func() {
+		Example(400)
+	})
+	Attribute("code", String, func() {
+		Example("bad_request")
+	})
+	Attribute("detail", String, func() {
+		Example("xxx is nil")
+	})
+	Required("status", "code", "detail")
+})
+
+var CustomeErrorMedia = MediaType("application/vnd.error+json", func() {
+	Attribute("response", ErrorValue)
+	Required("response")
+	View("default", func() {
+		Attribute("response")
+	})
 })
 
 var Data = Type("data", func() {
@@ -119,12 +140,12 @@ var Data = Type("data", func() {
 var ArticleType = MediaType("application/vnd.articleType+json", func() {
 	Description("example")
 	Attribute("data", ArrayOf(Data))
-	Attribute("response", ResponseFormat)
+	Attribute("response", OKMedia)
+	Required("data", "response")
 	View("default", func() {
 		Attribute("data")
 		Attribute("response")
 	})
-	Required("data", "response")
 })
 
 //-------gorma--------
@@ -132,7 +153,7 @@ var ArticleType = MediaType("application/vnd.articleType+json", func() {
 var Account = MediaType("application/vnd.account+json", func() {
 	Description("celler account")
 	Attributes(func() {
-		Attribute("ID", Integer, "ID", func() {
+		Attribute("id", Integer, "id", func() {
 			Example(1)
 		})
 		Attribute("name", String, "名前", func() {
@@ -141,10 +162,16 @@ var Account = MediaType("application/vnd.account+json", func() {
 		Attribute("email", String, "メールアドレス", func() {
 			Example("example@gmail.com")
 		})
+		Required("id", "name", "email")
 	})
-	Required("ID", "name", "email")
 	View("default", func() {
-		Attribute("ID")
+		Attribute("id")
+		Attribute("name")
+		Attribute("email")
+	})
+
+	View("link", func() {
+		Attribute("id")
 		Attribute("name")
 		Attribute("email")
 	})
@@ -153,7 +180,7 @@ var Account = MediaType("application/vnd.account+json", func() {
 var Bottle = MediaType("application/vnd.bottle+json", func() {
 	Description("celler bottles")
 	Attributes(func() {
-		Attribute("ID", Integer, "ID", func() {
+		Attribute("id", Integer, "id", func() {
 			Example(1)
 		})
 		Attribute("name", String, "ボトル名", func() {
@@ -162,28 +189,35 @@ var Bottle = MediaType("application/vnd.bottle+json", func() {
 		Attribute("quantity", Integer, "数量", func() {
 			Example(4)
 		})
+		Attribute("account", Account)
+		Required("id", "name", "quantity")
 	})
-	Required("ID", "name", "quantity")
+
+	Links(func() {
+		Link("account")
+	})
+
 	View("default", func() {
-		Attribute("ID")
+		Attribute("id")
 		Attribute("name")
 		Attribute("quantity")
+		Attribute("links")
 	})
 })
 
 var Category = MediaType("application/vnd.category+json", func() {
 	Description("celler account")
 	Attributes(func() {
-		Attribute("ID", Integer, "ID", func() {
+		Attribute("id", Integer, "id", func() {
 			Example(1)
 		})
 		Attribute("name", String, "名前", func() {
 			Example("ワイン")
 		})
+		Required("id", "name")
 	})
-	Required("ID", "name")
 	View("default", func() {
-		Attribute("ID")
+		Attribute("id")
 		Attribute("name")
 	})
 })

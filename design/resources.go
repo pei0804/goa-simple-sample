@@ -186,9 +186,15 @@ var _ = Resource("response", func() {
 		Routing(
 			GET("/users/nested"),
 		)
+		Params(func() {
+			Param("test", String, func() {
+				MinLength(1)
+			})
+			Required("test")
+		})
 		// ネストした要素を返す
 		Response(OK, ArticleType)
-		Response(BadRequest, ErrorMedia)
+		Response(BadRequest, CustomeErrorMedia)
 	})
 })
 
@@ -266,12 +272,13 @@ var _ = Resource("accounts", func() {
 			})
 		})
 		Response(OK, Account)
+		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})
 	Action("add", func() {
 		Description("追加")
 		Routing(
-			GET("/"),
+			POST("/"),
 		)
 		Params(func() {
 			Param("name", String, "名前", func() {
@@ -281,6 +288,7 @@ var _ = Resource("accounts", func() {
 				Format("email")
 				Example("example@gmail.com")
 			})
+			Required("name", "email")
 		})
 		Response(OK, Account)
 		Response(BadRequest, ErrorMedia)
@@ -288,20 +296,21 @@ var _ = Resource("accounts", func() {
 	Action("delete", func() {
 		Description("削除")
 		Routing(
-			GET("/users/:ID"),
+			DELETE("/:ID"),
 		)
 		Params(func() {
 			Param("ID", Integer, "名前", func() {
 				Example(1)
 			})
 		})
-		Response(OK, Account)
+		Response(OK)
+		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})
 	Action("update", func() {
 		Description("更新")
 		Routing(
-			GET("/users/:ID"),
+			PUT("/:ID"),
 		)
 		Params(func() {
 			Param("name", String, "名前", func() {
@@ -314,7 +323,84 @@ var _ = Resource("accounts", func() {
 				Example("example@gmail.com")
 			})
 		})
-		Response(OK, Account)
+		Response(OK)
+		Response(NotFound)
+		Response(BadRequest, ErrorMedia)
+	})
+})
+
+var _ = Resource("bottles", func() {
+	BasePath("/bottles")
+	Action("list", func() {
+		Description("複数")
+		Routing(
+			GET("/"),
+		)
+		Response(OK, CollectionOf(Bottle))
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("show", func() {
+		Description("単数")
+		Routing(
+			GET("/:ID"),
+		)
+		Params(func() {
+			Param("ID", Integer, "ID", func() {
+				Example(1)
+			})
+		})
+		Response(OK, Bottle)
+		Response(NotFound)
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("add", func() {
+		Description("追加")
+		Routing(
+			POST("/"),
+		)
+		Params(func() {
+			Param("name", String, "ボトル名", func() {
+				Default("")
+				Example("赤ワインなにか")
+			})
+			Param("quantity", Integer, "数量", func() {
+				Example(0)
+			})
+			Required("name", "quantity")
+		})
+		Response(Created)
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("delete", func() {
+		Description("削除")
+		Routing(
+			DELETE("/:ID"),
+		)
+		Params(func() {
+			Param("ID", Integer, "名前", func() {
+				Example(1)
+			})
+		})
+		Response(OK)
+		Response(NotFound)
+		Response(BadRequest, ErrorMedia)
+	})
+	Action("update", func() {
+		Description("更新")
+		Routing(
+			PUT("/:ID"),
+		)
+		Params(func() {
+			Param("name", String, "ボトル名", func() {
+				Default("")
+				Example("赤ワインなにか")
+			})
+			Param("quantity", Integer, "数量", func() {
+				Example(0)
+			})
+		})
+		Response(OK)
+		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})
 })

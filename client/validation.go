@@ -41,13 +41,13 @@ func (c *Client) NewValidationValidationRequest(ctx context.Context, path string
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
-	tmp20 := strconv.Itoa(id)
-	values.Set("ID", tmp20)
+	tmp27 := strconv.Itoa(id)
+	values.Set("ID", tmp27)
 	values.Set("defaultType", defaultType)
 	values.Set("email", email)
 	values.Set("enumType", enumType)
-	tmp21 := strconv.Itoa(integerType)
-	values.Set("integerType", tmp21)
+	tmp28 := strconv.Itoa(integerType)
+	values.Set("integerType", tmp28)
 	values.Set("reg", reg)
 	values.Set("stringType", stringType)
 	u.RawQuery = values.Encode()

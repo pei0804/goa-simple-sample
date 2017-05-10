@@ -18,8 +18,8 @@ var _ = StorageGroup("celler", func() {
 			Field("name", gorma.String)
 			Field("email", gorma.String)
 			Field("created_at", gorma.Timestamp)
-			Field("created_at", gorma.Timestamp)
 			Field("updated_at", gorma.Timestamp)
+			Field("deleted_at", gorma.NullableTimestamp)
 			HasMany("Bottles", "Bottle")
 		})
 		Model("Bottle", func() {
@@ -29,6 +29,7 @@ var _ = StorageGroup("celler", func() {
 				PrimaryKey()
 			})
 			Field("name", gorma.String)
+			Field("quantity", gorma.Integer)
 			Field("created_at", gorma.Timestamp)
 			Field("updated_at", gorma.Timestamp)
 			Field("deleted_at", gorma.NullableTimestamp)

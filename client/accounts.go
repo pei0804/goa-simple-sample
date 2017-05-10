@@ -25,7 +25,7 @@ func AddAccountsPath() string {
 }
 
 // 追加
-func (c *Client) AddAccounts(ctx context.Context, path string, email *string, name *string) (*http.Response, error) {
+func (c *Client) AddAccounts(ctx context.Context, path string, email string, name string) (*http.Response, error) {
 	req, err := c.NewAddAccountsRequest(ctx, path, email, name)
 	if err != nil {
 		return nil, err
@@ -34,21 +34,17 @@ func (c *Client) AddAccounts(ctx context.Context, path string, email *string, na
 }
 
 // NewAddAccountsRequest create the request corresponding to the add action endpoint of the accounts resource.
-func (c *Client) NewAddAccountsRequest(ctx context.Context, path string, email *string, name *string) (*http.Request, error) {
+func (c *Client) NewAddAccountsRequest(ctx context.Context, path string, email string, name string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "https"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
-	if email != nil {
-		values.Set("email", *email)
-	}
-	if name != nil {
-		values.Set("name", *name)
-	}
+	values.Set("email", email)
+	values.Set("name", name)
 	u.RawQuery = values.Encode()
-	req, err := http.NewRequest("GET", u.String(), nil)
+	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +55,7 @@ func (c *Client) NewAddAccountsRequest(ctx context.Context, path string, email *
 func DeleteAccountsPath(id int) string {
 	param0 := strconv.Itoa(id)
 
-	return fmt.Sprintf("/api/v1/accounts/users/%s", param0)
+	return fmt.Sprintf("/api/v1/accounts/%s", param0)
 }
 
 // 削除
@@ -78,7 +74,7 @@ func (c *Client) NewDeleteAccountsRequest(ctx context.Context, path string) (*ht
 		scheme = "https"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
-	req, err := http.NewRequest("GET", u.String(), nil)
+	req, err := http.NewRequest("DELETE", u.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +144,7 @@ func (c *Client) NewShowAccountsRequest(ctx context.Context, path string) (*http
 func UpdateAccountsPath(id string) string {
 	param0 := id
 
-	return fmt.Sprintf("/api/v1/accounts/users/%s", param0)
+	return fmt.Sprintf("/api/v1/accounts/%s", param0)
 }
 
 // 更新
@@ -175,7 +171,7 @@ func (c *Client) NewUpdateAccountsRequest(ctx context.Context, path string, emai
 		values.Set("name", *name)
 	}
 	u.RawQuery = values.Encode()
-	req, err := http.NewRequest("GET", u.String(), nil)
+	req, err := http.NewRequest("PUT", u.String(), nil)
 	if err != nil {
 		return nil, err
 	}
