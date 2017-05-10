@@ -64,18 +64,18 @@ var _ = Resource("actions", func() {
 		Response(OK, MessageType)
 		Response(BadRequest, ErrorMedia)
 	})
-	Action("ID", func() {
-		Description("複数アクション（:ID）")
+	Action("id", func() {
+		Description("複数アクション（:id）")
 		Routing(
 			// エンドポイントにリソースを指定出来る
 			// GET http://localhost:8080/api/v1/actions/1になる
-			GET("/:ID"),
+			GET("/:id"),
 		)
 		Params(func() {
-			// :IDはIntegert型でなければならない。
-			Param("ID", Integer, "ID")
+			// :idはIntegert型でなければならない。
+			Param("id", Integer, "id")
 			// Requiredはリソースを含めたエンドポイントになるので、定義しなくても良い
-			//Required("ID")
+			//Required("id")
 		})
 		Response(OK, IntegerType)
 		// 指定したリソースが無ければNotFoundを返す可能生がある
@@ -130,10 +130,10 @@ var _ = Resource("method", func() {
 		Response(BadRequest, ErrorMedia)
 	})
 	Action("etc", func() {
-		Routing(GET("/users/:ID/follow/:type"))
+		Routing(GET("/users/:id/follow/:type"))
 		Description("ちょっと特殊ケース")
 		Params(func() {
-			Param("ID", Integer, "ID")
+			Param("id", Integer, "id")
 			Param("type", Integer, "タイプ", func() {
 				Enum(1, 2, 3)
 			})
@@ -207,7 +207,7 @@ var _ = Resource("validation", func() {
 		)
 		Params(func() {
 			// Integer型
-			Param("ID", Integer, "ID", func() {
+			Param("id", Integer, "id", func() {
 				Example(1)
 			})
 			// Integer型かつ1〜10以下
@@ -244,7 +244,7 @@ var _ = Resource("validation", func() {
 			})
 
 			// 全て必須パラメーター
-			Required("ID", "integerType", "stringType", "email", "enumType", "defaultType", "reg")
+			Required("id", "integerType", "stringType", "email", "enumType", "defaultType", "reg")
 		})
 		Response(OK, ValidationType)
 		Response(BadRequest, ErrorMedia)
@@ -264,10 +264,10 @@ var _ = Resource("accounts", func() {
 	Action("show", func() {
 		Description("単数")
 		Routing(
-			GET("/:ID"),
+			GET("/:id"),
 		)
 		Params(func() {
-			Param("ID", Integer, "ID", func() {
+			Param("id", Integer, "id", func() {
 				Example(1)
 			})
 		})
@@ -296,10 +296,10 @@ var _ = Resource("accounts", func() {
 	Action("delete", func() {
 		Description("削除")
 		Routing(
-			DELETE("/:ID"),
+			DELETE("/:id"),
 		)
 		Params(func() {
-			Param("ID", Integer, "名前", func() {
+			Param("id", Integer, "名前", func() {
 				Example(1)
 			})
 		})
@@ -310,7 +310,7 @@ var _ = Resource("accounts", func() {
 	Action("update", func() {
 		Description("更新")
 		Routing(
-			PUT("/:ID"),
+			PUT("/:id"),
 		)
 		Params(func() {
 			Param("name", String, "名前", func() {
@@ -342,10 +342,10 @@ var _ = Resource("bottles", func() {
 	Action("show", func() {
 		Description("単数")
 		Routing(
-			GET("/:ID"),
+			GET("/:id"),
 		)
 		Params(func() {
-			Param("ID", Integer, "ID", func() {
+			Param("id", Integer, "id", func() {
 				Example(1)
 			})
 		})
@@ -374,10 +374,10 @@ var _ = Resource("bottles", func() {
 	Action("delete", func() {
 		Description("削除")
 		Routing(
-			DELETE("/:ID"),
+			DELETE("/:id"),
 		)
 		Params(func() {
-			Param("ID", Integer, "名前", func() {
+			Param("id", Integer, "名前", func() {
 				Example(1)
 			})
 		})
@@ -388,7 +388,7 @@ var _ = Resource("bottles", func() {
 	Action("update", func() {
 		Description("更新")
 		Routing(
-			PUT("/:ID"),
+			PUT("/:id"),
 		)
 		Params(func() {
 			Param("name", String, "ボトル名", func() {

@@ -15,7 +15,7 @@
         }
       });
       requirejs(['client'], function (client) {
-        client().IDActions ("/api/v1/actions/698503672345162876")
+        client().arrayResponse ("/api/v1/response/users/array")
           .then(function (resp) {
             document.getElementById('response').innerHTML = resp.statusText;
           })

@@ -29,7 +29,7 @@ import (
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ValidationController, id int, defaultType string, email string, enumType string, integerType int, reg string, stringType string) (http.ResponseWriter, error) {
+func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ValidationController, defaultType string, email string, enumType string, id int, integerType int, reg string, stringType string) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -51,10 +51,6 @@ func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, s
 	rw := httptest.NewRecorder()
 	query := url.Values{}
 	{
-		sliceVal := []string{strconv.Itoa(id)}
-		query["ID"] = sliceVal
-	}
-	{
 		sliceVal := []string{defaultType}
 		query["defaultType"] = sliceVal
 	}
@@ -65,6 +61,10 @@ func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, s
 	{
 		sliceVal := []string{enumType}
 		query["enumType"] = sliceVal
+	}
+	{
+		sliceVal := []string{strconv.Itoa(id)}
+		query["id"] = sliceVal
 	}
 	{
 		sliceVal := []string{strconv.Itoa(integerType)}
@@ -88,10 +88,6 @@ func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, s
 	}
 	prms := url.Values{}
 	{
-		sliceVal := []string{strconv.Itoa(id)}
-		prms["ID"] = sliceVal
-	}
-	{
 		sliceVal := []string{defaultType}
 		prms["defaultType"] = sliceVal
 	}
@@ -102,6 +98,10 @@ func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, s
 	{
 		sliceVal := []string{enumType}
 		prms["enumType"] = sliceVal
+	}
+	{
+		sliceVal := []string{strconv.Itoa(id)}
+		prms["id"] = sliceVal
 	}
 	{
 		sliceVal := []string{strconv.Itoa(integerType)}
@@ -151,7 +151,7 @@ func ValidationValidationBadRequest(t goatest.TInterface, ctx context.Context, s
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ValidationValidationOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ValidationController, id int, defaultType string, email string, enumType string, integerType int, reg string, stringType string) (http.ResponseWriter, *app.Validationtype) {
+func ValidationValidationOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.ValidationController, defaultType string, email string, enumType string, id int, integerType int, reg string, stringType string) (http.ResponseWriter, *app.Validationtype) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -173,10 +173,6 @@ func ValidationValidationOK(t goatest.TInterface, ctx context.Context, service *
 	rw := httptest.NewRecorder()
 	query := url.Values{}
 	{
-		sliceVal := []string{strconv.Itoa(id)}
-		query["ID"] = sliceVal
-	}
-	{
 		sliceVal := []string{defaultType}
 		query["defaultType"] = sliceVal
 	}
@@ -187,6 +183,10 @@ func ValidationValidationOK(t goatest.TInterface, ctx context.Context, service *
 	{
 		sliceVal := []string{enumType}
 		query["enumType"] = sliceVal
+	}
+	{
+		sliceVal := []string{strconv.Itoa(id)}
+		query["id"] = sliceVal
 	}
 	{
 		sliceVal := []string{strconv.Itoa(integerType)}
@@ -210,10 +210,6 @@ func ValidationValidationOK(t goatest.TInterface, ctx context.Context, service *
 	}
 	prms := url.Values{}
 	{
-		sliceVal := []string{strconv.Itoa(id)}
-		prms["ID"] = sliceVal
-	}
-	{
 		sliceVal := []string{defaultType}
 		prms["defaultType"] = sliceVal
 	}
@@ -224,6 +220,10 @@ func ValidationValidationOK(t goatest.TInterface, ctx context.Context, service *
 	{
 		sliceVal := []string{enumType}
 		prms["enumType"] = sliceVal
+	}
+	{
+		sliceVal := []string{strconv.Itoa(id)}
+		prms["id"] = sliceVal
 	}
 	{
 		sliceVal := []string{strconv.Itoa(integerType)}

@@ -91,13 +91,13 @@ func NewDeleteAccountsContext(ctx context.Context, r *http.Request, service *goa
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := DeleteAccountsContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramID := req.Params["ID"]
+	paramID := req.Params["id"]
 	if len(paramID) > 0 {
 		rawID := paramID[0]
 		if id, err2 := strconv.Atoi(rawID); err2 == nil {
 			rctx.ID = id
 		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
 		}
 	}
 	return &rctx, err
@@ -183,13 +183,13 @@ func NewShowAccountsContext(ctx context.Context, r *http.Request, service *goa.S
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := ShowAccountsContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramID := req.Params["ID"]
+	paramID := req.Params["id"]
 	if len(paramID) > 0 {
 		rawID := paramID[0]
 		if id, err2 := strconv.Atoi(rawID); err2 == nil {
 			rctx.ID = id
 		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
 		}
 	}
 	return &rctx, err
@@ -224,8 +224,8 @@ type UpdateAccountsContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	ID    string
 	Email string
+	ID    string
 	Name  string
 }
 
@@ -238,11 +238,6 @@ func NewUpdateAccountsContext(ctx context.Context, r *http.Request, service *goa
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := UpdateAccountsContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramID := req.Params["ID"]
-	if len(paramID) > 0 {
-		rawID := paramID[0]
-		rctx.ID = rawID
-	}
 	paramEmail := req.Params["email"]
 	if len(paramEmail) == 0 {
 		rctx.Email = ""
@@ -252,6 +247,11 @@ func NewUpdateAccountsContext(ctx context.Context, r *http.Request, service *goa
 		if err2 := goa.ValidateFormat(goa.FormatEmail, rctx.Email); err2 != nil {
 			err = goa.MergeErrors(err, goa.InvalidFormatError(`email`, rctx.Email, goa.FormatEmail, err2))
 		}
+	}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		rctx.ID = rawID
 	}
 	paramName := req.Params["name"]
 	if len(paramName) == 0 {
@@ -279,53 +279,6 @@ func (ctx *UpdateAccountsContext) BadRequest(r error) error {
 
 // NotFound sends a HTTP response with status code 404.
 func (ctx *UpdateAccountsContext) NotFound() error {
-	ctx.ResponseData.WriteHeader(404)
-	return nil
-}
-
-// IDActionsContext provides the actions ID action context.
-type IDActionsContext struct {
-	context.Context
-	*goa.ResponseData
-	*goa.RequestData
-	ID int
-}
-
-// NewIDActionsContext parses the incoming request URL and body, performs validations and creates the
-// context used by the actions controller ID action.
-func NewIDActionsContext(ctx context.Context, r *http.Request, service *goa.Service) (*IDActionsContext, error) {
-	var err error
-	resp := goa.ContextResponse(ctx)
-	resp.Service = service
-	req := goa.ContextRequest(ctx)
-	req.Request = r
-	rctx := IDActionsContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramID := req.Params["ID"]
-	if len(paramID) > 0 {
-		rawID := paramID[0]
-		if id, err2 := strconv.Atoi(rawID); err2 == nil {
-			rctx.ID = id
-		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
-		}
-	}
-	return &rctx, err
-}
-
-// OK sends a HTTP response with status code 200.
-func (ctx *IDActionsContext) OK(r *Integertype) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.integertype+json")
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
-}
-
-// BadRequest sends a HTTP response with status code 400.
-func (ctx *IDActionsContext) BadRequest(r error) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
-	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
-}
-
-// NotFound sends a HTTP response with status code 404.
-func (ctx *IDActionsContext) NotFound() error {
 	ctx.ResponseData.WriteHeader(404)
 	return nil
 }
@@ -367,6 +320,53 @@ func (ctx *HelloActionsContext) OK(r *Messagetype) error {
 func (ctx *HelloActionsContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// IDActionsContext provides the actions id action context.
+type IDActionsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID int
+}
+
+// NewIDActionsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the actions controller id action.
+func NewIDActionsContext(ctx context.Context, r *http.Request, service *goa.Service) (*IDActionsContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := IDActionsContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *IDActionsContext) OK(r *Integertype) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.integertype+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *IDActionsContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *IDActionsContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
 }
 
 // PingActionsContext provides the actions ping action context.
@@ -468,13 +468,13 @@ func NewDeleteBottlesContext(ctx context.Context, r *http.Request, service *goa.
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := DeleteBottlesContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramID := req.Params["ID"]
+	paramID := req.Params["id"]
 	if len(paramID) > 0 {
 		rawID := paramID[0]
 		if id, err2 := strconv.Atoi(rawID); err2 == nil {
 			rctx.ID = id
 		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
 		}
 	}
 	return &rctx, err
@@ -551,13 +551,13 @@ func NewShowBottlesContext(ctx context.Context, r *http.Request, service *goa.Se
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := ShowBottlesContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramID := req.Params["ID"]
+	paramID := req.Params["id"]
 	if len(paramID) > 0 {
 		rawID := paramID[0]
 		if id, err2 := strconv.Atoi(rawID); err2 == nil {
 			rctx.ID = id
 		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
 		}
 	}
 	return &rctx, err
@@ -600,7 +600,7 @@ func NewUpdateBottlesContext(ctx context.Context, r *http.Request, service *goa.
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := UpdateBottlesContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramID := req.Params["ID"]
+	paramID := req.Params["id"]
 	if len(paramID) > 0 {
 		rawID := paramID[0]
 		rctx.ID = rawID
@@ -664,13 +664,13 @@ func NewEtcMethodContext(ctx context.Context, r *http.Request, service *goa.Serv
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := EtcMethodContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramID := req.Params["ID"]
+	paramID := req.Params["id"]
 	if len(paramID) > 0 {
 		rawID := paramID[0]
 		if id, err2 := strconv.Atoi(rawID); err2 == nil {
 			rctx.ID = id
 		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
 		}
 	}
 	paramType := req.Params["type"]
@@ -1039,10 +1039,10 @@ type ValidationValidationContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	ID          int
 	DefaultType string
 	Email       string
 	EnumType    string
+	ID          int
 	IntegerType int
 	Reg         string
 	StringType  string
@@ -1057,17 +1057,6 @@ func NewValidationValidationContext(ctx context.Context, r *http.Request, servic
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := ValidationValidationContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramID := req.Params["ID"]
-	if len(paramID) == 0 {
-		err = goa.MergeErrors(err, goa.MissingParamError("ID"))
-	} else {
-		rawID := paramID[0]
-		if id, err2 := strconv.Atoi(rawID); err2 == nil {
-			rctx.ID = id
-		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("ID", rawID, "integer"))
-		}
-	}
 	paramDefaultType := req.Params["defaultType"]
 	if len(paramDefaultType) == 0 {
 		rctx.DefaultType = "でふぉ"
@@ -1093,6 +1082,17 @@ func NewValidationValidationContext(ctx context.Context, r *http.Request, servic
 		rctx.EnumType = rawEnumType
 		if !(rctx.EnumType == "A" || rctx.EnumType == "B" || rctx.EnumType == "C") {
 			err = goa.MergeErrors(err, goa.InvalidEnumValueError(`enumType`, rctx.EnumType, []interface{}{"A", "B", "C"}))
+		}
+	}
+	paramID := req.Params["id"]
+	if len(paramID) == 0 {
+		err = goa.MergeErrors(err, goa.MissingParamError("id"))
+	} else {
+		rawID := paramID[0]
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
 		}
 	}
 	paramIntegerType := req.Params["integerType"]

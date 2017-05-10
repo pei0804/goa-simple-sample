@@ -11,12 +11,11 @@
 package models
 
 import (
-	"time"
-
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
 	"github.com/tikasan/goa-simple-sample/app"
 	"golang.org/x/net/context"
+	"time"
 )
 
 // MediaType Retrieval Functions

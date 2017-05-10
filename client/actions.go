@@ -18,36 +18,6 @@ import (
 	"strconv"
 )
 
-// IDActionsPath computes a request path to the ID action of actions.
-func IDActionsPath(id int) string {
-	param0 := strconv.Itoa(id)
-
-	return fmt.Sprintf("/api/v1/actions/%s", param0)
-}
-
-// 複数アクション（:ID）
-func (c *Client) IDActions(ctx context.Context, path string) (*http.Response, error) {
-	req, err := c.NewIDActionsRequest(ctx, path)
-	if err != nil {
-		return nil, err
-	}
-	return c.Client.Do(ctx, req)
-}
-
-// NewIDActionsRequest create the request corresponding to the ID action endpoint of the actions resource.
-func (c *Client) NewIDActionsRequest(ctx context.Context, path string) (*http.Request, error) {
-	scheme := c.Scheme
-	if scheme == "" {
-		scheme = "https"
-	}
-	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
-	req, err := http.NewRequest("GET", u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	return req, nil
-}
-
 // HelloActionsPath computes a request path to the hello action of actions.
 func HelloActionsPath() string {
 
@@ -73,6 +43,36 @@ func (c *Client) NewHelloActionsRequest(ctx context.Context, path string, name s
 	values := u.Query()
 	values.Set("name", name)
 	u.RawQuery = values.Encode()
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// IDActionsPath computes a request path to the id action of actions.
+func IDActionsPath(id int) string {
+	param0 := strconv.Itoa(id)
+
+	return fmt.Sprintf("/api/v1/actions/%s", param0)
+}
+
+// 複数アクション（:id）
+func (c *Client) IDActions(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewIDActionsRequest(ctx, path)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewIDActionsRequest create the request corresponding to the id action endpoint of the actions resource.
+func (c *Client) NewIDActionsRequest(ctx context.Context, path string) (*http.Request, error) {
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "https"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err

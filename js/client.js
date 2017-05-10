@@ -19,24 +19,6 @@ define(['axios'] , function (axios) {
     // URL prefix for all API requests.
     var urlPrefix = scheme + '://' + host;
 
-  // 複数アクション（:ID）
-  // path is the request path, the format is "/api/v1/actions/:ID"
-  // config is an optional object to be merged into the config built by the function prior to making the request.
-  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
-  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
-  client.IDActions = function (path, config) {
-    cfg = {
-      timeout: timeout,
-      url: urlPrefix + path,
-      method: 'get',
-      responseType: 'json'
-    };
-    if (config) {
-      cfg = merge(cfg, config);
-    }
-    return client(cfg);
-  }
-
   // 追加
   // path is the request path, the format is "/api/v1/accounts"
   // email, name are used to build the request query string.
@@ -102,7 +84,7 @@ define(['axios'] , function (axios) {
   }
 
   // 削除
-  // path is the request path, the format is "/api/v1/accounts/:ID"
+  // path is the request path, the format is "/api/v1/accounts/:id"
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
@@ -120,7 +102,7 @@ define(['axios'] , function (axios) {
   }
 
   // 削除
-  // path is the request path, the format is "/api/v1/bottles/:ID"
+  // path is the request path, the format is "/api/v1/bottles/:id"
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
@@ -138,7 +120,7 @@ define(['axios'] , function (axios) {
   }
 
   // ちょっと特殊ケース
-  // path is the request path, the format is "/api/v1/method/users/:ID/follow/:type"
+  // path is the request path, the format is "/api/v1/method/users/:id/follow/:type"
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
@@ -205,6 +187,24 @@ define(['axios'] , function (axios) {
       params: {
         name: name
       },
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
+  // 複数アクション（:id）
+  // path is the request path, the format is "/api/v1/actions/:id"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.idActions = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
       responseType: 'json'
     };
     if (config) {
@@ -362,7 +362,7 @@ define(['axios'] , function (axios) {
   }
 
   // 単数
-  // path is the request path, the format is "/api/v1/accounts/:ID"
+  // path is the request path, the format is "/api/v1/accounts/:id"
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
@@ -380,7 +380,7 @@ define(['axios'] , function (axios) {
   }
 
   // 単数
-  // path is the request path, the format is "/api/v1/bottles/:ID"
+  // path is the request path, the format is "/api/v1/bottles/:id"
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
@@ -416,7 +416,7 @@ define(['axios'] , function (axios) {
   }
 
   // 更新
-  // path is the request path, the format is "/api/v1/accounts/:ID"
+  // path is the request path, the format is "/api/v1/accounts/:id"
   // email, name are used to build the request query string.
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
@@ -439,7 +439,7 @@ define(['axios'] , function (axios) {
   }
 
   // 更新
-  // path is the request path, the format is "/api/v1/bottles/:ID"
+  // path is the request path, the format is "/api/v1/bottles/:id"
   // name, quantity are used to build the request query string.
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
@@ -463,20 +463,20 @@ define(['axios'] , function (axios) {
 
   // Validation
   // path is the request path, the format is "/api/v1/validation"
-  // ID, defaultType, email, enumType, integerType, reg, stringType are used to build the request query string.
+  // defaultType, email, enumType, id, integerType, reg, stringType are used to build the request query string.
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
-  client.validationValidation = function (path, ID, defaultType, email, enumType, integerType, reg, stringType, config) {
+  client.validationValidation = function (path, defaultType, email, enumType, id, integerType, reg, stringType, config) {
     cfg = {
       timeout: timeout,
       url: urlPrefix + path,
       method: 'get',
       params: {
-        ID: ID,
         defaultType: defaultType,
         email: email,
         enumType: enumType,
+        id: id,
         integerType: integerType,
         reg: reg,
         stringType: stringType

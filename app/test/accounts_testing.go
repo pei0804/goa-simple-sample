@@ -310,7 +310,7 @@ func DeleteAccountsBadRequest(t goatest.TInterface, ctx context.Context, service
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -375,7 +375,7 @@ func DeleteAccountsNotFound(t goatest.TInterface, ctx context.Context, service *
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -432,7 +432,7 @@ func DeleteAccountsOK(t goatest.TInterface, ctx context.Context, service *goa.Se
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -689,7 +689,7 @@ func ShowAccountsBadRequest(t goatest.TInterface, ctx context.Context, service *
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -754,7 +754,7 @@ func ShowAccountsNotFound(t goatest.TInterface, ctx context.Context, service *go
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -811,7 +811,7 @@ func ShowAccountsOK(t goatest.TInterface, ctx context.Context, service *goa.Serv
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -880,7 +880,7 @@ func ShowAccountsOKLink(t goatest.TInterface, ctx context.Context, service *goa.
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -959,7 +959,7 @@ func UpdateAccountsBadRequest(t goatest.TInterface, ctx context.Context, service
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	{
 		sliceVal := []string{email}
 		prms["email"] = sliceVal
@@ -1042,7 +1042,7 @@ func UpdateAccountsNotFound(t goatest.TInterface, ctx context.Context, service *
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	{
 		sliceVal := []string{email}
 		prms["email"] = sliceVal
@@ -1117,7 +1117,7 @@ func UpdateAccountsOK(t goatest.TInterface, ctx context.Context, service *goa.Se
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	{
 		sliceVal := []string{email}
 		prms["email"] = sliceVal

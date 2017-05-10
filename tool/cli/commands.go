@@ -52,7 +52,7 @@ type (
 
 	// ShowAccountsCommand is the command line data structure for the show action of accounts
 	ShowAccountsCommand struct {
-		// ID
+		// id
 		ID          int
 		PrettyPrint bool
 	}
@@ -67,17 +67,17 @@ type (
 		PrettyPrint bool
 	}
 
-	// IDActionsCommand is the command line data structure for the ID action of actions
-	IDActionsCommand struct {
-		// ID
-		ID          int
-		PrettyPrint bool
-	}
-
 	// HelloActionsCommand is the command line data structure for the hello action of actions
 	HelloActionsCommand struct {
 		// 名前
 		Name        string
+		PrettyPrint bool
+	}
+
+	// IDActionsCommand is the command line data structure for the id action of actions
+	IDActionsCommand struct {
+		// id
+		ID          int
 		PrettyPrint bool
 	}
 
@@ -109,7 +109,7 @@ type (
 
 	// ShowBottlesCommand is the command line data structure for the show action of bottles
 	ShowBottlesCommand struct {
-		// ID
+		// id
 		ID          int
 		PrettyPrint bool
 	}
@@ -126,7 +126,7 @@ type (
 
 	// EtcMethodCommand is the command line data structure for the etc action of method
 	EtcMethodCommand struct {
-		// ID
+		// id
 		ID int
 		// タイプ
 		Type        int
@@ -182,14 +182,14 @@ type (
 
 	// ValidationValidationCommand is the command line data structure for the validation action of validation
 	ValidationValidationCommand struct {
-		// ID
-		ID int
 		// デフォルト値
 		DefaultType string
 		// メールアドレス
 		Email string
 		// 列挙型
 		EnumType string
+		// id
+		ID int
 		// 数字（1〜10）
 		IntegerType int
 		// 正規表現
@@ -327,7 +327,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	app.AddCommand(command)
 	command = &cobra.Command{
 		Use:   "id",
-		Short: `複数アクション（:ID）`,
+		Short: `複数アクション（:id）`,
 	}
 	tmp10 := new(IDActionsCommand)
 	sub = &cobra.Command{
@@ -777,7 +777,7 @@ func (cmd *DeleteAccountsCommand) Run(c *client.Client, args []string) error {
 // RegisterFlags registers the command flags with the command line.
 func (cmd *DeleteAccountsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id int
-	cc.Flags().IntVar(&cmd.ID, "ID", id, `名前`)
+	cc.Flags().IntVar(&cmd.ID, "id", id, `名前`)
 }
 
 // Run makes the HTTP request corresponding to the ListAccountsCommand command.
@@ -827,7 +827,7 @@ func (cmd *ShowAccountsCommand) Run(c *client.Client, args []string) error {
 // RegisterFlags registers the command flags with the command line.
 func (cmd *ShowAccountsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id int
-	cc.Flags().IntVar(&cmd.ID, "ID", id, `ID`)
+	cc.Flags().IntVar(&cmd.ID, "id", id, `id`)
 }
 
 // Run makes the HTTP request corresponding to the UpdateAccountsCommand command.
@@ -853,9 +853,35 @@ func (cmd *UpdateAccountsCommand) Run(c *client.Client, args []string) error {
 // RegisterFlags registers the command flags with the command line.
 func (cmd *UpdateAccountsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id string
-	cc.Flags().StringVar(&cmd.ID, "ID", id, ``)
+	cc.Flags().StringVar(&cmd.ID, "id", id, ``)
 	var email string
 	cc.Flags().StringVar(&cmd.Email, "email", email, `名前`)
+	var name string
+	cc.Flags().StringVar(&cmd.Name, "name", name, `名前`)
+}
+
+// Run makes the HTTP request corresponding to the HelloActionsCommand command.
+func (cmd *HelloActionsCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/api/v1/actions/hello"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.HelloActions(ctx, path, cmd.Name)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *HelloActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var name string
 	cc.Flags().StringVar(&cmd.Name, "name", name, `名前`)
 }
@@ -883,33 +909,7 @@ func (cmd *IDActionsCommand) Run(c *client.Client, args []string) error {
 // RegisterFlags registers the command flags with the command line.
 func (cmd *IDActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id int
-	cc.Flags().IntVar(&cmd.ID, "ID", id, `ID`)
-}
-
-// Run makes the HTTP request corresponding to the HelloActionsCommand command.
-func (cmd *HelloActionsCommand) Run(c *client.Client, args []string) error {
-	var path string
-	if len(args) > 0 {
-		path = args[0]
-	} else {
-		path = "/api/v1/actions/hello"
-	}
-	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
-	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.HelloActions(ctx, path, cmd.Name)
-	if err != nil {
-		goa.LogError(ctx, "failed", "err", err)
-		return err
-	}
-
-	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
-	return nil
-}
-
-// RegisterFlags registers the command flags with the command line.
-func (cmd *HelloActionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
-	var name string
-	cc.Flags().StringVar(&cmd.Name, "name", name, `名前`)
+	cc.Flags().IntVar(&cmd.ID, "id", id, `id`)
 }
 
 // Run makes the HTTP request corresponding to the PingActionsCommand command.
@@ -987,7 +987,7 @@ func (cmd *DeleteBottlesCommand) Run(c *client.Client, args []string) error {
 // RegisterFlags registers the command flags with the command line.
 func (cmd *DeleteBottlesCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id int
-	cc.Flags().IntVar(&cmd.ID, "ID", id, `名前`)
+	cc.Flags().IntVar(&cmd.ID, "id", id, `名前`)
 }
 
 // Run makes the HTTP request corresponding to the ListBottlesCommand command.
@@ -1037,7 +1037,7 @@ func (cmd *ShowBottlesCommand) Run(c *client.Client, args []string) error {
 // RegisterFlags registers the command flags with the command line.
 func (cmd *ShowBottlesCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id int
-	cc.Flags().IntVar(&cmd.ID, "ID", id, `ID`)
+	cc.Flags().IntVar(&cmd.ID, "id", id, `id`)
 }
 
 // Run makes the HTTP request corresponding to the UpdateBottlesCommand command.
@@ -1063,7 +1063,7 @@ func (cmd *UpdateBottlesCommand) Run(c *client.Client, args []string) error {
 // RegisterFlags registers the command flags with the command line.
 func (cmd *UpdateBottlesCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id string
-	cc.Flags().StringVar(&cmd.ID, "ID", id, ``)
+	cc.Flags().StringVar(&cmd.ID, "id", id, ``)
 	var name string
 	cc.Flags().StringVar(&cmd.Name, "name", name, `ボトル名`)
 	var quantity int
@@ -1093,7 +1093,7 @@ func (cmd *EtcMethodCommand) Run(c *client.Client, args []string) error {
 // RegisterFlags registers the command flags with the command line.
 func (cmd *EtcMethodCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id int
-	cc.Flags().IntVar(&cmd.ID, "ID", id, `ID`)
+	cc.Flags().IntVar(&cmd.ID, "id", id, `id`)
 	var type_ int
 	cc.Flags().IntVar(&cmd.Type, "type", type_, `タイプ`)
 }
@@ -1328,7 +1328,7 @@ func (cmd *ValidationValidationCommand) Run(c *client.Client, args []string) err
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.ValidationValidation(ctx, path, cmd.ID, cmd.DefaultType, cmd.Email, cmd.EnumType, cmd.IntegerType, cmd.Reg, cmd.StringType)
+	resp, err := c.ValidationValidation(ctx, path, cmd.DefaultType, cmd.Email, cmd.EnumType, cmd.ID, cmd.IntegerType, cmd.Reg, cmd.StringType)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -1340,13 +1340,13 @@ func (cmd *ValidationValidationCommand) Run(c *client.Client, args []string) err
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *ValidationValidationCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
-	var id int
-	cc.Flags().IntVar(&cmd.ID, "ID", id, `ID`)
 	cc.Flags().StringVar(&cmd.DefaultType, "defaultType", "でふぉ", `デフォルト値`)
 	var email string
 	cc.Flags().StringVar(&cmd.Email, "email", email, `メールアドレス`)
 	var enumType string
 	cc.Flags().StringVar(&cmd.EnumType, "enumType", enumType, `列挙型`)
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "id", id, `id`)
 	var integerType int
 	cc.Flags().IntVar(&cmd.IntegerType, "integerType", integerType, `数字（1〜10）`)
 	var reg string

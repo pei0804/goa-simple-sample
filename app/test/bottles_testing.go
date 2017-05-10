@@ -213,7 +213,7 @@ func DeleteBottlesBadRequest(t goatest.TInterface, ctx context.Context, service 
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -278,7 +278,7 @@ func DeleteBottlesNotFound(t goatest.TInterface, ctx context.Context, service *g
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -335,7 +335,7 @@ func DeleteBottlesOK(t goatest.TInterface, ctx context.Context, service *goa.Ser
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -524,7 +524,7 @@ func ShowBottlesBadRequest(t goatest.TInterface, ctx context.Context, service *g
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -589,7 +589,7 @@ func ShowBottlesNotFound(t goatest.TInterface, ctx context.Context, service *goa
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -646,7 +646,7 @@ func ShowBottlesOK(t goatest.TInterface, ctx context.Context, service *goa.Servi
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -725,7 +725,7 @@ func UpdateBottlesBadRequest(t goatest.TInterface, ctx context.Context, service 
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	{
 		sliceVal := []string{name}
 		prms["name"] = sliceVal
@@ -808,7 +808,7 @@ func UpdateBottlesNotFound(t goatest.TInterface, ctx context.Context, service *g
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	{
 		sliceVal := []string{name}
 		prms["name"] = sliceVal
@@ -883,7 +883,7 @@ func UpdateBottlesOK(t goatest.TInterface, ctx context.Context, service *goa.Ser
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	{
 		sliceVal := []string{name}
 		prms["name"] = sliceVal

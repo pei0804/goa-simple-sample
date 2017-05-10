@@ -25,8 +25,8 @@ func ValidationValidationPath() string {
 }
 
 // Validation
-func (c *Client) ValidationValidation(ctx context.Context, path string, id int, defaultType string, email string, enumType string, integerType int, reg string, stringType string) (*http.Response, error) {
-	req, err := c.NewValidationValidationRequest(ctx, path, id, defaultType, email, enumType, integerType, reg, stringType)
+func (c *Client) ValidationValidation(ctx context.Context, path string, defaultType string, email string, enumType string, id int, integerType int, reg string, stringType string) (*http.Response, error) {
+	req, err := c.NewValidationValidationRequest(ctx, path, defaultType, email, enumType, id, integerType, reg, stringType)
 	if err != nil {
 		return nil, err
 	}
@@ -34,18 +34,18 @@ func (c *Client) ValidationValidation(ctx context.Context, path string, id int, 
 }
 
 // NewValidationValidationRequest create the request corresponding to the validation action endpoint of the validation resource.
-func (c *Client) NewValidationValidationRequest(ctx context.Context, path string, id int, defaultType string, email string, enumType string, integerType int, reg string, stringType string) (*http.Request, error) {
+func (c *Client) NewValidationValidationRequest(ctx context.Context, path string, defaultType string, email string, enumType string, id int, integerType int, reg string, stringType string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "https"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
-	tmp27 := strconv.Itoa(id)
-	values.Set("ID", tmp27)
 	values.Set("defaultType", defaultType)
 	values.Set("email", email)
 	values.Set("enumType", enumType)
+	tmp27 := strconv.Itoa(id)
+	values.Set("id", tmp27)
 	tmp28 := strconv.Itoa(integerType)
 	values.Set("integerType", tmp28)
 	values.Set("reg", reg)

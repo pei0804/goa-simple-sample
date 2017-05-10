@@ -56,7 +56,7 @@ func EtcMethodBadRequest(t goatest.TInterface, ctx context.Context, service *goa
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	prms["type"] = []string{fmt.Sprintf("%v", type_)}
 	if ctx == nil {
 		ctx = context.Background()
@@ -122,7 +122,7 @@ func EtcMethodOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["ID"] = []string{fmt.Sprintf("%v", id)}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
 	prms["type"] = []string{fmt.Sprintf("%v", type_)}
 	if ctx == nil {
 		ctx = context.Background()

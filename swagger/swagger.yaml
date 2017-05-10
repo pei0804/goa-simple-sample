@@ -452,14 +452,14 @@ paths:
       summary: add accounts
       tags:
       - accounts
-  /api/v1/accounts/{ID}:
+  /api/v1/accounts/{id}:
     delete:
       description: 削除
       operationId: accounts#delete
       parameters:
       - description: 名前
         in: path
-        name: ID
+        name: id
         required: true
         type: integer
       produces:
@@ -484,9 +484,9 @@ paths:
       description: 単数
       operationId: accounts#show
       parameters:
-      - description: ID
+      - description: id
         in: path
-        name: ID
+        name: id
         required: true
         type: integer
       produces:
@@ -513,16 +513,16 @@ paths:
       description: 更新
       operationId: accounts#update
       parameters:
-      - in: path
-        name: ID
-        required: true
-        type: string
       - default: ""
         description: 名前
         format: email
         in: query
         name: email
         required: false
+        type: string
+      - in: path
+        name: id
+        required: true
         type: string
       - default: ""
         description: 名前
@@ -531,8 +531,8 @@ paths:
         required: false
         type: string
       produces:
-      - application/vnd.goa.error
       - text/plain
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -548,14 +548,14 @@ paths:
       summary: update accounts
       tags:
       - accounts
-  /api/v1/actions/{ID}:
+  /api/v1/actions/{id}:
     get:
-      description: 複数アクション（:ID）
-      operationId: actions#ID
+      description: 複数アクション（:id）
+      operationId: actions#id
       parameters:
-      - description: ID
+      - description: id
         in: path
-        name: ID
+        name: id
         required: true
         type: integer
       produces:
@@ -575,7 +575,7 @@ paths:
       schemes:
       - http
       - https
-      summary: ID actions
+      summary: id actions
       tags:
       - actions
   /api/v1/actions/hello:
@@ -590,8 +590,8 @@ paths:
         required: true
         type: string
       produces:
-      - application/vnd.goa.error
       - application/vnd.messagetype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -681,14 +681,14 @@ paths:
       summary: add bottles
       tags:
       - bottles
-  /api/v1/bottles/{ID}:
+  /api/v1/bottles/{id}:
     delete:
       description: 削除
       operationId: bottles#delete
       parameters:
       - description: 名前
         in: path
-        name: ID
+        name: id
         required: true
         type: integer
       produces:
@@ -713,9 +713,9 @@ paths:
       description: 単数
       operationId: bottles#show
       parameters:
-      - description: ID
+      - description: id
         in: path
-        name: ID
+        name: id
         required: true
         type: integer
       produces:
@@ -743,7 +743,7 @@ paths:
       operationId: bottles#update
       parameters:
       - in: path
-        name: ID
+        name: id
         required: true
         type: string
       - default: ""
@@ -758,8 +758,8 @@ paths:
         required: false
         type: integer
       produces:
-      - application/vnd.goa.error
       - text/plain
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -824,8 +824,8 @@ paths:
       description: リストを返す
       operationId: method#list
       produces:
-      - application/vnd.usertype+json; type=collection
       - application/vnd.goa.error
+      - application/vnd.usertype+json; type=collection
       responses:
         "200":
           description: OK
@@ -929,14 +929,14 @@ paths:
       summary: method method
       tags:
       - method
-  /api/v1/method/users/{ID}/follow/{type}:
+  /api/v1/method/users/{id}/follow/{type}:
     get:
       description: ちょっと特殊ケース
       operationId: method#etc
       parameters:
-      - description: ID
+      - description: id
         in: path
-        name: ID
+        name: id
         required: true
         type: integer
       - description: タイプ
@@ -990,8 +990,8 @@ paths:
       description: フォロー操作
       operationId: method#follow
       produces:
-      - application/vnd.goa.error
       - application/vnd.messagetype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -1039,8 +1039,8 @@ paths:
         required: true
         type: string
       produces:
-      - application/vnd.goa.error
       - application/vnd.usertype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -1061,8 +1061,8 @@ paths:
       description: ユーザー（配列）
       operationId: response#array
       produces:
-      - application/vnd.goa.error
       - text/plain
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -1153,11 +1153,6 @@ paths:
       description: Validation
       operationId: validation#validation
       parameters:
-      - description: ID
-        in: query
-        name: ID
-        required: true
-        type: integer
       - default: でふぉ
         description: デフォルト値
         in: query
@@ -1179,6 +1174,11 @@ paths:
         name: enumType
         required: true
         type: string
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: integer
       - description: 数字（1〜10）
         in: query
         maximum: 10
