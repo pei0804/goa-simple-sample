@@ -62,12 +62,6 @@ func (ctx *AddAccountsContext) OK(r *Account) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
-// OKLink sends a HTTP response with status code 200.
-func (ctx *AddAccountsContext) OKLink(r *AccountLink) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json")
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
-}
-
 // BadRequest sends a HTTP response with status code 400.
 func (ctx *AddAccountsContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
@@ -151,15 +145,6 @@ func (ctx *ListAccountsContext) OK(r AccountCollection) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
-// OKLink sends a HTTP response with status code 200.
-func (ctx *ListAccountsContext) OKLink(r AccountLinkCollection) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json; type=collection")
-	if r == nil {
-		r = AccountLinkCollection{}
-	}
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
-}
-
 // BadRequest sends a HTTP response with status code 400.
 func (ctx *ListAccountsContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
@@ -201,12 +186,6 @@ func (ctx *ShowAccountsContext) OK(r *Account) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
-// OKLink sends a HTTP response with status code 200.
-func (ctx *ShowAccountsContext) OKLink(r *AccountLink) error {
-	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.account+json")
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
-}
-
 // BadRequest sends a HTTP response with status code 400.
 func (ctx *ShowAccountsContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
@@ -225,7 +204,7 @@ type UpdateAccountsContext struct {
 	*goa.ResponseData
 	*goa.RequestData
 	Email string
-	ID    string
+	ID    int
 	Name  string
 }
 
@@ -251,7 +230,11 @@ func NewUpdateAccountsContext(ctx context.Context, r *http.Request, service *goa
 	paramID := req.Params["id"]
 	if len(paramID) > 0 {
 		rawID := paramID[0]
-		rctx.ID = rawID
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
+		}
 	}
 	paramName := req.Params["name"]
 	if len(paramName) == 0 {
@@ -405,8 +388,9 @@ type AddBottlesContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	Name     string
-	Quantity int
+	AccountID int
+	Name      string
+	Quantity  int
 }
 
 // NewAddBottlesContext parses the incoming request URL and body, performs validations and creates the
@@ -418,6 +402,17 @@ func NewAddBottlesContext(ctx context.Context, r *http.Request, service *goa.Ser
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := AddBottlesContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramAccountID := req.Params["account_id"]
+	if len(paramAccountID) == 0 {
+		err = goa.MergeErrors(err, goa.MissingParamError("account_id"))
+	} else {
+		rawAccountID := paramAccountID[0]
+		if accountID, err2 := strconv.Atoi(rawAccountID); err2 == nil {
+			rctx.AccountID = accountID
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("account_id", rawAccountID, "integer"))
+		}
+	}
 	paramName := req.Params["name"]
 	if len(paramName) == 0 {
 		rctx.Name = ""
@@ -586,9 +581,9 @@ type UpdateBottlesContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	ID       string
+	ID       int
 	Name     string
-	Quantity *int
+	Quantity int
 }
 
 // NewUpdateBottlesContext parses the incoming request URL and body, performs validations and creates the
@@ -603,7 +598,11 @@ func NewUpdateBottlesContext(ctx context.Context, r *http.Request, service *goa.
 	paramID := req.Params["id"]
 	if len(paramID) > 0 {
 		rawID := paramID[0]
-		rctx.ID = rawID
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
+		}
 	}
 	paramName := req.Params["name"]
 	if len(paramName) == 0 {
@@ -613,14 +612,17 @@ func NewUpdateBottlesContext(ctx context.Context, r *http.Request, service *goa.
 		rctx.Name = rawName
 	}
 	paramQuantity := req.Params["quantity"]
-	if len(paramQuantity) > 0 {
+	if len(paramQuantity) == 0 {
+		rctx.Quantity = 0
+	} else {
 		rawQuantity := paramQuantity[0]
 		if quantity, err2 := strconv.Atoi(rawQuantity); err2 == nil {
-			tmp8 := quantity
-			tmp7 := &tmp8
-			rctx.Quantity = tmp7
+			rctx.Quantity = quantity
 		} else {
 			err = goa.MergeErrors(err, goa.InvalidParamTypeError("quantity", rawQuantity, "integer"))
+		}
+		if rctx.Quantity < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`quantity`, rctx.Quantity, 0, true))
 		}
 	}
 	return &rctx, err

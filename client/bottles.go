@@ -25,8 +25,8 @@ func AddBottlesPath() string {
 }
 
 // 追加
-func (c *Client) AddBottles(ctx context.Context, path string, name string, quantity int) (*http.Response, error) {
-	req, err := c.NewAddBottlesRequest(ctx, path, name, quantity)
+func (c *Client) AddBottles(ctx context.Context, path string, accountID int, name string, quantity int) (*http.Response, error) {
+	req, err := c.NewAddBottlesRequest(ctx, path, accountID, name, quantity)
 	if err != nil {
 		return nil, err
 	}
@@ -34,16 +34,18 @@ func (c *Client) AddBottles(ctx context.Context, path string, name string, quant
 }
 
 // NewAddBottlesRequest create the request corresponding to the add action endpoint of the bottles resource.
-func (c *Client) NewAddBottlesRequest(ctx context.Context, path string, name string, quantity int) (*http.Request, error) {
+func (c *Client) NewAddBottlesRequest(ctx context.Context, path string, accountID int, name string, quantity int) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "https"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
+	tmp25 := strconv.Itoa(accountID)
+	values.Set("account_id", tmp25)
 	values.Set("name", name)
-	tmp25 := strconv.Itoa(quantity)
-	values.Set("quantity", tmp25)
+	tmp26 := strconv.Itoa(quantity)
+	values.Set("quantity", tmp26)
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -142,8 +144,8 @@ func (c *Client) NewShowBottlesRequest(ctx context.Context, path string) (*http.
 }
 
 // UpdateBottlesPath computes a request path to the update action of bottles.
-func UpdateBottlesPath(id string) string {
-	param0 := id
+func UpdateBottlesPath(id int) string {
+	param0 := strconv.Itoa(id)
 
 	return fmt.Sprintf("/api/v1/bottles/%s", param0)
 }
@@ -169,8 +171,8 @@ func (c *Client) NewUpdateBottlesRequest(ctx context.Context, path string, name 
 		values.Set("name", *name)
 	}
 	if quantity != nil {
-		tmp26 := strconv.Itoa(*quantity)
-		values.Set("quantity", tmp26)
+		tmp27 := strconv.Itoa(*quantity)
+		values.Set("quantity", tmp27)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("PUT", u.String(), nil)

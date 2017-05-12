@@ -39,40 +39,9 @@ func (mt *Account) Validate() (err error) {
 	return
 }
 
-// celler account (link view)
-//
-// Identifier: application/vnd.account+json; view=link
-type AccountLink struct {
-	// メールアドレス
-	Email string `form:"email" json:"email" xml:"email"`
-	// id
-	ID int `form:"id" json:"id" xml:"id"`
-	// 名前
-	Name string `form:"name" json:"name" xml:"name"`
-}
-
-// Validate validates the AccountLink media type instance.
-func (mt *AccountLink) Validate() (err error) {
-
-	if mt.Name == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
-	}
-	if mt.Email == "" {
-		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "email"))
-	}
-	return
-}
-
 // DecodeAccount decodes the Account instance encoded in resp body.
 func (c *Client) DecodeAccount(resp *http.Response) (*Account, error) {
 	var decoded Account
-	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
-	return &decoded, err
-}
-
-// DecodeAccountLink decodes the AccountLink instance encoded in resp body.
-func (c *Client) DecodeAccountLink(resp *http.Response) (*AccountLink, error) {
-	var decoded AccountLink
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
@@ -94,33 +63,9 @@ func (mt AccountCollection) Validate() (err error) {
 	return
 }
 
-// AccountCollection is the media type for an array of Account (link view)
-//
-// Identifier: application/vnd.account+json; type=collection; view=link
-type AccountLinkCollection []*AccountLink
-
-// Validate validates the AccountLinkCollection media type instance.
-func (mt AccountLinkCollection) Validate() (err error) {
-	for _, e := range mt {
-		if e != nil {
-			if err2 := e.Validate(); err2 != nil {
-				err = goa.MergeErrors(err, err2)
-			}
-		}
-	}
-	return
-}
-
 // DecodeAccountCollection decodes the AccountCollection instance encoded in resp body.
 func (c *Client) DecodeAccountCollection(resp *http.Response) (AccountCollection, error) {
 	var decoded AccountCollection
-	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
-	return decoded, err
-}
-
-// DecodeAccountLinkCollection decodes the AccountLinkCollection instance encoded in resp body.
-func (c *Client) DecodeAccountLinkCollection(resp *http.Response) (AccountLinkCollection, error) {
-	var decoded AccountLinkCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }
@@ -162,10 +107,9 @@ func (c *Client) DecodeArticletype(resp *http.Response) (*Articletype, error) {
 //
 // Identifier: application/vnd.bottle+json; view=default
 type Bottle struct {
+	Account *Account `form:"account" json:"account" xml:"account"`
 	// id
 	ID int `form:"id" json:"id" xml:"id"`
-	// Links to related resources
-	Links *BottleLinks `form:"links,omitempty" json:"links,omitempty" xml:"links,omitempty"`
 	// ボトル名
 	Name string `form:"name" json:"name" xml:"name"`
 	// 数量
@@ -179,23 +123,11 @@ func (mt *Bottle) Validate() (err error) {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
 	}
 
-	if mt.Links != nil {
-		if err2 := mt.Links.Validate(); err2 != nil {
-			err = goa.MergeErrors(err, err2)
-		}
+	if mt.Account == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "account"))
 	}
-	return
-}
-
-// BottleLinks contains links to related resources of Bottle.
-type BottleLinks struct {
-	Account *AccountLink `form:"account,omitempty" json:"account,omitempty" xml:"account,omitempty"`
-}
-
-// Validate validates the BottleLinks type instance.
-func (ut *BottleLinks) Validate() (err error) {
-	if ut.Account != nil {
-		if err2 := ut.Account.Validate(); err2 != nil {
+	if mt.Account != nil {
+		if err2 := mt.Account.Validate(); err2 != nil {
 			err = goa.MergeErrors(err, err2)
 		}
 	}
@@ -217,21 +149,6 @@ type BottleCollection []*Bottle
 // Validate validates the BottleCollection media type instance.
 func (mt BottleCollection) Validate() (err error) {
 	for _, e := range mt {
-		if e != nil {
-			if err2 := e.Validate(); err2 != nil {
-				err = goa.MergeErrors(err, err2)
-			}
-		}
-	}
-	return
-}
-
-// BottleLinksArray contains links to related resources of BottleCollection.
-type BottleLinksArray []*BottleLinks
-
-// Validate validates the BottleLinksArray type instance.
-func (ut BottleLinksArray) Validate() (err error) {
-	for _, e := range ut {
 		if e != nil {
 			if err2 := e.Validate(); err2 != nil {
 				err = goa.MergeErrors(err, err2)

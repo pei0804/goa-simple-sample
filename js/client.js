@@ -44,16 +44,17 @@ define(['axios'] , function (axios) {
 
   // 追加
   // path is the request path, the format is "/api/v1/bottles"
-  // name, quantity are used to build the request query string.
+  // account_id, name, quantity are used to build the request query string.
   // config is an optional object to be merged into the config built by the function prior to making the request.
   // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
   // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
-  client.addBottles = function (path, name, quantity, config) {
+  client.addBottles = function (path, account_id, name, quantity, config) {
     cfg = {
       timeout: timeout,
       url: urlPrefix + path,
       method: 'post',
       params: {
+        account_id: account_id,
         name: name,
         quantity: quantity
       },

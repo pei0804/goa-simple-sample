@@ -31,7 +31,7 @@ import (
 type (
 	// AddAccountsCommand is the command line data structure for the add action of accounts
 	AddAccountsCommand struct {
-		// 名前
+		// email
 		Email string
 		// 名前
 		Name        string
@@ -59,8 +59,9 @@ type (
 
 	// UpdateAccountsCommand is the command line data structure for the update action of accounts
 	UpdateAccountsCommand struct {
-		ID string
-		// 名前
+		// id
+		ID int
+		// email
 		Email string
 		// 名前
 		Name        string
@@ -88,6 +89,8 @@ type (
 
 	// AddBottlesCommand is the command line data structure for the add action of bottles
 	AddBottlesCommand struct {
+		// アカウントID
+		AccountID int
 		// ボトル名
 		Name string
 		// 数量
@@ -97,7 +100,7 @@ type (
 
 	// DeleteBottlesCommand is the command line data structure for the delete action of bottles
 	DeleteBottlesCommand struct {
-		// 名前
+		// id
 		ID          int
 		PrettyPrint bool
 	}
@@ -116,7 +119,8 @@ type (
 
 	// UpdateBottlesCommand is the command line data structure for the update action of bottles
 	UpdateBottlesCommand struct {
-		ID string
+		// id
+		ID int
 		// ボトル名
 		Name string
 		// 数量
@@ -749,7 +753,7 @@ func (cmd *AddAccountsCommand) Run(c *client.Client, args []string) error {
 // RegisterFlags registers the command flags with the command line.
 func (cmd *AddAccountsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var email string
-	cc.Flags().StringVar(&cmd.Email, "email", email, `名前`)
+	cc.Flags().StringVar(&cmd.Email, "email", email, `email`)
 	var name string
 	cc.Flags().StringVar(&cmd.Name, "name", name, `名前`)
 }
@@ -836,7 +840,7 @@ func (cmd *UpdateAccountsCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = fmt.Sprintf("/api/v1/accounts/%v", url.QueryEscape(cmd.ID))
+		path = fmt.Sprintf("/api/v1/accounts/%v", cmd.ID)
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -852,10 +856,10 @@ func (cmd *UpdateAccountsCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *UpdateAccountsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
-	var id string
-	cc.Flags().StringVar(&cmd.ID, "id", id, ``)
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "id", id, `id`)
 	var email string
-	cc.Flags().StringVar(&cmd.Email, "email", email, `名前`)
+	cc.Flags().StringVar(&cmd.Email, "email", email, `email`)
 	var name string
 	cc.Flags().StringVar(&cmd.Name, "name", name, `名前`)
 }
@@ -946,7 +950,7 @@ func (cmd *AddBottlesCommand) Run(c *client.Client, args []string) error {
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.AddBottles(ctx, path, cmd.Name, cmd.Quantity)
+	resp, err := c.AddBottles(ctx, path, cmd.AccountID, cmd.Name, cmd.Quantity)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -958,6 +962,8 @@ func (cmd *AddBottlesCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *AddBottlesCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var accountID int
+	cc.Flags().IntVar(&cmd.AccountID, "account_id", accountID, `アカウントID`)
 	var name string
 	cc.Flags().StringVar(&cmd.Name, "name", name, `ボトル名`)
 	var quantity int
@@ -987,7 +993,7 @@ func (cmd *DeleteBottlesCommand) Run(c *client.Client, args []string) error {
 // RegisterFlags registers the command flags with the command line.
 func (cmd *DeleteBottlesCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id int
-	cc.Flags().IntVar(&cmd.ID, "id", id, `名前`)
+	cc.Flags().IntVar(&cmd.ID, "id", id, `id`)
 }
 
 // Run makes the HTTP request corresponding to the ListBottlesCommand command.
@@ -1046,7 +1052,7 @@ func (cmd *UpdateBottlesCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = fmt.Sprintf("/api/v1/bottles/%v", url.QueryEscape(cmd.ID))
+		path = fmt.Sprintf("/api/v1/bottles/%v", cmd.ID)
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -1062,8 +1068,8 @@ func (cmd *UpdateBottlesCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *UpdateBottlesCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
-	var id string
-	cc.Flags().StringVar(&cmd.ID, "id", id, ``)
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "id", id, `id`)
 	var name string
 	cc.Flags().StringVar(&cmd.Name, "name", name, `ボトル名`)
 	var quantity int

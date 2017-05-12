@@ -29,7 +29,7 @@ import (
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func AddBottlesBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesController, name string, quantity int) (http.ResponseWriter, error) {
+func AddBottlesBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesController, accountID int, name string, quantity int) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -51,6 +51,10 @@ func AddBottlesBadRequest(t goatest.TInterface, ctx context.Context, service *go
 	rw := httptest.NewRecorder()
 	query := url.Values{}
 	{
+		sliceVal := []string{strconv.Itoa(accountID)}
+		query["account_id"] = sliceVal
+	}
+	{
 		sliceVal := []string{name}
 		query["name"] = sliceVal
 	}
@@ -67,6 +71,10 @@ func AddBottlesBadRequest(t goatest.TInterface, ctx context.Context, service *go
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
+	{
+		sliceVal := []string{strconv.Itoa(accountID)}
+		prms["account_id"] = sliceVal
+	}
 	{
 		sliceVal := []string{name}
 		prms["name"] = sliceVal
@@ -111,7 +119,7 @@ func AddBottlesBadRequest(t goatest.TInterface, ctx context.Context, service *go
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func AddBottlesCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesController, name string, quantity int) http.ResponseWriter {
+func AddBottlesCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesController, accountID int, name string, quantity int) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -133,6 +141,10 @@ func AddBottlesCreated(t goatest.TInterface, ctx context.Context, service *goa.S
 	rw := httptest.NewRecorder()
 	query := url.Values{}
 	{
+		sliceVal := []string{strconv.Itoa(accountID)}
+		query["account_id"] = sliceVal
+	}
+	{
 		sliceVal := []string{name}
 		query["name"] = sliceVal
 	}
@@ -149,6 +161,10 @@ func AddBottlesCreated(t goatest.TInterface, ctx context.Context, service *goa.S
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
+	{
+		sliceVal := []string{strconv.Itoa(accountID)}
+		prms["account_id"] = sliceVal
+	}
 	{
 		sliceVal := []string{name}
 		prms["name"] = sliceVal
@@ -687,7 +703,7 @@ func ShowBottlesOK(t goatest.TInterface, ctx context.Context, service *goa.Servi
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateBottlesBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesController, id string, name string, quantity *int) (http.ResponseWriter, error) {
+func UpdateBottlesBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesController, id int, name string, quantity int) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -712,8 +728,8 @@ func UpdateBottlesBadRequest(t goatest.TInterface, ctx context.Context, service 
 		sliceVal := []string{name}
 		query["name"] = sliceVal
 	}
-	if quantity != nil {
-		sliceVal := []string{strconv.Itoa(*quantity)}
+	{
+		sliceVal := []string{strconv.Itoa(quantity)}
 		query["quantity"] = sliceVal
 	}
 	u := &url.URL{
@@ -730,8 +746,8 @@ func UpdateBottlesBadRequest(t goatest.TInterface, ctx context.Context, service 
 		sliceVal := []string{name}
 		prms["name"] = sliceVal
 	}
-	if quantity != nil {
-		sliceVal := []string{strconv.Itoa(*quantity)}
+	{
+		sliceVal := []string{strconv.Itoa(quantity)}
 		prms["quantity"] = sliceVal
 	}
 	if ctx == nil {
@@ -770,7 +786,7 @@ func UpdateBottlesBadRequest(t goatest.TInterface, ctx context.Context, service 
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateBottlesNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesController, id string, name string, quantity *int) http.ResponseWriter {
+func UpdateBottlesNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesController, id int, name string, quantity int) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -795,8 +811,8 @@ func UpdateBottlesNotFound(t goatest.TInterface, ctx context.Context, service *g
 		sliceVal := []string{name}
 		query["name"] = sliceVal
 	}
-	if quantity != nil {
-		sliceVal := []string{strconv.Itoa(*quantity)}
+	{
+		sliceVal := []string{strconv.Itoa(quantity)}
 		query["quantity"] = sliceVal
 	}
 	u := &url.URL{
@@ -813,8 +829,8 @@ func UpdateBottlesNotFound(t goatest.TInterface, ctx context.Context, service *g
 		sliceVal := []string{name}
 		prms["name"] = sliceVal
 	}
-	if quantity != nil {
-		sliceVal := []string{strconv.Itoa(*quantity)}
+	{
+		sliceVal := []string{strconv.Itoa(quantity)}
 		prms["quantity"] = sliceVal
 	}
 	if ctx == nil {
@@ -845,7 +861,7 @@ func UpdateBottlesNotFound(t goatest.TInterface, ctx context.Context, service *g
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateBottlesOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesController, id string, name string, quantity *int) http.ResponseWriter {
+func UpdateBottlesOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesController, id int, name string, quantity int) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -870,8 +886,8 @@ func UpdateBottlesOK(t goatest.TInterface, ctx context.Context, service *goa.Ser
 		sliceVal := []string{name}
 		query["name"] = sliceVal
 	}
-	if quantity != nil {
-		sliceVal := []string{strconv.Itoa(*quantity)}
+	{
+		sliceVal := []string{strconv.Itoa(quantity)}
 		query["quantity"] = sliceVal
 	}
 	u := &url.URL{
@@ -888,8 +904,8 @@ func UpdateBottlesOK(t goatest.TInterface, ctx context.Context, service *goa.Ser
 		sliceVal := []string{name}
 		prms["name"] = sliceVal
 	}
-	if quantity != nil {
-		sliceVal := []string{strconv.Itoa(*quantity)}
+	{
+		sliceVal := []string{strconv.Itoa(quantity)}
 		prms["quantity"] = sliceVal
 	}
 	if ctx == nil {

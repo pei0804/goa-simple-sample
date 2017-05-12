@@ -11,11 +11,12 @@
 package models
 
 import (
+	"time"
+
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
 	"github.com/tikasan/goa-simple-sample/app"
 	"golang.org/x/net/context"
-	"time"
 )
 
 // celler account
@@ -63,9 +64,6 @@ type AccountStorage interface {
 
 	ListAccount(ctx context.Context) []*app.Account
 	OneAccount(ctx context.Context, id int) (*app.Account, error)
-
-	ListAccountLink(ctx context.Context) []*app.AccountLink
-	OneAccountLink(ctx context.Context, id int) (*app.AccountLink, error)
 }
 
 // TableName overrides the table name settings in Gorm to force a specific table name

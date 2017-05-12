@@ -11,11 +11,12 @@
 package models
 
 import (
+	"time"
+
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
 	"github.com/tikasan/goa-simple-sample/app"
 	"golang.org/x/net/context"
-	"time"
 )
 
 // MediaType Retrieval Functions
@@ -43,9 +44,8 @@ func (m *BottleDB) ListBottle(ctx context.Context, accountID int) []*app.Bottle 
 // BottleToBottle loads a Bottle and builds the default view of media type Bottle.
 func (m *Bottle) BottleToBottle() *app.Bottle {
 	bottle := &app.Bottle{}
-	bottle.Links = &app.BottleLinks{}
-	tmp1 := m.Account.AccountToAccountLink()
-	bottle.Links.Account = tmp1
+	tmp1 := &m.Account
+	bottle.Account = tmp1.AccountToAccount() // %!s(MISSING)
 	bottle.ID = m.ID
 	bottle.Name = m.Name
 	bottle.Quantity = m.Quantity

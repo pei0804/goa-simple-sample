@@ -258,6 +258,7 @@ var _ = Resource("accounts", func() {
 		Routing(
 			GET("/"),
 		)
+		// 複数のaccountのレコードを返す
 		Response(OK, CollectionOf(Account))
 		Response(BadRequest, ErrorMedia)
 	})
@@ -271,7 +272,9 @@ var _ = Resource("accounts", func() {
 				Example(1)
 			})
 		})
+		// 発見したら1レコード返す
 		Response(OK, Account)
+		// なかったらNotFound返す
 		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})
@@ -284,7 +287,7 @@ var _ = Resource("accounts", func() {
 			Param("name", String, "名前", func() {
 				Example("山田 太郎")
 			})
-			Param("email", String, "名前", func() {
+			Param("email", String, "email", func() {
 				Format("email")
 				Example("example@gmail.com")
 			})
@@ -313,18 +316,23 @@ var _ = Resource("accounts", func() {
 			PUT("/:id"),
 		)
 		Params(func() {
+			// idを使ってレコードを検索する
+			Param("id", Integer, "id")
+			// デフォルトだけ設定しておいて、何も設定がなかったら無視する感じにする
 			Param("name", String, "名前", func() {
 				Default("")
-				Example("山田 太郎")
 			})
-			Param("email", String, "名前", func() {
+			// 上と同じ何も設定がなかったら無視する感じにする
+			Param("email", String, "email", func() {
 				Format("email")
 				Default("")
-				Example("example@gmail.com")
 			})
 		})
+		// 成功したらOK返す
 		Response(OK)
+		// 更新するレコードなかったら404
 		Response(NotFound)
+		// 謎の失敗をしたらBadRequest
 		Response(BadRequest, ErrorMedia)
 	})
 })
@@ -359,6 +367,9 @@ var _ = Resource("bottles", func() {
 			POST("/"),
 		)
 		Params(func() {
+			Param("account_id", Integer, "アカウントID", func() {
+				Example(1)
+			})
 			Param("name", String, "ボトル名", func() {
 				Default("")
 				Example("赤ワインなにか")
@@ -366,7 +377,7 @@ var _ = Resource("bottles", func() {
 			Param("quantity", Integer, "数量", func() {
 				Example(0)
 			})
-			Required("name", "quantity")
+			Required("account_id", "name", "quantity")
 		})
 		Response(Created)
 		Response(BadRequest, ErrorMedia)
@@ -377,7 +388,7 @@ var _ = Resource("bottles", func() {
 			DELETE("/:id"),
 		)
 		Params(func() {
-			Param("id", Integer, "名前", func() {
+			Param("id", Integer, "id", func() {
 				Example(1)
 			})
 		})
@@ -391,11 +402,16 @@ var _ = Resource("bottles", func() {
 			PUT("/:id"),
 		)
 		Params(func() {
+			Param("id", Integer, "id", func() {
+				Example(1)
+			})
 			Param("name", String, "ボトル名", func() {
 				Default("")
 				Example("赤ワインなにか")
 			})
 			Param("quantity", Integer, "数量", func() {
+				Default(0)
+				Minimum(0)
 				Example(0)
 			})
 		})

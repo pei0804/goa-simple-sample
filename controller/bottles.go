@@ -27,11 +27,13 @@ func (c *BottlesController) Add(ctx *app.AddBottlesContext) error {
 
 	// Put your logic here
 	b := &models.Bottle{}
+	b.AccountID = ctx.AccountID
 	b.Name = ctx.Name
+	b.Quantity = ctx.Quantity
 	bdb := models.NewBottleDB(c.db)
 	err := bdb.Add(ctx.Context, b)
 	if err != nil {
-		ctx.BadRequest(err)
+		return ctx.BadRequest(err)
 	}
 	// BottlesController_Add: end_implement
 	return ctx.Created()
@@ -45,7 +47,7 @@ func (c *BottlesController) Delete(ctx *app.DeleteBottlesContext) error {
 	bdb := models.NewBottleDB(c.db)
 	err := bdb.Delete(ctx.Context, ctx.ID)
 	if err != nil {
-		ctx.BadRequest(err)
+		return ctx.BadRequest(err)
 	}
 
 	// BottlesController_Delete: end_implement
@@ -74,7 +76,7 @@ func (c *BottlesController) Show(ctx *app.ShowBottlesContext) error {
 	bdb := models.NewBottleDB(c.db)
 	b, err := bdb.OneBottle(ctx.Context, ctx.ID, 0)
 	if err != nil {
-		ctx.BadRequest(err)
+		return ctx.NotFound()
 	}
 
 	// BottlesController_Show: end_implement
@@ -89,10 +91,15 @@ func (c *BottlesController) Update(ctx *app.UpdateBottlesContext) error {
 
 	// Put your logic here
 	b := &models.Bottle{}
+	b.ID = ctx.ID
+	b.Name = ctx.Name
+	b.Quantity = ctx.Quantity
 	bdb := models.NewBottleDB(c.db)
 	err := bdb.Update(ctx.Context, b)
-	if err != nil {
-		ctx.BadRequest(err)
+	if err == gorm.ErrRecordNotFound {
+		return ctx.NotFound()
+	} else if err != nil {
+		return ctx.BadRequest(err)
 	}
 
 	// BottlesController_Update: end_implement

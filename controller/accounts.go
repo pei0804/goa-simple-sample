@@ -78,7 +78,7 @@ func (c *AccountsController) Show(ctx *app.ShowAccountsContext) error {
 	adb := models.NewAccountDB(c.db)
 	a, err := adb.OneAccount(ctx, ctx.ID)
 	if err != nil {
-		ctx.NotFound()
+		return ctx.NotFound()
 	}
 
 	// AccountsController_Show: end_implement
@@ -93,12 +93,15 @@ func (c *AccountsController) Update(ctx *app.UpdateAccountsContext) error {
 
 	// Put your logic here
 	a := &models.Account{}
+	a.ID = ctx.ID
 	a.Name = ctx.Name
 	a.Email = ctx.Email
 	adb := models.NewAccountDB(c.db)
 	err := adb.Update(ctx.Context, a)
-	if err != nil {
-		ctx.BadRequest(err)
+	if err == gorm.ErrRecordNotFound {
+		return ctx.NotFound()
+	} else if err != nil {
+		return ctx.BadRequest(err)
 	}
 
 	// AccountsController_Update: end_implement

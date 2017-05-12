@@ -141,8 +141,8 @@ func (c *Client) NewShowAccountsRequest(ctx context.Context, path string) (*http
 }
 
 // UpdateAccountsPath computes a request path to the update action of accounts.
-func UpdateAccountsPath(id string) string {
-	param0 := id
+func UpdateAccountsPath(id int) string {
+	param0 := strconv.Itoa(id)
 
 	return fmt.Sprintf("/api/v1/accounts/%s", param0)
 }

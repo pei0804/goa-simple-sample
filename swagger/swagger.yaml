@@ -44,32 +44,6 @@ definitions:
       $ref: '#/definitions/Account'
     title: 'Mediatype identifier: application/vnd.account+json; type=collection; view=default'
     type: array
-  AccountLink:
-    description: celler account (link view)
-    example:
-      email: example@gmail.com
-      id: 1
-      name: 山田　太郎
-    properties:
-      email:
-        description: メールアドレス
-        example: example@gmail.com
-        type: string
-      id:
-        description: id
-        example: 1
-        format: int64
-        type: integer
-      name:
-        description: 名前
-        example: 山田　太郎
-        type: string
-    required:
-    - id
-    - name
-    - email
-    title: 'Mediatype identifier: application/vnd.account+json; view=link'
-    type: object
   Articletype:
     description: example (default view)
     example:
@@ -96,22 +70,21 @@ definitions:
   Bottle:
     description: celler bottles (default view)
     example:
+      account:
+        email: example@gmail.com
+        id: 1
+        name: 山田　太郎
       id: 1
-      links:
-        account:
-          email: example@gmail.com
-          id: 1
-          name: 山田　太郎
       name: シャルドネ
       quantity: 4
     properties:
+      account:
+        $ref: '#/definitions/Account'
       id:
         description: id
         example: 1
         format: int64
         type: integer
-      links:
-        $ref: '#/definitions/BottleLinks'
       name:
         description: ボトル名
         example: シャルドネ
@@ -125,44 +98,31 @@ definitions:
     - id
     - name
     - quantity
+    - account
     title: 'Mediatype identifier: application/vnd.bottle+json; view=default'
     type: object
   BottleCollection:
     description: BottleCollection is the media type for an array of Bottle (default
       view)
     example:
-    - id: 1
-      links:
-        account:
-          email: example@gmail.com
-          id: 1
-          name: 山田　太郎
+    - account:
+        email: example@gmail.com
+        id: 1
+        name: 山田　太郎
+      id: 1
       name: シャルドネ
       quantity: 4
-    - id: 1
-      links:
-        account:
-          email: example@gmail.com
-          id: 1
-          name: 山田　太郎
+    - account:
+        email: example@gmail.com
+        id: 1
+        name: 山田　太郎
+      id: 1
       name: シャルドネ
       quantity: 4
     items:
       $ref: '#/definitions/Bottle'
     title: 'Mediatype identifier: application/vnd.bottle+json; type=collection; view=default'
     type: array
-  BottleLinks:
-    description: BottleLinks contains links to related resources of Bottle.
-    example:
-      account:
-        email: example@gmail.com
-        id: 1
-        name: 山田　太郎
-    properties:
-      account:
-        $ref: '#/definitions/AccountLink'
-    title: BottleLinks
-    type: object
   Error:
     description: Error media type (default view)
     example:
@@ -423,7 +383,7 @@ paths:
       description: 追加
       operationId: accounts#add
       parameters:
-      - description: 名前
+      - description: email
         format: email
         in: query
         name: email
@@ -514,16 +474,17 @@ paths:
       operationId: accounts#update
       parameters:
       - default: ""
-        description: 名前
+        description: email
         format: email
         in: query
         name: email
         required: false
         type: string
-      - in: path
+      - description: id
+        in: path
         name: id
         required: true
-        type: string
+        type: integer
       - default: ""
         description: 名前
         in: query
@@ -531,8 +492,8 @@ paths:
         required: false
         type: string
       produces:
-      - text/plain
       - application/vnd.goa.error
+      - text/plain
       responses:
         "200":
           description: OK
@@ -590,8 +551,8 @@ paths:
         required: true
         type: string
       produces:
-      - application/vnd.messagetype+json
       - application/vnd.goa.error
+      - application/vnd.messagetype+json
       responses:
         "200":
           description: OK
@@ -655,6 +616,11 @@ paths:
       description: 追加
       operationId: bottles#add
       parameters:
+      - description: アカウントID
+        in: query
+        name: account_id
+        required: true
+        type: integer
       - default: ""
         description: ボトル名
         in: query
@@ -686,7 +652,7 @@ paths:
       description: 削除
       operationId: bottles#delete
       parameters:
-      - description: 名前
+      - description: id
         in: path
         name: id
         required: true
@@ -742,24 +708,27 @@ paths:
       description: 更新
       operationId: bottles#update
       parameters:
-      - in: path
+      - description: id
+        in: path
         name: id
         required: true
-        type: string
+        type: integer
       - default: ""
         description: ボトル名
         in: query
         name: name
         required: false
         type: string
-      - description: 数量
+      - default: 0
+        description: 数量
         in: query
+        minimum: 0
         name: quantity
         required: false
         type: integer
       produces:
-      - text/plain
       - application/vnd.goa.error
+      - text/plain
       responses:
         "200":
           description: OK
@@ -846,8 +815,8 @@ paths:
       description: リストを返す
       operationId: method#list#1
       produces:
-      - application/vnd.goa.error
       - application/vnd.usertype+json; type=collection
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -868,8 +837,8 @@ paths:
       description: リストを返す
       operationId: method#list#2
       produces:
-      - application/vnd.usertype+json; type=collection
       - application/vnd.goa.error
+      - application/vnd.usertype+json; type=collection
       responses:
         "200":
           description: OK
@@ -990,8 +959,8 @@ paths:
       description: フォロー操作
       operationId: method#follow
       produces:
-      - application/vnd.messagetype+json
       - application/vnd.goa.error
+      - application/vnd.messagetype+json
       responses:
         "200":
           description: OK
@@ -1012,8 +981,8 @@ paths:
       description: ユーザー（複数）
       operationId: response#list
       produces:
-      - application/vnd.goa.error
       - application/vnd.usertype+json; type=collection
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -1039,8 +1008,8 @@ paths:
         required: true
         type: string
       produces:
-      - application/vnd.usertype+json
       - application/vnd.goa.error
+      - application/vnd.usertype+json
       responses:
         "200":
           description: OK
@@ -1061,8 +1030,8 @@ paths:
       description: ユーザー（配列）
       operationId: response#array
       produces:
-      - text/plain
       - application/vnd.goa.error
+      - text/plain
       responses:
         "200":
           description: OK
@@ -1129,8 +1098,8 @@ paths:
       description: セキュリティの例です
       operationId: security#security
       produces:
-      - application/vnd.goa.error
       - application/vnd.messagetype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -1200,8 +1169,8 @@ paths:
         required: true
         type: string
       produces:
-      - application/vnd.goa.error
       - application/vnd.validationtype+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK

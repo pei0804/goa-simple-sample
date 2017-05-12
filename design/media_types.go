@@ -169,12 +169,6 @@ var Account = MediaType("application/vnd.account+json", func() {
 		Attribute("name")
 		Attribute("email")
 	})
-
-	View("link", func() {
-		Attribute("id")
-		Attribute("name")
-		Attribute("email")
-	})
 })
 
 var Bottle = MediaType("application/vnd.bottle+json", func() {
@@ -189,19 +183,16 @@ var Bottle = MediaType("application/vnd.bottle+json", func() {
 		Attribute("quantity", Integer, "数量", func() {
 			Example(4)
 		})
+		// accountのMediaTypeを入れ子構造にする
 		Attribute("account", Account)
-		Required("id", "name", "quantity")
-	})
-
-	Links(func() {
-		Link("account")
+		Required("id", "name", "quantity", "account")
 	})
 
 	View("default", func() {
 		Attribute("id")
 		Attribute("name")
 		Attribute("quantity")
-		Attribute("links")
+		Attribute("account")
 	})
 })
 
