@@ -60,7 +60,7 @@ func (c *BottlesController) List(ctx *app.ListBottlesContext) error {
 
 	// Put your logic here
 	bdb := models.NewBottleDB(c.db)
-	b := bdb.ListInnerBottle(ctx.Context, 0)
+	b := bdb.ListBottleFullScan(ctx.Context, 0)
 
 	// BottlesController_List: end_implement
 	res := app.BottleCollection{}

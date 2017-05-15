@@ -9,7 +9,7 @@ import (
 )
 
 // ListBottle returns an array of view: default.
-func (m *BottleDB) ListInnerBottle(ctx context.Context, accountID int) []*app.Bottle {
+func (m *BottleDB) ListBottleFullScan(ctx context.Context, accountID int) []*app.Bottle {
 	defer goa.MeasureSince([]string{"goa", "db", "bottle", "listbottle"}, time.Now())
 
 	var native []*Bottle
