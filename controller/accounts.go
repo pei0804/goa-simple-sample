@@ -53,7 +53,7 @@ func (c *AccountsController) Delete(ctx *app.DeleteAccountsContext) error {
 	}
 
 	// AccountsController_Delete: end_implement
-	return ctx.OK([]byte{})
+	return nil
 }
 
 // List runs the list action.
@@ -105,5 +105,5 @@ func (c *AccountsController) Update(ctx *app.UpdateAccountsContext) error {
 	}
 
 	// AccountsController_Update: end_implement
-	return ctx.OK([]byte{})
+	return nil
 }

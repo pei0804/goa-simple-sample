@@ -51,7 +51,7 @@ func (c *BottlesController) Delete(ctx *app.DeleteBottlesContext) error {
 	}
 
 	// BottlesController_Delete: end_implement
-	return ctx.OK([]byte{})
+	return nil
 }
 
 // List runs the list action.
@@ -60,7 +60,7 @@ func (c *BottlesController) List(ctx *app.ListBottlesContext) error {
 
 	// Put your logic here
 	bdb := models.NewBottleDB(c.db)
-	b := bdb.ListBottle(ctx.Context, 0)
+	b := bdb.ListInnerBottle(ctx.Context, 0)
 
 	// BottlesController_List: end_implement
 	res := app.BottleCollection{}
@@ -103,5 +103,5 @@ func (c *BottlesController) Update(ctx *app.UpdateBottlesContext) error {
 	}
 
 	// BottlesController_Update: end_implement
-	return ctx.OK([]byte{})
+	return nil
 }

@@ -22,7 +22,7 @@ func (c *ValidationController) Validation(ctx *app.ValidationValidationContext) 
 	// Put your logic here
 
 	// ValidationController_Validation: end_implement
-	res := &app.Validationtype{}
+	res := &app.Validation{}
 	res.ID = ctx.ID
 	res.IntegerType = ctx.IntegerType
 	res.StringType = ctx.StringType

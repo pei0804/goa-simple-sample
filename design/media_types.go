@@ -7,7 +7,7 @@ import (
 
 // レスポンスデータの定義
 // MediaTypeに名前をつけます
-var IntegerType = MediaType("application/vnd.integerType+json", func() {
+var IntegerMedia = MediaType("application/vnd.integer+json", func() {
 	// 説明
 	Description("example")
 	// どのような値があるか（複数定義出来る）
@@ -26,7 +26,7 @@ var IntegerType = MediaType("application/vnd.integerType+json", func() {
 	})
 })
 
-var MessageType = MediaType("application/vnd.messageType+json", func() {
+var MessageMedia = MediaType("application/vnd.message+json", func() {
 	Description("example")
 	Attributes(func() {
 		Attribute("message", String, "メッセージ", func() {
@@ -39,7 +39,7 @@ var MessageType = MediaType("application/vnd.messageType+json", func() {
 	})
 })
 
-var UserType = MediaType("application/vnd.userType+json", func() {
+var UserMedia = MediaType("application/vnd.user+json", func() {
 	Description("example")
 	Attributes(func() {
 		Attribute("id", Integer, "id", func() {
@@ -66,7 +66,7 @@ var UserType = MediaType("application/vnd.userType+json", func() {
 	})
 })
 
-var ValidationType = MediaType("application/vnd.validationType+json", func() {
+var ValidationMedia = MediaType("application/vnd.validation+json", func() {
 	Description("example")
 	Attributes(func() {
 		Attribute("id", Integer, "id", func() {
@@ -105,7 +105,7 @@ var ValidationType = MediaType("application/vnd.validationType+json", func() {
 
 var OKMedia = Type("ok", func() {
 	Attribute("status", Integer, func() {
-		Default(200)
+		Example(200)
 	})
 	Required("status")
 })
@@ -131,15 +131,15 @@ var CustomeErrorMedia = MediaType("application/vnd.error+json", func() {
 	})
 })
 
-var Data = Type("data", func() {
+var ArticleData = Type("data", func() {
 	Attribute("title", String)
 	Attribute("body", String)
 	Required("title", "body")
 })
 
-var ArticleType = MediaType("application/vnd.articleType+json", func() {
+var ArticleMedia = MediaType("application/vnd.article+json", func() {
 	Description("example")
-	Attribute("data", ArrayOf(Data))
+	Attribute("data", ArrayOf(ArticleData))
 	Attribute("response", OKMedia)
 	Required("data", "response")
 	View("default", func() {
@@ -148,22 +148,22 @@ var ArticleType = MediaType("application/vnd.articleType+json", func() {
 	})
 })
 
-//-------gorma--------
+//--------------------------------
+// gorma
+//--------------------------------
 
-var Account = MediaType("application/vnd.account+json", func() {
+var AccountData = MediaType("application/vnd.account+json", func() {
 	Description("celler account")
-	Attributes(func() {
-		Attribute("id", Integer, "id", func() {
-			Example(1)
-		})
-		Attribute("name", String, "名前", func() {
-			Example("山田　太郎")
-		})
-		Attribute("email", String, "メールアドレス", func() {
-			Example("example@gmail.com")
-		})
-		Required("id", "name", "email")
+	Attribute("id", Integer, "id", func() {
+		Example(1)
 	})
+	Attribute("name", String, "名前", func() {
+		Example("山田　太郎")
+	})
+	Attribute("email", String, "メールアドレス", func() {
+		Example("example@gmail.com")
+	})
+	Required("id", "name", "email")
 	View("default", func() {
 		Attribute("id")
 		Attribute("name")
@@ -171,44 +171,84 @@ var Account = MediaType("application/vnd.account+json", func() {
 	})
 })
 
-var Bottle = MediaType("application/vnd.bottle+json", func() {
-	Description("celler bottles")
-	Attributes(func() {
-		Attribute("id", Integer, "id", func() {
-			Example(1)
-		})
-		Attribute("name", String, "ボトル名", func() {
-			Example("シャルドネ")
-		})
-		Attribute("quantity", Integer, "数量", func() {
-			Example(4)
-		})
-		// accountのMediaTypeを入れ子構造にする
-		Attribute("account", Account)
-		Required("id", "name", "quantity", "account")
+var AccountMedia = MediaType("application/vnd.accountMedia+json", func() {
+	Description("example")
+	Attribute("data", ArrayOf(AccountData))
+	Attribute("status", Integer, func() {
+		Example(200)
 	})
+	Required("data", "status")
+	View("default", func() {
+		Attribute("data")
+		Attribute("status")
+	})
+})
 
+// Bottle
+
+var BottleData = MediaType("application/vnd.bottle+json", func() {
+	Description("celler bottles")
+	Attribute("id", Integer, "id", func() {
+		Example(1)
+	})
+	Attribute("name", String, "ボトル名", func() {
+		Example("シャルドネ")
+	})
+	Attribute("quantity", Integer, "数量", func() {
+		Example(4)
+	})
+	// accountのMediaTypeを入れ子構造にする
+	Attribute("account", AccountData)
+	Attribute("categories", ArrayOf(CategoryData))
+	Required("id", "name", "quantity", "account", "categories")
 	View("default", func() {
 		Attribute("id")
 		Attribute("name")
 		Attribute("quantity")
 		Attribute("account")
+		Attribute("categories")
 	})
 })
 
-var Category = MediaType("application/vnd.category+json", func() {
-	Description("celler account")
-	Attributes(func() {
-		Attribute("id", Integer, "id", func() {
-			Example(1)
-		})
-		Attribute("name", String, "名前", func() {
-			Example("ワイン")
-		})
-		Required("id", "name")
+var BottleMedia = MediaType("application/vnd.bottleMedia+json", func() {
+	Description("example")
+	Attribute("data", ArrayOf(BottleData))
+	Attribute("status", Integer, func() {
+		Example(200)
 	})
+	Required("data", "status")
+	View("default", func() {
+		Attribute("data")
+		Attribute("status")
+	})
+})
+
+// Category
+
+var CategoryData = MediaType("application/vnd.category+json", func() {
+	Description("celler account")
+	Attribute("id", Integer, "id", func() {
+		Example(1)
+	})
+	Attribute("name", String, "名前", func() {
+		Example("ワイン")
+	})
+	Required("id", "name")
 	View("default", func() {
 		Attribute("id")
 		Attribute("name")
+	})
+})
+
+var CategoryMedia = MediaType("application/vnd.categoryMedia+json", func() {
+	Description("example")
+	Attribute("data", ArrayOf(CategoryData))
+	Attribute("status", Integer, func() {
+		Example(200)
+	})
+	Required("data", "status")
+	View("default", func() {
+		Attribute("data")
+		Attribute("status")
 	})
 })

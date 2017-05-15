@@ -22,6 +22,6 @@ func (c *SecurityController) Security(ctx *app.SecuritySecurityContext) error {
 	// Put your logic here
 
 	// SecurityController_Security: end_implement
-	res := &app.Messagetype{}
+	res := &app.Message{}
 	return ctx.OK(res)
 }

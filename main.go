@@ -42,31 +42,38 @@ func main() {
 		// Mount "accounts" controller
 		a := controller.NewAccountsController(service, dbcon)
 		app.MountAccountsController(service, a)
+		// Mount "bottles" controller
 		b := controller.NewBottlesController(service, dbcon)
 		app.MountBottlesController(service, b)
+		// Mount "accounts_data" controller
+		ad := controller.NewAccountsDataController(service, dbcon)
+		app.MountAccountsDataController(service, ad)
+		// Mount "bottles_data" controller
+		bd := controller.NewBottlesDataController(service, dbcon)
+		app.MountBottlesDataController(service, bd)
 	}
 
 	// Mount "actions" controller
-	c2 := controller.NewActionsController(service)
-	app.MountActionsController(service, c2)
+	action := controller.NewActionsController(service)
+	app.MountActionsController(service, action)
 	// Mount "js" controller
-	c3 := controller.NewJsController(service)
-	app.MountJsController(service, c3)
+	js := controller.NewJsController(service)
+	app.MountJsController(service, js)
 	// Mount "method" controller
-	c4 := controller.NewMethodController(service)
-	app.MountMethodController(service, c4)
+	method := controller.NewMethodController(service)
+	app.MountMethodController(service, method)
 	// Mount "response" controller
-	c5 := controller.NewResponseController(service)
-	app.MountResponseController(service, c5)
+	response := controller.NewResponseController(service)
+	app.MountResponseController(service, response)
 	// Mount "security" controller
-	c6 := controller.NewSecurityController(service)
-	app.MountSecurityController(service, c6)
+	security := controller.NewSecurityController(service)
+	app.MountSecurityController(service, security)
 	// Mount "swagger" controller
-	c7 := controller.NewSwaggerController(service)
-	app.MountSwaggerController(service, c7)
+	swagger := controller.NewSwaggerController(service)
+	app.MountSwaggerController(service, swagger)
 	// Mount "validation" controller
-	c8 := controller.NewValidationController(service)
-	app.MountValidationController(service, c8)
+	validation := controller.NewValidationController(service)
+	app.MountValidationController(service, validation)
 
 	// Start service
 	if err := service.ListenAndServe(*port); err != nil {

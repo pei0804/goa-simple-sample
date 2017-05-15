@@ -32,7 +32,7 @@ func (c *ActionsController) ID(ctx *app.IDActionsContext) error {
 
 	// Response(OK, IntegerType)
 	// MediaType IntegerTypeでレスポンス
-	res := &app.Integertype{}
+	res := &app.Integer{}
 	/*
 		IDはInteger型で
 		Attribute("ID", Integer, "ID", func() {
@@ -51,7 +51,7 @@ func (c *ActionsController) Hello(ctx *app.HelloActionsContext) error {
 	name := ctx.Name
 
 	// ActionsController_Ping: end_implement
-	res := &app.Messagetype{}
+	res := &app.Message{}
 	res.Message = "Hello " + name
 	return ctx.OK(res)
 }
@@ -64,7 +64,7 @@ func (c *ActionsController) Ping(ctx *app.PingActionsContext) error {
 	message := "pong"
 
 	// ActionsController_Ping: end_implement
-	res := &app.Messagetype{}
+	res := &app.Message{}
 	res.Message = message
 	return ctx.OK(res)
 }

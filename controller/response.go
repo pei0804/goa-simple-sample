@@ -50,12 +50,12 @@ func (c *ResponseController) List(ctx *app.ListResponseContext) error {
 	// Put your logic here
 
 	// ResponseController_List: end_implement
-	res := make(app.UsertypeTinyCollection, 2)
-	u1 := &app.UsertypeTiny{
+	res := make(app.UserTinyCollection, 2)
+	u1 := &app.UserTiny{
 		ID:   1,
 		Name: "ユーザー1",
 	}
-	u2 := &app.UsertypeTiny{
+	u2 := &app.UserTiny{
 		ID:   2,
 		Name: "ユーザー2",
 	}
@@ -71,7 +71,7 @@ func (c *ResponseController) Show(ctx *app.ShowResponseContext) error {
 	// Put your logic here
 
 	// ResponseController_Show: end_implement
-	res := &app.Usertype{}
+	res := &app.User{}
 	res.ID = 1
 	res.Name = "ユーザー1"
 	res.Email = "satak47cpc@gmail.com"
@@ -85,6 +85,6 @@ func (c *ResponseController) Nested(ctx *app.NestedResponseContext) error {
 	// Put your logic here
 
 	//ResponseController_Show: end_implement
-	res := &app.Articletype{}
+	res := &app.Article{}
 	return ctx.OK(res)
 }

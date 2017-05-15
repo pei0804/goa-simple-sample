@@ -40,7 +40,7 @@ func (c *MethodController) Follow(ctx *app.FollowMethodContext) error {
 		message = "フォロー外した"
 	}
 	// MethodController_Follow: end_implement
-	res := &app.Messagetype{}
+	res := &app.Message{}
 	res.Message = message
 	return ctx.OK(res)
 }
@@ -61,12 +61,12 @@ func (c *MethodController) List(ctx *app.ListMethodContext) error {
 		listType = "注目されている"
 	}
 	// MethodController_List: end_implement
-	res := make(app.UsertypeTinyCollection, 2)
-	u1 := &app.UsertypeTiny{
+	res := make(app.UserTinyCollection, 2)
+	u1 := &app.UserTiny{
 		ID:   1,
 		Name: listType + "ユーザー1",
 	}
-	u2 := &app.UsertypeTiny{
+	u2 := &app.UserTiny{
 		ID:   2,
 		Name: listType + "ユーザー2",
 	}
@@ -83,7 +83,7 @@ func (c *MethodController) Method(ctx *app.MethodMethodContext) error {
 	message := ctx.RequestURI
 
 	// MethodController_Method: end_implement
-	res := &app.Messagetype{}
+	res := &app.Message{}
 	res.Message = message
 	return ctx.OK(res)
 }

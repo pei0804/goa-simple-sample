@@ -38,7 +38,7 @@ generate:
 	@go build -o build
 
 model:
-	@rm -rf models
+	@ls models | grep -v '_defined.go' | xargs rm -f
 	@goagen --design=$(REPO)/design gen --pkg-path=github.com/goadesign/gorma
 
 swaggerUI:

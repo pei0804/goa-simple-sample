@@ -7,23 +7,29 @@ import (
 
 var _ = StorageGroup("celler", func() {
 	Description("celler Model")
+	// Mysqlを使う
 	Store("MySQL", gorma.MySQL, func() {
 		Description("MySQLのリレーションナルデータベース")
+		// accountsテーブルのModelなら、Account
 		Model("Account", func() {
-			RendersTo(Account)
+			// MediaTypeで作成したAccountにマッピングする
+			RendersTo(AccountData)
 			Description("celler account")
+			// PrimaryKeyの設定
 			Field("id", gorma.Integer, func() {
 				PrimaryKey()
 			})
 			Field("name", gorma.String)
 			Field("email", gorma.String)
+			// timestamp系の定義
 			Field("created_at", gorma.Timestamp)
 			Field("updated_at", gorma.Timestamp)
 			Field("deleted_at", gorma.NullableTimestamp)
+			// HasMany(複数形名, 単数形名)
 			HasMany("Bottles", "Bottle")
 		})
 		Model("Bottle", func() {
-			RendersTo(Bottle)
+			RendersTo(BottleData)
 			Description("celler bottle")
 			Field("id", gorma.Integer, func() {
 				PrimaryKey()
@@ -33,11 +39,13 @@ var _ = StorageGroup("celler", func() {
 			Field("created_at", gorma.Timestamp)
 			Field("updated_at", gorma.Timestamp)
 			Field("deleted_at", gorma.NullableTimestamp)
+			// BelongTo(単数形)
 			BelongsTo("Account")
 			HasMany("BottleCategories", "BottleCategory")
+			ManyToMany("Category", "Categories")
 		})
 		Model("Category", func() {
-			RendersTo(Category)
+			RendersTo(CategoryData)
 			Description("celler category")
 			Field("id", gorma.Integer, func() {
 				PrimaryKey()
@@ -47,6 +55,7 @@ var _ = StorageGroup("celler", func() {
 			Field("updated_at", gorma.Timestamp)
 			Field("deleted_at", gorma.NullableTimestamp)
 			HasMany("BottleCategories", "BottleCategory")
+			ManyToMany("Bottle", "Bottles")
 		})
 		Model("BottleCategory", func() {
 			Description("celler bottle category")
