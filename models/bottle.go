@@ -66,6 +66,9 @@ type BottleStorage interface {
 
 	ListBottle(ctx context.Context, accountID int) []*app.Bottle
 	OneBottle(ctx context.Context, id int, accountID int) (*app.Bottle, error)
+
+	ListBottleRelation(ctx context.Context, accountID int) []*app.BottleRelation
+	OneBottleRelation(ctx context.Context, id int, accountID int) (*app.BottleRelation, error)
 }
 
 // TableName overrides the table name settings in Gorm to force a specific table name

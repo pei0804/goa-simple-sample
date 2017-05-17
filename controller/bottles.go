@@ -60,12 +60,26 @@ func (c *BottlesController) List(ctx *app.ListBottlesContext) error {
 
 	// Put your logic here
 	bdb := models.NewBottleDB(c.db)
-	b := bdb.ListBottleFullScan(ctx.Context, 0)
+	b := bdb.ListBottle(ctx.Context, 0)
 
 	// BottlesController_List: end_implement
 	res := app.BottleCollection{}
 	res = b
 	return ctx.OK(res)
+}
+
+// ListRelation runs the listRelation action.
+func (c *BottlesController) ListRelation(ctx *app.ListRelationBottlesContext) error {
+	// BottlesController_ListRelation: start_implement
+
+	// Put your logic here
+	bdb := models.NewBottleDB(c.db)
+	b := bdb.ListBottleFullScan(ctx.Context, 0)
+
+	// BottlesController_ListRelation: end_implement
+	res := app.BottleRelationCollection{}
+	res = b
+	return ctx.OKRelation(res)
 }
 
 // Show runs the show action.

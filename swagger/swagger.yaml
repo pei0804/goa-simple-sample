@@ -104,22 +104,12 @@ definitions:
         email: example@gmail.com
         id: 1
         name: 山田　太郎
-      categories:
-      - id: 1
-        name: ワイン
       id: 1
       name: シャルドネ
       quantity: 4
     properties:
       account:
         $ref: '#/definitions/Account'
-      categories:
-        example:
-        - id: 1
-          name: ワイン
-        items:
-          $ref: '#/definitions/Category'
-        type: array
       id:
         description: id
         example: 1
@@ -139,7 +129,6 @@ definitions:
     - name
     - quantity
     - account
-    - categories
     title: 'Mediatype identifier: application/vnd.bottle+json; view=default'
     type: object
   BottleCollection:
@@ -150,9 +139,6 @@ definitions:
         email: example@gmail.com
         id: 1
         name: 山田　太郎
-      categories:
-      - id: 1
-        name: ワイン
       id: 1
       name: シャルドネ
       quantity: 4
@@ -160,9 +146,6 @@ definitions:
         email: example@gmail.com
         id: 1
         name: 山田　太郎
-      categories:
-      - id: 1
-        name: ワイン
       id: 1
       name: シャルドネ
       quantity: 4
@@ -170,9 +153,6 @@ definitions:
         email: example@gmail.com
         id: 1
         name: 山田　太郎
-      categories:
-      - id: 1
-        name: ワイン
       id: 1
       name: シャルドネ
       quantity: 4
@@ -188,9 +168,6 @@ definitions:
           email: example@gmail.com
           id: 1
           name: 山田　太郎
-        categories:
-        - id: 1
-          name: ワイン
         id: 1
         name: シャルドネ
         quantity: 4
@@ -198,9 +175,6 @@ definitions:
           email: example@gmail.com
           id: 1
           name: 山田　太郎
-        categories:
-        - id: 1
-          name: ワイン
         id: 1
         name: シャルドネ
         quantity: 4
@@ -208,9 +182,6 @@ definitions:
           email: example@gmail.com
           id: 1
           name: 山田　太郎
-        categories:
-        - id: 1
-          name: ワイン
         id: 1
         name: シャルドネ
         quantity: 4
@@ -222,9 +193,6 @@ definitions:
             email: example@gmail.com
             id: 1
             name: 山田　太郎
-          categories:
-          - id: 1
-            name: ワイン
           id: 1
           name: シャルドネ
           quantity: 4
@@ -232,9 +200,6 @@ definitions:
             email: example@gmail.com
             id: 1
             name: 山田　太郎
-          categories:
-          - id: 1
-            name: ワイン
           id: 1
           name: シャルドネ
           quantity: 4
@@ -242,9 +207,6 @@ definitions:
             email: example@gmail.com
             id: 1
             name: 山田　太郎
-          categories:
-          - id: 1
-            name: ワイン
           id: 1
           name: シャルドネ
           quantity: 4
@@ -259,26 +221,6 @@ definitions:
     - data
     - status
     title: 'Mediatype identifier: application/vnd.bottlemedia+json; view=default'
-    type: object
-  Category:
-    description: celler account (default view)
-    example:
-      id: 1
-      name: ワイン
-    properties:
-      id:
-        description: id
-        example: 1
-        format: int64
-        type: integer
-      name:
-        description: 名前
-        example: ワイン
-        type: string
-    required:
-    - id
-    - name
-    title: 'Mediatype identifier: application/vnd.category+json; view=default'
     type: object
   Error:
     description: Error media type (default view)
@@ -607,8 +549,8 @@ paths:
         required: true
         type: integer
       produces:
-      - application/vnd.goa.error
       - application/vnd.account+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -759,8 +701,8 @@ paths:
         required: true
         type: integer
       produces:
-      - application/vnd.goa.error
       - application/vnd.accountmedia+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -967,8 +909,8 @@ paths:
         required: true
         type: integer
       produces:
-      - application/vnd.goa.error
       - text/plain
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -1053,6 +995,28 @@ paths:
       summary: update bottles
       tags:
       - bottles
+  /api/v1/bottles/relation:
+    get:
+      description: 複数(リレーション版)
+      operationId: bottles#listRelation
+      produces:
+      - application/vnd.bottle+json; type=collection
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BottleCollection'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      - https
+      summary: listRelation bottles
+      tags:
+      - bottles
   /api/v1/bottles_data:
     get:
       description: 複数
@@ -1121,8 +1085,8 @@ paths:
         required: true
         type: integer
       produces:
-      - application/vnd.goa.error
       - text/plain
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -1190,8 +1154,8 @@ paths:
         required: false
         type: integer
       produces:
-      - text/plain
       - application/vnd.goa.error
+      - text/plain
       responses:
         "200":
           description: OK
@@ -1212,8 +1176,8 @@ paths:
       description: HTTPメソッド
       operationId: method#method#2
       produces:
-      - application/vnd.message+json
       - application/vnd.goa.error
+      - application/vnd.message+json
       responses:
         "200":
           description: OK
@@ -1278,8 +1242,8 @@ paths:
       description: リストを返す
       operationId: method#list#1
       produces:
-      - application/vnd.goa.error
       - application/vnd.user+json; type=collection
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -1344,8 +1308,8 @@ paths:
       description: HTTPメソッド
       operationId: method#method#3
       produces:
-      - application/vnd.goa.error
       - application/vnd.message+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -1422,8 +1386,8 @@ paths:
       description: フォロー操作
       operationId: method#follow
       produces:
-      - application/vnd.goa.error
       - application/vnd.message+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK

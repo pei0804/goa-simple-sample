@@ -138,8 +138,7 @@ func (c *Client) DecodeArticle(resp *http.Response) (*Article, error) {
 //
 // Identifier: application/vnd.bottle+json; view=default
 type Bottle struct {
-	Account    *Account    `form:"account" json:"account" xml:"account"`
-	Categories []*Category `form:"categories" json:"categories" xml:"categories"`
+	Account *Account `form:"account" json:"account" xml:"account"`
 	// id
 	ID int `form:"id" json:"id" xml:"id"`
 	// ボトル名
@@ -150,6 +149,38 @@ type Bottle struct {
 
 // Validate validates the Bottle media type instance.
 func (mt *Bottle) Validate() (err error) {
+
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+
+	if mt.Account == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "account"))
+	}
+	if mt.Account != nil {
+		if err2 := mt.Account.Validate(); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
+// celler bottles (relation view)
+//
+// Identifier: application/vnd.bottle+json; view=relation
+type BottleRelation struct {
+	Account    *Account    `form:"account" json:"account" xml:"account"`
+	Categories []*Category `form:"categories" json:"categories" xml:"categories"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
+	// ボトル名
+	Name string `form:"name" json:"name" xml:"name"`
+	// 数量
+	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
+}
+
+// Validate validates the BottleRelation media type instance.
+func (mt *BottleRelation) Validate() (err error) {
 
 	if mt.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
@@ -183,6 +214,13 @@ func (c *Client) DecodeBottle(resp *http.Response) (*Bottle, error) {
 	return &decoded, err
 }
 
+// DecodeBottleRelation decodes the BottleRelation instance encoded in resp body.
+func (c *Client) DecodeBottleRelation(resp *http.Response) (*BottleRelation, error) {
+	var decoded BottleRelation
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
 // BottleCollection is the media type for an array of Bottle (default view)
 //
 // Identifier: application/vnd.bottle+json; type=collection; view=default
@@ -200,9 +238,33 @@ func (mt BottleCollection) Validate() (err error) {
 	return
 }
 
+// BottleCollection is the media type for an array of Bottle (relation view)
+//
+// Identifier: application/vnd.bottle+json; type=collection; view=relation
+type BottleRelationCollection []*BottleRelation
+
+// Validate validates the BottleRelationCollection media type instance.
+func (mt BottleRelationCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
 // DecodeBottleCollection decodes the BottleCollection instance encoded in resp body.
 func (c *Client) DecodeBottleCollection(resp *http.Response) (BottleCollection, error) {
 	var decoded BottleCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
+// DecodeBottleRelationCollection decodes the BottleRelationCollection instance encoded in resp body.
+func (c *Client) DecodeBottleRelationCollection(resp *http.Response) (BottleRelationCollection, error) {
+	var decoded BottleRelationCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }

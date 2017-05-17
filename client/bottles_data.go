@@ -41,11 +41,11 @@ func (c *Client) NewAddBottlesDataRequest(ctx context.Context, path string, acco
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
-	tmp38 := strconv.Itoa(accountID)
-	values.Set("account_id", tmp38)
+	tmp39 := strconv.Itoa(accountID)
+	values.Set("account_id", tmp39)
 	values.Set("name", name)
-	tmp39 := strconv.Itoa(quantity)
-	values.Set("quantity", tmp39)
+	tmp40 := strconv.Itoa(quantity)
+	values.Set("quantity", tmp40)
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -171,8 +171,8 @@ func (c *Client) NewUpdateBottlesDataRequest(ctx context.Context, path string, n
 		values.Set("name", *name)
 	}
 	if quantity != nil {
-		tmp40 := strconv.Itoa(*quantity)
-		values.Set("quantity", tmp40)
+		tmp41 := strconv.Itoa(*quantity)
+		values.Set("quantity", tmp41)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("PUT", u.String(), nil)

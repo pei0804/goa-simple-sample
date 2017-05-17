@@ -206,6 +206,12 @@ var BottleData = MediaType("application/vnd.bottle+json", func() {
 		Attribute("name")
 		Attribute("quantity")
 		Attribute("account")
+	})
+	View("relation", func() {
+		Attribute("id")
+		Attribute("name")
+		Attribute("quantity")
+		Attribute("account")
 		Attribute("categories")
 	})
 })

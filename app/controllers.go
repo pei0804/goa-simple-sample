@@ -380,6 +380,7 @@ type BottlesController interface {
 	Add(*AddBottlesContext) error
 	Delete(*DeleteBottlesContext) error
 	List(*ListBottlesContext) error
+	ListRelation(*ListRelationBottlesContext) error
 	Show(*ShowBottlesContext) error
 	Update(*UpdateBottlesContext) error
 }
@@ -390,6 +391,7 @@ func MountBottlesController(service *goa.Service, ctrl BottlesController) {
 	var h goa.Handler
 	service.Mux.Handle("OPTIONS", "/api/v1/bottles", ctrl.MuxHandler("preflight", handleBottlesOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/api/v1/bottles/:id", ctrl.MuxHandler("preflight", handleBottlesOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/api/v1/bottles/relation", ctrl.MuxHandler("preflight", handleBottlesOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -438,6 +440,22 @@ func MountBottlesController(service *goa.Service, ctrl BottlesController) {
 	h = handleBottlesOrigin(h)
 	service.Mux.Handle("GET", "/api/v1/bottles", ctrl.MuxHandler("list", h, nil))
 	service.LogInfo("mount", "ctrl", "Bottles", "action", "List", "route", "GET /api/v1/bottles")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewListRelationBottlesContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.ListRelation(rctx)
+	}
+	h = handleBottlesOrigin(h)
+	service.Mux.Handle("GET", "/api/v1/bottles/relation", ctrl.MuxHandler("listRelation", h, nil))
+	service.LogInfo("mount", "ctrl", "Bottles", "action", "ListRelation", "route", "GET /api/v1/bottles/relation")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request

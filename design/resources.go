@@ -347,6 +347,14 @@ var _ = Resource("bottles", func() {
 		Response(OK, CollectionOf(BottleData))
 		Response(BadRequest, ErrorMedia)
 	})
+	Action("listRelation", func() {
+		Description("複数(リレーション版)")
+		Routing(
+			GET("/relation"),
+		)
+		Response(OK, CollectionOf(BottleData))
+		Response(BadRequest, ErrorMedia)
+	})
 	Action("show", func() {
 		Description("単数")
 		Routing(

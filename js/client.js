@@ -405,6 +405,24 @@ define(['axios'] , function (axios) {
     return client(cfg);
   }
 
+  // 複数(リレーション版)
+  // path is the request path, the format is "/api/v1/bottles/relation"
+  // config is an optional object to be merged into the config built by the function prior to making the request.
+  // The content of the config object is described here: https://github.com/mzabriskie/axios#request-api
+  // This function returns a promise which raises an error if the HTTP response is a 4xx or 5xx.
+  client.listRelationBottles = function (path, config) {
+    cfg = {
+      timeout: timeout,
+      url: urlPrefix + path,
+      method: 'get',
+      responseType: 'json'
+    };
+    if (config) {
+      cfg = merge(cfg, config);
+    }
+    return client(cfg);
+  }
+
   // HTTPメソッド
   // path is the request path, the format is "/api/v1/method/get"
   // config is an optional object to be merged into the config built by the function prior to making the request.

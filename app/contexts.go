@@ -768,8 +768,60 @@ func (ctx *ListBottlesContext) OK(r BottleCollection) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
+// OKRelation sends a HTTP response with status code 200.
+func (ctx *ListBottlesContext) OKRelation(r BottleRelationCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.bottle+json; type=collection")
+	if r == nil {
+		r = BottleRelationCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
 // BadRequest sends a HTTP response with status code 400.
 func (ctx *ListBottlesContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// ListRelationBottlesContext provides the bottles listRelation action context.
+type ListRelationBottlesContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewListRelationBottlesContext parses the incoming request URL and body, performs validations and creates the
+// context used by the bottles controller listRelation action.
+func NewListRelationBottlesContext(ctx context.Context, r *http.Request, service *goa.Service) (*ListRelationBottlesContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := ListRelationBottlesContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ListRelationBottlesContext) OK(r BottleCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.bottle+json; type=collection")
+	if r == nil {
+		r = BottleCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// OKRelation sends a HTTP response with status code 200.
+func (ctx *ListRelationBottlesContext) OKRelation(r BottleRelationCollection) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.bottle+json; type=collection")
+	if r == nil {
+		r = BottleRelationCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *ListRelationBottlesContext) BadRequest(r error) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }
@@ -805,6 +857,12 @@ func NewShowBottlesContext(ctx context.Context, r *http.Request, service *goa.Se
 
 // OK sends a HTTP response with status code 200.
 func (ctx *ShowBottlesContext) OK(r *Bottle) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.bottle+json")
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// OKRelation sends a HTTP response with status code 200.
+func (ctx *ShowBottlesContext) OKRelation(r *BottleRelation) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.bottle+json")
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }

@@ -9,11 +9,11 @@ import (
 )
 
 // ListBottle returns an array of view: default.
-func (m *BottleDB) ListBottleFullScan(ctx context.Context, accountID int) []*app.Bottle {
+func (m *BottleDB) ListBottleFullScan(ctx context.Context, accountID int) []*app.BottleRelation {
 	defer goa.MeasureSince([]string{"goa", "db", "bottle", "listbottle"}, time.Now())
 
 	var native []*Bottle
-	var objs []*app.Bottle
+	var objs []*app.BottleRelation
 	err := m.Db.Scopes(BottleFilterByAccount(accountID, m.Db)).Table(m.TableName()).Preload("BottleCategories").Preload("Account").Find(&native).Error
 
 	for k, v := range native {
@@ -30,7 +30,7 @@ func (m *BottleDB) ListBottleFullScan(ctx context.Context, accountID int) []*app
 	}
 
 	for _, t := range native {
-		objs = append(objs, t.BottleToBottle())
+		objs = append(objs, t.BottleToBottleRelation())
 	}
 
 	return objs

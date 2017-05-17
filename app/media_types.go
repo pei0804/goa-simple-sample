@@ -109,8 +109,7 @@ func (mt *Article) Validate() (err error) {
 //
 // Identifier: application/vnd.bottle+json; view=default
 type Bottle struct {
-	Account    *Account    `form:"account" json:"account" xml:"account"`
-	Categories []*Category `form:"categories" json:"categories" xml:"categories"`
+	Account *Account `form:"account" json:"account" xml:"account"`
 	// id
 	ID int `form:"id" json:"id" xml:"id"`
 	// ボトル名
@@ -121,6 +120,38 @@ type Bottle struct {
 
 // Validate validates the Bottle media type instance.
 func (mt *Bottle) Validate() (err error) {
+
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+
+	if mt.Account == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "account"))
+	}
+	if mt.Account != nil {
+		if err2 := mt.Account.Validate(); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
+// celler bottles (relation view)
+//
+// Identifier: application/vnd.bottle+json; view=relation
+type BottleRelation struct {
+	Account    *Account    `form:"account" json:"account" xml:"account"`
+	Categories []*Category `form:"categories" json:"categories" xml:"categories"`
+	// id
+	ID int `form:"id" json:"id" xml:"id"`
+	// ボトル名
+	Name string `form:"name" json:"name" xml:"name"`
+	// 数量
+	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
+}
+
+// Validate validates the BottleRelation media type instance.
+func (mt *BottleRelation) Validate() (err error) {
 
 	if mt.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
@@ -154,6 +185,23 @@ type BottleCollection []*Bottle
 
 // Validate validates the BottleCollection media type instance.
 func (mt BottleCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// BottleCollection is the media type for an array of Bottle (relation view)
+//
+// Identifier: application/vnd.bottle+json; type=collection; view=relation
+type BottleRelationCollection []*BottleRelation
+
+// Validate validates the BottleRelationCollection media type instance.
+func (mt BottleRelationCollection) Validate() (err error) {
 	for _, e := range mt {
 		if e != nil {
 			if err2 := e.Validate(); err2 != nil {
