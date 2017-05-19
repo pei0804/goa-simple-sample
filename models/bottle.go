@@ -23,7 +23,7 @@ type Bottle struct {
 	ID               int              `gorm:"primary_key"` // primary key
 	AccountID        int              // Belongs To Account
 	BottleCategories []BottleCategory // has many BottleCategories
-	Categories       []Category       `gorm:"many2many:Categories"` // many to many Bottle/Category
+	Categories       []Category       `gorm:"many2many:bottle_categories"` // many to many Bottle/Category
 	Name             string
 	Quantity         int
 	CreatedAt        time.Time  // timestamp

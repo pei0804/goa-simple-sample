@@ -27,7 +27,7 @@ func (m *BottleDB) ListBottle(ctx context.Context, accountID int) []*app.Bottle 
 
 	var native []*Bottle
 	var objs []*app.Bottle
-	err := m.Db.Scopes(BottleFilterByAccount(accountID, m.Db)).Table(m.TableName()).Preload("Account").Find(&native).Error
+	err := m.Db.Scopes(BottleFilterByAccount(accountID, m.Db)).Table(m.TableName()).Find(&native).Error
 
 	if err != nil {
 		goa.LogError(ctx, "error listing Bottle", "error", err.Error())

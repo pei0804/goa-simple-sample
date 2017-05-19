@@ -42,7 +42,7 @@ var _ = StorageGroup("celler", func() {
 			// BelongTo(単数形)
 			BelongsTo("Account")
 			HasMany("BottleCategories", "BottleCategory")
-			ManyToMany("Category", "Categories")
+			ManyToMany("Category", "bottle_categories")
 		})
 		Model("Category", func() {
 			RendersTo(CategoryData)
