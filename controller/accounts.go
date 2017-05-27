@@ -101,7 +101,7 @@ func (c *AccountsController) Update(ctx *app.UpdateAccountsContext) error {
 	if err == gorm.ErrRecordNotFound {
 		return ctx.NotFound()
 	} else if err != nil {
-		return ctx.BadRequest(err)
+		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
 
 	// AccountsController_Update: end_implement

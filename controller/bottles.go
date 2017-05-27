@@ -33,7 +33,7 @@ func (c *BottlesController) Add(ctx *app.AddBottlesContext) error {
 	bdb := models.NewBottleDB(c.db)
 	err := bdb.Add(ctx.Context, b)
 	if err != nil {
-		return ctx.BadRequest(err)
+		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
 	// BottlesController_Add: end_implement
 	return ctx.Created()
@@ -47,7 +47,7 @@ func (c *BottlesController) Delete(ctx *app.DeleteBottlesContext) error {
 	bdb := models.NewBottleDB(c.db)
 	err := bdb.Delete(ctx.Context, ctx.ID)
 	if err != nil {
-		return ctx.BadRequest(err)
+		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
 
 	// BottlesController_Delete: end_implement
@@ -113,7 +113,7 @@ func (c *BottlesController) Update(ctx *app.UpdateBottlesContext) error {
 	if err == gorm.ErrRecordNotFound {
 		return ctx.NotFound()
 	} else if err != nil {
-		return ctx.BadRequest(err)
+		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
 
 	// BottlesController_Update: end_implement

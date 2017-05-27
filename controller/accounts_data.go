@@ -32,7 +32,7 @@ func (c *AccountsDataController) Add(ctx *app.AddAccountsDataContext) error {
 	adb := models.NewAccountDB(c.db)
 	err := adb.Add(ctx.Context, a)
 	if err != nil {
-		return ctx.BadRequest(err)
+		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
 
 	// AccountsDataController_Add: end_implement
@@ -50,7 +50,7 @@ func (c *AccountsDataController) Delete(ctx *app.DeleteAccountsDataContext) erro
 	adb := models.NewAccountDB(c.db)
 	err := adb.Delete(ctx.Context, ctx.ID)
 	if err != nil {
-		return ctx.BadRequest(err)
+		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
 
 	// AccountsDataController_Delete: end_implement
@@ -102,7 +102,7 @@ func (c *AccountsDataController) Update(ctx *app.UpdateAccountsDataContext) erro
 	if err == gorm.ErrRecordNotFound {
 		return ctx.NotFound()
 	} else if err != nil {
-		return ctx.BadRequest(err)
+		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
 
 	// AccountsDataController_Update: end_implement
