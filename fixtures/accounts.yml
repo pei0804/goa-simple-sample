@@ -1,0 +1,16 @@
+-
+  id: 1
+  name: ユーザー1
+  email: example@gmail.com
+  created_at: 2016-01-01 12:30:12
+  updated_at: 2016-01-01 12:30:12
+  deleted_at: null
+
+-
+  id: 2
+  name: ユーザー2
+  email: example2@gmail.com
+  created_at: 2016-01-01 12:30:12
+  updated_at: 2016-01-01 12:30:12
+  deleted_at: null
+

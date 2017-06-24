@@ -1,0 +1,27 @@
+one:
+  id: 1
+  name: 赤
+  created_at: 2016-01-01 12:30:12
+  updated_at: 2016-01-01 12:30:12
+  deleted_at: null
+
+two:
+  id: 2
+  name: 白
+  created_at: 2016-01-01 12:30:12
+  updated_at: 2016-01-01 12:30:12
+  deleted_at: null
+
+three:
+  id: 3
+  name: ワイン
+  created_at: 2016-01-01 12:30:12
+  updated_at: 2016-01-01 12:30:12
+  deleted_at: null
+
+four:
+  id: 4
+  name: フランス
+  created_at: 2016-01-01 12:30:12
+  updated_at: 2016-01-01 12:30:12
+  deleted_at: null
