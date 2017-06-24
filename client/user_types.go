@@ -6,7 +6,7 @@
 // $ goagen
 // --design=github.com/tikasan/goa-simple-sample/design
 // --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
-// --version=v1.1.0
+// --version=v1.2.0-dirty
 
 package client
 

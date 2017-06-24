@@ -549,8 +549,8 @@ paths:
         required: true
         type: integer
       produces:
-      - application/vnd.account+json
       - application/vnd.goa.error
+      - application/vnd.account+json
       responses:
         "200":
           description: OK
@@ -674,8 +674,8 @@ paths:
         required: true
         type: integer
       produces:
-      - text/plain
       - application/vnd.goa.error
+      - text/plain
       responses:
         "200":
           description: OK
@@ -701,8 +701,8 @@ paths:
         required: true
         type: integer
       produces:
-      - application/vnd.accountmedia+json
       - application/vnd.goa.error
+      - application/vnd.accountmedia+json
       responses:
         "200":
           description: OK
@@ -909,8 +909,8 @@ paths:
         required: true
         type: integer
       produces:
-      - text/plain
       - application/vnd.goa.error
+      - text/plain
       responses:
         "200":
           description: OK
@@ -1000,8 +1000,8 @@ paths:
       description: 複数(リレーション版)
       operationId: bottles#listRelation
       produces:
-      - application/vnd.bottle+json; type=collection
       - application/vnd.goa.error
+      - application/vnd.bottle+json; type=collection
       responses:
         "200":
           description: OK
@@ -1085,8 +1085,8 @@ paths:
         required: true
         type: integer
       produces:
-      - text/plain
       - application/vnd.goa.error
+      - text/plain
       responses:
         "200":
           description: OK
@@ -1242,8 +1242,8 @@ paths:
       description: リストを返す
       operationId: method#list#1
       produces:
-      - application/vnd.user+json; type=collection
       - application/vnd.goa.error
+      - application/vnd.user+json; type=collection
       responses:
         "200":
           description: OK
@@ -1308,8 +1308,8 @@ paths:
       description: HTTPメソッド
       operationId: method#method#3
       produces:
-      - application/vnd.message+json
       - application/vnd.goa.error
+      - application/vnd.message+json
       responses:
         "200":
           description: OK
@@ -1386,8 +1386,8 @@ paths:
       description: フォロー操作
       operationId: method#follow
       produces:
-      - application/vnd.message+json
       - application/vnd.goa.error
+      - application/vnd.message+json
       responses:
         "200":
           description: OK
