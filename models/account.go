@@ -12,10 +12,11 @@ package models
 
 import (
 	"context"
+	"time"
+
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
 	"github.com/tikasan/goa-simple-sample/app"
-	"time"
 )
 
 // celler account

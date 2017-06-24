@@ -12,3 +12,10 @@ development:
   dialect: mysql
   datasource: celler:celler@tcp(localhost:3306)/celler?parseTime=true&collation=utf8_general_ci&interpolateParams=true&loc=Asia%2FTokyo&parseTime=True
   dir: migrations
+  table: migrations
+
+test:
+  dialect: mysql
+  datasource: dbname=celler_test
+  dir: migrations
+  table: migrations

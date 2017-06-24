@@ -1,27 +1,27 @@
-one:
+-
   id: 1
-  name: 赤
+  name: red
   created_at: 2016-01-01 12:30:12
   updated_at: 2016-01-01 12:30:12
   deleted_at: null
 
-two:
+-
   id: 2
-  name: 白
+  name: white
   created_at: 2016-01-01 12:30:12
   updated_at: 2016-01-01 12:30:12
   deleted_at: null
 
-three:
+-
   id: 3
-  name: ワイン
+  name: wine
   created_at: 2016-01-01 12:30:12
   updated_at: 2016-01-01 12:30:12
   deleted_at: null
 
-four:
+-
   id: 4
-  name: フランス
+  name: france
   created_at: 2016-01-01 12:30:12
   updated_at: 2016-01-01 12:30:12
   deleted_at: null
