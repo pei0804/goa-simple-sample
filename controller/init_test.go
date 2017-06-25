@@ -60,7 +60,9 @@ func TestMain(m *testing.M) {
 		"../fixtures/categories.yml",
 		"../fixtures/bottle_categories.yml",
 	)
-
+	if err != nil {
+		log.Fatalf("Could not load test data: %s", err)
+	}
 	code := m.Run()
 
 	// You can't defer this because os.Exit doesn't care for defer
