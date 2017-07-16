@@ -1,6 +1,6 @@
 ##### Convenience targets ######
 
-REPO:=github.com/tikasan/goa-simple-sample
+REPO:=github.com/pei0804/goa-simple-sample
 
 init: depend bootstrap
 gen: clean generate
