@@ -4,8 +4,8 @@
 //
 // Command:
 // $ goagen
-// --design=github.com/tikasan/goa-simple-sample/design
-// --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
+// --design=github.com/pei0804/goa-simple-sample/design
+// --out=$(GOPATH)/src/github.com/pei0804/goa-simple-sample
 // --version=v1.2.0-dirty
 
 package cli
@@ -17,8 +17,8 @@ import (
 	"github.com/goadesign/goa"
 	goaclient "github.com/goadesign/goa/client"
 	uuid "github.com/goadesign/goa/uuid"
+	"github.com/pei0804/goa-simple-sample/client"
 	"github.com/spf13/cobra"
-	"github.com/tikasan/goa-simple-sample/client"
 	"log"
 	"net/url"
 	"os"

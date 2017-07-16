@@ -4,8 +4,8 @@
 //
 // Command:
 // $ goagen
-// --design=github.com/tikasan/goa-simple-sample/design
-// --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
+// --design=github.com/pei0804/goa-simple-sample/design
+// --out=$(GOPATH)/src/github.com/pei0804/goa-simple-sample
 // --version=v1.2.0-dirty
 
 package js
@@ -20,6 +20,6 @@ import (
 // Use --noexample to prevent this file from being generated.
 func MountController(service *goa.Service) {
 	// Serve static files under js
-	service.ServeFiles("/js/*filepath", "/Users/jumpei/go/src/github.com/tikasan/goa-simple-sample/js")
+	service.ServeFiles("/js/*filepath", "/Users/jumpei/go/src/github.com/pei0804/goa-simple-sample/js")
 	service.LogInfo("mount", "ctrl", "JS", "action", "ServeFiles", "route", "GET /js/*")
 }

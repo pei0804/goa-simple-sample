@@ -1,4 +1,4 @@
-//go:generate goagen bootstrap -d github.com/tikasan/goa-simple-sample/design
+//go:generate goagen bootstrap -d github.com/pei0804/goa-simple-sample/design
 
 package main
 
@@ -8,9 +8,9 @@ import (
 
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
-	"github.com/tikasan/goa-simple-sample/app"
-	"github.com/tikasan/goa-simple-sample/controller"
-	"github.com/tikasan/goa-simple-sample/database"
+	"github.com/pei0804/goa-simple-sample/app"
+	"github.com/pei0804/goa-simple-sample/controller"
+	"github.com/pei0804/goa-simple-sample/database"
 )
 
 func main() {

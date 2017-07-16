@@ -4,8 +4,8 @@
 //
 // Command:
 // $ goagen
-// --design=github.com/tikasan/goa-simple-sample/design
-// --out=$(GOPATH)/src/github.com/tikasan/goa-simple-sample
+// --design=github.com/pei0804/goa-simple-sample/design
+// --out=$(GOPATH)/src/github.com/pei0804/goa-simple-sample
 // --version=v1.1.0
 
 package models
@@ -14,7 +14,7 @@ import (
 	"context"
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
-	"github.com/tikasan/goa-simple-sample/app"
+	"github.com/pei0804/goa-simple-sample/app"
 	"time"
 )
 

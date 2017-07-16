@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	goaclient "github.com/goadesign/goa/client"
+	"github.com/pei0804/goa-simple-sample/client"
+	"github.com/pei0804/goa-simple-sample/tool/cli"
 	"github.com/spf13/cobra"
-	"github.com/tikasan/goa-simple-sample/client"
-	"github.com/tikasan/goa-simple-sample/tool/cli"
 	"net/http"
 	"os"
 	"time"
@@ -15,7 +15,7 @@ func main() {
 	// Create command line parser
 	app := &cobra.Command{
 		Use:   "goa simple sample-cli",
-		Short: `CLI client for the goa simple sample service (https://github.com/tikasan/goa-simple-sample/wiki)`,
+		Short: `CLI client for the goa simple sample service (https://github.com/pei0804/goa-simple-sample/wiki)`,
 	}
 
 	// Create client struct

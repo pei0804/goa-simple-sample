@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/goadesign/goa"
-	"github.com/tikasan/goa-simple-sample/app"
+	"github.com/pei0804/goa-simple-sample/app"
 )
 
 // ActionsController implements the actions resource.

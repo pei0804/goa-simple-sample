@@ -3,8 +3,8 @@ package controller
 import (
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
-	"github.com/tikasan/goa-simple-sample/app"
-	"github.com/tikasan/goa-simple-sample/models"
+	"github.com/pei0804/goa-simple-sample/app"
+	"github.com/pei0804/goa-simple-sample/models"
 )
 
 // BottlesController implements the bottles resource.

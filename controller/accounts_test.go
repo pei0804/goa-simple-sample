@@ -7,8 +7,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/goadesign/goa"
 	_ "github.com/lib/pq"
-	"github.com/tikasan/goa-simple-sample/app/test"
-	"github.com/tikasan/goa-simple-sample/models"
+	"github.com/pei0804/goa-simple-sample/app/test"
+	"github.com/pei0804/goa-simple-sample/models"
 )
 
 func TestAccountsController_Show(t *testing.T) {

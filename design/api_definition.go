@@ -14,7 +14,7 @@ var _ = API("goa simple sample", func() {
 	Contact(func() {
 		Name("pei")
 		Email("satak47cpc@gmail.com")
-		URL("https://github.com/tikasan/goa-simple-sample/issues")
+		URL("https://github.com/pei0804/goa-simple-sample/issues")
 	})
 	// APIのライセンス
 	License(func() {
@@ -24,7 +24,7 @@ var _ = API("goa simple sample", func() {
 	// APIのドキュメント
 	Docs(func() {
 		Description("wiki")
-		URL("https://github.com/tikasan/goa-simple-sample/wiki")
+		URL("https://github.com/pei0804/goa-simple-sample/wiki")
 	})
 	// ホストの設定
 	Host("localhost:8080")

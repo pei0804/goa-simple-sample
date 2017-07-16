@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/tikasan/goa"
-	"github.com/tikasan/goa-simple-sample/app"
+	"github.com/goadesign/goa"
+	"github.com/pei0804/goa-simple-sample/app"
 )
 
 // ListBottle returns an array of view: default.
