@@ -70,6 +70,71 @@ definitions:
     - status
     title: 'Mediatype identifier: application/vnd.accountmedia+json; view=default'
     type: object
+  AddAccountsDataPayload:
+    example:
+      email: example@gmail.com
+      name: 山田 太郎
+    properties:
+      email:
+        description: email
+        example: example@gmail.com
+        format: email
+        type: string
+      name:
+        description: 名前
+        example: 山田 太郎
+        type: string
+    required:
+    - name
+    - email
+    title: AddAccountsDataPayload
+    type: object
+  AddAccountsPayload:
+    example:
+      email: example@gmail.com
+      name: 山田 太郎
+    properties:
+      email:
+        description: email
+        example: example@gmail.com
+        format: email
+        type: string
+      name:
+        description: 名前
+        example: 山田 太郎
+        type: string
+    required:
+    - name
+    - email
+    title: AddAccountsPayload
+    type: object
+  AddBottlesPayload:
+    example:
+      account_id: 1
+      name: 赤ワインなにか
+      quantity: 0
+    properties:
+      account_id:
+        description: アカウントID
+        example: 1
+        format: int64
+        type: integer
+      name:
+        default: ""
+        description: ボトル名
+        example: 赤ワインなにか
+        type: string
+      quantity:
+        description: 数量
+        example: 0
+        format: int64
+        type: integer
+    required:
+    - account_id
+    - name
+    - quantity
+    title: AddBottlesPayload
+    type: object
   Article:
     description: example (default view)
     example:
@@ -135,13 +200,6 @@ definitions:
     description: BottleCollection is the media type for an array of Bottle (default
       view)
     example:
-    - account:
-        email: example@gmail.com
-        id: 1
-        name: 山田　太郎
-      id: 1
-      name: シャルドネ
-      quantity: 4
     - account:
         email: example@gmail.com
         id: 1
@@ -263,6 +321,60 @@ definitions:
     - message
     title: 'Mediatype identifier: application/vnd.message+json; view=default'
     type: object
+  UpdateAccountsDataPayload:
+    example:
+      email: maiya@stoltenberg.info
+      name: Enim et.
+    properties:
+      email:
+        default: ""
+        description: email
+        example: maiya@stoltenberg.info
+        format: email
+        type: string
+      name:
+        default: ""
+        description: 名前
+        example: Enim et.
+        type: string
+    title: UpdateAccountsDataPayload
+    type: object
+  UpdateAccountsPayload:
+    example:
+      email: claire.kiehn@ward.net
+      name: Eum illum nemo.
+    properties:
+      email:
+        default: ""
+        description: email
+        example: claire.kiehn@ward.net
+        format: email
+        type: string
+      name:
+        default: ""
+        description: 名前
+        example: Eum illum nemo.
+        type: string
+    title: UpdateAccountsPayload
+    type: object
+  UpdateBottlesPayload:
+    example:
+      name: 赤ワインなにか
+      quantity: 0
+    properties:
+      name:
+        default: ""
+        description: ボトル名
+        example: 赤ワインなにか
+        type: string
+      quantity:
+        default: 0
+        description: 数量
+        example: 0
+        minimum: 0
+        type: integer
+    title: UpdateBottlesPayload
+    type: object
   User:
     description: example (default view)
     example:
@@ -292,6 +404,9 @@ definitions:
   UserCollection:
     description: UserCollection is the media type for an array of User (default view)
     example:
+    - email: satak47cpc@gmail.com
+      id: 1
+      name: hoge
     - email: satak47cpc@gmail.com
       id: 1
       name: hoge
@@ -376,7 +491,7 @@ definitions:
       detail: Value of ID must be an integer
       id: 3F1FKVRR
       meta:
-        timestamp: 1.458609e+09
+        timestamp: 1.458609066e+09
       status: "400"
     properties:
       code:
@@ -397,7 +512,7 @@ definitions:
         description: a meta object containing non-standard meta-information about
           the error.
         example:
-          timestamp: 1.458609e+09
+          timestamp: 1.458609066e+09
         type: object
       status:
         description: the HTTP status code applicable to this problem, expressed as
@@ -456,13 +571,13 @@ info:
   title: tikasan/goa-simple-sample
   version: ""
 paths:
-  /api/v1/accounts:
+  /api/v1/accounts/:
     get:
       description: 複数
       operationId: accounts#list
       produces:
-      - application/vnd.goa.error
       - application/vnd.account+json; type=collection
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -482,20 +597,14 @@ paths:
       description: 追加
       operationId: accounts#add
       parameters:
-      - description: email
-        format: email
-        in: query
-        name: email
+      - in: body
+        name: payload
         required: true
-        type: string
-      - description: 名前
-        in: query
-        name: name
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/AddAccountsPayload'
       produces:
-      - application/vnd.goa.error
       - application/vnd.account+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -549,8 +658,8 @@ paths:
         required: true
         type: integer
       produces:
-      - application/vnd.goa.error
       - application/vnd.account+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -572,24 +681,16 @@ paths:
       description: 更新
       operationId: accounts#update
       parameters:
-      - default: ""
-        description: email
-        format: email
-        in: query
-        name: email
-        required: false
-        type: string
       - description: id
         in: path
         name: id
         required: true
         type: integer
-      - default: ""
-        description: 名前
-        in: query
-        name: name
-        required: false
-        type: string
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateAccountsPayload'
       produces:
       - application/vnd.goa.error
       - text/plain
@@ -608,13 +709,13 @@ paths:
       summary: update accounts
       tags:
       - accounts
-  /api/v1/accounts_data:
+  /api/v1/accounts_data/:
     get:
       description: 複数
       operationId: accounts_data#list
       produces:
-      - application/vnd.goa.error
       - application/vnd.accountmedia+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -634,20 +735,14 @@ paths:
       description: 追加
       operationId: accounts_data#add
       parameters:
-      - description: email
-        format: email
-        in: query
-        name: email
+      - in: body
+        name: payload
         required: true
-        type: string
-      - description: 名前
-        in: query
-        name: name
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/AddAccountsDataPayload'
       produces:
-      - application/vnd.goa.error
       - application/vnd.accountmedia+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -701,8 +796,8 @@ paths:
         required: true
         type: integer
       produces:
-      - application/vnd.goa.error
       - application/vnd.accountmedia+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -724,24 +819,16 @@ paths:
       description: 更新
       operationId: accounts_data#update
       parameters:
-      - default: ""
-        description: email
-        format: email
-        in: query
-        name: email
-        required: false
-        type: string
       - description: id
         in: path
         name: id
         required: true
         type: integer
-      - default: ""
-        description: 名前
-        in: query
-        name: name
-        required: false
-        type: string
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateAccountsDataPayload'
       produces:
       - application/vnd.goa.error
       - text/plain
@@ -841,13 +928,13 @@ paths:
       summary: ping actions
       tags:
       - actions
-  /api/v1/bottles:
+  /api/v1/bottles/:
     get:
       description: 複数
       operationId: bottles#list
       produces:
-      - application/vnd.goa.error
       - application/vnd.bottle+json; type=collection
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -867,22 +954,11 @@ paths:
       description: 追加
       operationId: bottles#add
       parameters:
-      - description: アカウントID
-        in: query
-        name: account_id
+      - in: body
+        name: payload
         required: true
-        type: integer
-      - default: ""
-        description: ボトル名
-        in: query
-        name: name
-        required: true
-        type: string
-      - description: 数量
-        in: query
-        name: quantity
-        required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/AddBottlesPayload'
       produces:
       - application/vnd.goa.error
       responses:
@@ -936,8 +1012,8 @@ paths:
         required: true
         type: integer
       produces:
-      - application/vnd.goa.error
       - application/vnd.bottle+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -964,19 +1040,11 @@ paths:
         name: id
         required: true
         type: integer
-      - default: ""
-        description: ボトル名
-        in: query
-        name: name
-        required: false
-        type: string
-      - default: 0
-        description: 数量
-        in: query
-        minimum: 0
-        name: quantity
-        required: false
-        type: integer
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateBottlesPayload'
       produces:
       - application/vnd.goa.error
       - text/plain
@@ -1000,8 +1068,8 @@ paths:
       description: 複数(リレーション版)
       operationId: bottles#listRelation
       produces:
-      - application/vnd.goa.error
       - application/vnd.bottle+json; type=collection
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -1017,13 +1085,13 @@ paths:
       summary: listRelation bottles
       tags:
       - bottles
-  /api/v1/bottles_data:
+  /api/v1/bottles_data/:
     get:
       description: 複数
       operationId: bottles_data#list
       produces:
-      - application/vnd.goa.error
       - application/vnd.bottlemedia+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -1112,8 +1180,8 @@ paths:
         required: true
         type: integer
       produces:
-      - application/vnd.goa.error
       - application/vnd.bottlemedia+json
+      - application/vnd.goa.error
       responses:
         "200":
           description: OK
@@ -1503,8 +1571,8 @@ paths:
         required: true
         type: string
       produces:
-      - application/vnd.error+json
       - application/vnd.article+json
+      - application/vnd.error+json
       responses:
         "200":
           description: OK
@@ -1520,7 +1588,7 @@ paths:
       summary: nested response
       tags:
       - response
-  /api/v1/securiy:
+  /api/v1/securiy/:
     get:
       description: セキュリティの例です
       operationId: security#security
@@ -1544,7 +1612,7 @@ paths:
       summary: security security
       tags:
       - security
-  /api/v1/validation:
+  /api/v1/validation/:
     get:
       description: Validation
       operationId: validation#validation

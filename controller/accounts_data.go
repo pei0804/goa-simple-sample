@@ -27,8 +27,8 @@ func (c *AccountsDataController) Add(ctx *app.AddAccountsDataContext) error {
 
 	// Put your logic here
 	a := &models.Account{}
-	a.Name = ctx.Name
-	a.Email = ctx.Email
+	a.Name = ctx.Payload.Name
+	a.Email = ctx.Payload.Email
 	adb := models.NewAccountDB(c.db)
 	err := adb.Add(ctx.Context, a)
 	if err != nil {
@@ -95,8 +95,8 @@ func (c *AccountsDataController) Update(ctx *app.UpdateAccountsDataContext) erro
 	// Put your logic here
 	a := &models.Account{}
 	a.ID = ctx.ID
-	a.Name = ctx.Name
-	a.Email = ctx.Email
+	a.Name = ctx.Payload.Name
+	a.Email = ctx.Payload.Email
 	adb := models.NewAccountDB(c.db)
 	err := adb.Update(ctx.Context, a)
 	if err == gorm.ErrRecordNotFound {

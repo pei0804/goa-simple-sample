@@ -35,7 +35,7 @@ func TestAccountsController_Show(t *testing.T) {
 		_, account := test.ShowAccountsOK(t, context.Background(), service, ctrl, tc.ID)
 
 		if account == nil {
-			t.Fatalf("%s: nil account", k)
+			t.Fatalf("%d: nil account", k)
 		}
 		if account.ID != tc.ID {
 			t.Errorf("%v: invalid account ID, expected 1, got %v", k, tc.ID)

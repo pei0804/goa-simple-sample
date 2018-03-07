@@ -283,11 +283,11 @@ var _ = Resource("accounts", func() {
 		Routing(
 			POST("/"),
 		)
-		Params(func() {
-			Param("name", String, "名前", func() {
+		Payload(func() {
+			Attribute("name", String, "名前", func() {
 				Example("山田 太郎")
 			})
-			Param("email", String, "email", func() {
+			Attribute("email", String, "email", func() {
 				Format("email")
 				Example("example@gmail.com")
 			})
@@ -318,6 +318,9 @@ var _ = Resource("accounts", func() {
 		Params(func() {
 			// idを使ってレコードを検索する
 			Param("id", Integer, "id")
+		})
+
+		Payload(func() {
 			// デフォルトだけ設定しておいて、何も設定がなかったら無視する感じにする
 			Param("name", String, "名前", func() {
 				Default("")
@@ -374,15 +377,15 @@ var _ = Resource("bottles", func() {
 		Routing(
 			POST("/"),
 		)
-		Params(func() {
-			Param("account_id", Integer, "アカウントID", func() {
+		Payload(func() {
+			Attribute("account_id", Integer, "アカウントID", func() {
 				Example(1)
 			})
-			Param("name", String, "ボトル名", func() {
+			Attribute("name", String, "ボトル名", func() {
 				Default("")
 				Example("赤ワインなにか")
 			})
-			Param("quantity", Integer, "数量", func() {
+			Attribute("quantity", Integer, "数量", func() {
 				Example(0)
 			})
 			Required("account_id", "name", "quantity")
@@ -413,11 +416,13 @@ var _ = Resource("bottles", func() {
 			Param("id", Integer, "id", func() {
 				Example(1)
 			})
-			Param("name", String, "ボトル名", func() {
+		})
+		Payload(func() {
+			Attribute("name", String, "ボトル名", func() {
 				Default("")
 				Example("赤ワインなにか")
 			})
-			Param("quantity", Integer, "数量", func() {
+			Attribute("quantity", Integer, "数量", func() {
 				Default(0)
 				Minimum(0)
 				Example(0)
@@ -458,11 +463,11 @@ var _ = Resource("accounts_data", func() {
 		Routing(
 			POST("/"),
 		)
-		Params(func() {
-			Param("name", String, "名前", func() {
+		Payload(func() {
+			Attribute("name", String, "名前", func() {
 				Example("山田 太郎")
 			})
-			Param("email", String, "email", func() {
+			Attribute("email", String, "email", func() {
 				Format("email")
 				Example("example@gmail.com")
 			})
@@ -492,10 +497,12 @@ var _ = Resource("accounts_data", func() {
 		)
 		Params(func() {
 			Param("id", Integer, "id")
-			Param("name", String, "名前", func() {
+		})
+		Payload(func() {
+			Attribute("name", String, "名前", func() {
 				Default("")
 			})
-			Param("email", String, "email", func() {
+			Attribute("email", String, "email", func() {
 				Format("email")
 				Default("")
 			})
