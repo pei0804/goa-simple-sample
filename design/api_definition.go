@@ -7,19 +7,18 @@ import (
 
 var _ = API("goa simple sample", func() {
 	// APIのタイトル
-	Title("tikasan/goa-simple-sample")
+	Title("pei0804/goa-simple-sample")
 	// APIの説明
 	Description("goaのサンプルです")
 	// 作成者へのコンタクト情報
 	Contact(func() {
 		Name("pei")
-		Email("satak47cpc@gmail.com")
+		Email("peeeei0804@gmail.com")
 		URL("https://github.com/pei0804/goa-simple-sample/issues")
 	})
 	// APIのライセンス
 	License(func() {
 		Name("MIT")
-		URL("https://github.com/tikasan/eventory/blob/master/LICENSE")
 	})
 	// APIのドキュメント
 	Docs(func() {
