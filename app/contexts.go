@@ -1268,9 +1268,7 @@ type AddBottlesDataContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	AccountID int
-	Name      string
-	Quantity  int
+	Payload *AddBottlesDataPayload
 }
 
 // NewAddBottlesDataContext parses the incoming request URL and body, performs validations and creates the
@@ -1282,36 +1280,74 @@ func NewAddBottlesDataContext(ctx context.Context, r *http.Request, service *goa
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := AddBottlesDataContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramAccountID := req.Params["account_id"]
-	if len(paramAccountID) == 0 {
-		err = goa.MergeErrors(err, goa.MissingParamError("account_id"))
-	} else {
-		rawAccountID := paramAccountID[0]
-		if accountID, err2 := strconv.Atoi(rawAccountID); err2 == nil {
-			rctx.AccountID = accountID
-		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("account_id", rawAccountID, "integer"))
-		}
-	}
-	paramName := req.Params["name"]
-	if len(paramName) == 0 {
-		rctx.Name = ""
-	} else {
-		rawName := paramName[0]
-		rctx.Name = rawName
-	}
-	paramQuantity := req.Params["quantity"]
-	if len(paramQuantity) == 0 {
-		err = goa.MergeErrors(err, goa.MissingParamError("quantity"))
-	} else {
-		rawQuantity := paramQuantity[0]
-		if quantity, err2 := strconv.Atoi(rawQuantity); err2 == nil {
-			rctx.Quantity = quantity
-		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("quantity", rawQuantity, "integer"))
-		}
-	}
 	return &rctx, err
+}
+
+// addBottlesDataPayload is the bottles_data add action payload.
+type addBottlesDataPayload struct {
+	// アカウントID
+	AccountID *int `form:"account_id,omitempty" json:"account_id,omitempty" xml:"account_id,omitempty"`
+	// ボトル名
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// 数量
+	Quantity *int `form:"quantity,omitempty" json:"quantity,omitempty" xml:"quantity,omitempty"`
+}
+
+// Finalize sets the default values defined in the design.
+func (payload *addBottlesDataPayload) Finalize() {
+	var defaultName = ""
+	if payload.Name == nil {
+		payload.Name = &defaultName
+	}
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *addBottlesDataPayload) Validate() (err error) {
+	if payload.AccountID == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "account_id"))
+	}
+	if payload.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
+	}
+	if payload.Quantity == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "quantity"))
+	}
+	return
+}
+
+// Publicize creates AddBottlesDataPayload from addBottlesDataPayload
+func (payload *addBottlesDataPayload) Publicize() *AddBottlesDataPayload {
+	var pub AddBottlesDataPayload
+	if payload.AccountID != nil {
+		pub.AccountID = *payload.AccountID
+	}
+	if payload.Name != nil {
+		pub.Name = *payload.Name
+	}
+	if payload.Quantity != nil {
+		pub.Quantity = *payload.Quantity
+	}
+	return &pub
+}
+
+// AddBottlesDataPayload is the bottles_data add action payload.
+type AddBottlesDataPayload struct {
+	// アカウントID
+	AccountID int `form:"account_id" json:"account_id" xml:"account_id"`
+	// ボトル名
+	Name string `form:"name" json:"name" xml:"name"`
+	// 数量
+	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *AddBottlesDataPayload) Validate() (err error) {
+
+	if payload.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
+	}
+
+	return
 }
 
 // Created sends a HTTP response with status code 201.
@@ -1472,9 +1508,8 @@ type UpdateBottlesDataContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	ID       int
-	Name     string
-	Quantity int
+	ID      int
+	Payload *UpdateBottlesDataPayload
 }
 
 // NewUpdateBottlesDataContext parses the incoming request URL and body, performs validations and creates the
@@ -1495,28 +1530,65 @@ func NewUpdateBottlesDataContext(ctx context.Context, r *http.Request, service *
 			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
 		}
 	}
-	paramName := req.Params["name"]
-	if len(paramName) == 0 {
-		rctx.Name = ""
-	} else {
-		rawName := paramName[0]
-		rctx.Name = rawName
-	}
-	paramQuantity := req.Params["quantity"]
-	if len(paramQuantity) == 0 {
-		rctx.Quantity = 0
-	} else {
-		rawQuantity := paramQuantity[0]
-		if quantity, err2 := strconv.Atoi(rawQuantity); err2 == nil {
-			rctx.Quantity = quantity
-		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("quantity", rawQuantity, "integer"))
-		}
-		if rctx.Quantity < 0 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError(`quantity`, rctx.Quantity, 0, true))
-		}
-	}
 	return &rctx, err
+}
+
+// updateBottlesDataPayload is the bottles_data update action payload.
+type updateBottlesDataPayload struct {
+	// ボトル名
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// 数量
+	Quantity *int `form:"quantity,omitempty" json:"quantity,omitempty" xml:"quantity,omitempty"`
+}
+
+// Finalize sets the default values defined in the design.
+func (payload *updateBottlesDataPayload) Finalize() {
+	var defaultName = ""
+	if payload.Name == nil {
+		payload.Name = &defaultName
+	}
+	var defaultQuantity = 0
+	if payload.Quantity == nil {
+		payload.Quantity = &defaultQuantity
+	}
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *updateBottlesDataPayload) Validate() (err error) {
+	if payload.Quantity != nil {
+		if *payload.Quantity < 0 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`raw.quantity`, *payload.Quantity, 0, true))
+		}
+	}
+	return
+}
+
+// Publicize creates UpdateBottlesDataPayload from updateBottlesDataPayload
+func (payload *updateBottlesDataPayload) Publicize() *UpdateBottlesDataPayload {
+	var pub UpdateBottlesDataPayload
+	if payload.Name != nil {
+		pub.Name = *payload.Name
+	}
+	if payload.Quantity != nil {
+		pub.Quantity = *payload.Quantity
+	}
+	return &pub
+}
+
+// UpdateBottlesDataPayload is the bottles_data update action payload.
+type UpdateBottlesDataPayload struct {
+	// ボトル名
+	Name string `form:"name" json:"name" xml:"name"`
+	// 数量
+	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *UpdateBottlesDataPayload) Validate() (err error) {
+	if payload.Quantity < 0 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError(`raw.quantity`, payload.Quantity, 0, true))
+	}
+	return
 }
 
 // OK sends a HTTP response with status code 200.

@@ -674,10 +674,16 @@ func MountBottlesDataController(service *goa.Service, ctrl BottlesDataController
 		if err != nil {
 			return err
 		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*AddBottlesDataPayload)
+		} else {
+			return goa.MissingPayloadError()
+		}
 		return ctrl.Add(rctx)
 	}
 	h = handleBottlesDataOrigin(h)
-	service.Mux.Handle("POST", "/api/v1/bottles_data/", ctrl.MuxHandler("add", h, nil))
+	service.Mux.Handle("POST", "/api/v1/bottles_data/", ctrl.MuxHandler("add", h, unmarshalAddBottlesDataPayload))
 	service.LogInfo("mount", "ctrl", "BottlesData", "action", "Add", "route", "POST /api/v1/bottles_data/")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
@@ -738,10 +744,16 @@ func MountBottlesDataController(service *goa.Service, ctrl BottlesDataController
 		if err != nil {
 			return err
 		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*UpdateBottlesDataPayload)
+		} else {
+			return goa.MissingPayloadError()
+		}
 		return ctrl.Update(rctx)
 	}
 	h = handleBottlesDataOrigin(h)
-	service.Mux.Handle("PUT", "/api/v1/bottles_data/:id", ctrl.MuxHandler("update", h, nil))
+	service.Mux.Handle("PUT", "/api/v1/bottles_data/:id", ctrl.MuxHandler("update", h, unmarshalUpdateBottlesDataPayload))
 	service.LogInfo("mount", "ctrl", "BottlesData", "action", "Update", "route", "PUT /api/v1/bottles_data/:id")
 }
 
@@ -770,6 +782,38 @@ func handleBottlesDataOrigin(h goa.Handler) goa.Handler {
 
 		return h(ctx, rw, req)
 	}
+}
+
+// unmarshalAddBottlesDataPayload unmarshals the request body into the context request data Payload field.
+func unmarshalAddBottlesDataPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &addBottlesDataPayload{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	payload.Finalize()
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
+}
+
+// unmarshalUpdateBottlesDataPayload unmarshals the request body into the context request data Payload field.
+func unmarshalUpdateBottlesDataPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &updateBottlesDataPayload{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	payload.Finalize()
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
 }
 
 // JsController is the controller interface for the Js actions.

@@ -542,15 +542,15 @@ var _ = Resource("bottles_data", func() {
 		Routing(
 			POST("/"),
 		)
-		Params(func() {
-			Param("account_id", Integer, "アカウントID", func() {
+		Payload(func() {
+			Attribute("account_id", Integer, "アカウントID", func() {
 				Example(1)
 			})
-			Param("name", String, "ボトル名", func() {
+			Attribute("name", String, "ボトル名", func() {
 				Default("")
 				Example("赤ワインなにか")
 			})
-			Param("quantity", Integer, "数量", func() {
+			Attribute("quantity", Integer, "数量", func() {
 				Example(0)
 			})
 			Required("account_id", "name", "quantity")
@@ -581,6 +581,8 @@ var _ = Resource("bottles_data", func() {
 			Param("id", Integer, "id", func() {
 				Example(1)
 			})
+		})
+		Payload(func() {
 			Param("name", String, "ボトル名", func() {
 				Default("")
 				Example("赤ワインなにか")

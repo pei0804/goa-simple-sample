@@ -11,12 +11,23 @@
 package client
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
 )
+
+// AddBottlesDataPayload is the bottles_data add action payload.
+type AddBottlesDataPayload struct {
+	// アカウントID
+	AccountID int `form:"account_id" json:"account_id" xml:"account_id"`
+	// ボトル名
+	Name string `form:"name" json:"name" xml:"name"`
+	// 数量
+	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
+}
 
 // AddBottlesDataPath computes a request path to the add action of bottles_data.
 func AddBottlesDataPath() string {
@@ -25,8 +36,8 @@ func AddBottlesDataPath() string {
 }
 
 // 追加
-func (c *Client) AddBottlesData(ctx context.Context, path string, accountID int, name string, quantity int) (*http.Response, error) {
-	req, err := c.NewAddBottlesDataRequest(ctx, path, accountID, name, quantity)
+func (c *Client) AddBottlesData(ctx context.Context, path string, payload *AddBottlesDataPayload, contentType string) (*http.Response, error) {
+	req, err := c.NewAddBottlesDataRequest(ctx, path, payload, contentType)
 	if err != nil {
 		return nil, err
 	}
@@ -34,22 +45,29 @@ func (c *Client) AddBottlesData(ctx context.Context, path string, accountID int,
 }
 
 // NewAddBottlesDataRequest create the request corresponding to the add action endpoint of the bottles_data resource.
-func (c *Client) NewAddBottlesDataRequest(ctx context.Context, path string, accountID int, name string, quantity int) (*http.Request, error) {
+func (c *Client) NewAddBottlesDataRequest(ctx context.Context, path string, payload *AddBottlesDataPayload, contentType string) (*http.Request, error) {
+	var body bytes.Buffer
+	if contentType == "" {
+		contentType = "*/*" // Use default encoder
+	}
+	err := c.Encoder.Encode(payload, &body, contentType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode body: %s", err)
+	}
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "https"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
-	values := u.Query()
-	tmp36 := strconv.Itoa(accountID)
-	values.Set("account_id", tmp36)
-	values.Set("name", name)
-	tmp37 := strconv.Itoa(quantity)
-	values.Set("quantity", tmp37)
-	u.RawQuery = values.Encode()
-	req, err := http.NewRequest("POST", u.String(), nil)
+	req, err := http.NewRequest("POST", u.String(), &body)
 	if err != nil {
 		return nil, err
+	}
+	header := req.Header
+	if contentType == "*/*" {
+		header.Set("Content-Type", "application/json")
+	} else {
+		header.Set("Content-Type", contentType)
 	}
 	return req, nil
 }
@@ -143,6 +161,14 @@ func (c *Client) NewShowBottlesDataRequest(ctx context.Context, path string) (*h
 	return req, nil
 }
 
+// UpdateBottlesDataPayload is the bottles_data update action payload.
+type UpdateBottlesDataPayload struct {
+	// ボトル名
+	Name string `form:"name" json:"name" xml:"name"`
+	// 数量
+	Quantity int `form:"quantity" json:"quantity" xml:"quantity"`
+}
+
 // UpdateBottlesDataPath computes a request path to the update action of bottles_data.
 func UpdateBottlesDataPath(id int) string {
 	param0 := strconv.Itoa(id)
@@ -151,8 +177,8 @@ func UpdateBottlesDataPath(id int) string {
 }
 
 // 更新
-func (c *Client) UpdateBottlesData(ctx context.Context, path string, name *string, quantity *int) (*http.Response, error) {
-	req, err := c.NewUpdateBottlesDataRequest(ctx, path, name, quantity)
+func (c *Client) UpdateBottlesData(ctx context.Context, path string, payload *UpdateBottlesDataPayload, contentType string) (*http.Response, error) {
+	req, err := c.NewUpdateBottlesDataRequest(ctx, path, payload, contentType)
 	if err != nil {
 		return nil, err
 	}
@@ -160,24 +186,29 @@ func (c *Client) UpdateBottlesData(ctx context.Context, path string, name *strin
 }
 
 // NewUpdateBottlesDataRequest create the request corresponding to the update action endpoint of the bottles_data resource.
-func (c *Client) NewUpdateBottlesDataRequest(ctx context.Context, path string, name *string, quantity *int) (*http.Request, error) {
+func (c *Client) NewUpdateBottlesDataRequest(ctx context.Context, path string, payload *UpdateBottlesDataPayload, contentType string) (*http.Request, error) {
+	var body bytes.Buffer
+	if contentType == "" {
+		contentType = "*/*" // Use default encoder
+	}
+	err := c.Encoder.Encode(payload, &body, contentType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode body: %s", err)
+	}
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "https"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
-	values := u.Query()
-	if name != nil {
-		values.Set("name", *name)
-	}
-	if quantity != nil {
-		tmp38 := strconv.Itoa(*quantity)
-		values.Set("quantity", tmp38)
-	}
-	u.RawQuery = values.Encode()
-	req, err := http.NewRequest("PUT", u.String(), nil)
+	req, err := http.NewRequest("PUT", u.String(), &body)
 	if err != nil {
 		return nil, err
+	}
+	header := req.Header
+	if contentType == "*/*" {
+		header.Set("Content-Type", "application/json")
+	} else {
+		header.Set("Content-Type", contentType)
 	}
 	return req, nil
 }

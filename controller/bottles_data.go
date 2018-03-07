@@ -27,9 +27,9 @@ func (c *BottlesDataController) Add(ctx *app.AddBottlesDataContext) error {
 
 	// Put your logic here
 	b := &models.Bottle{}
-	b.AccountID = ctx.AccountID
-	b.Name = ctx.Name
-	b.Quantity = ctx.Quantity
+	b.AccountID = ctx.Payload.AccountID
+	b.Name = ctx.Payload.Name
+	b.Quantity = ctx.Payload.Quantity
 	bdb := models.NewBottleDB(c.db)
 	err := bdb.Add(ctx.Context, b)
 	if err != nil {
@@ -93,8 +93,8 @@ func (c *BottlesDataController) Update(ctx *app.UpdateBottlesDataContext) error 
 	// Put your logic here
 	b := &models.Bottle{}
 	b.ID = ctx.ID
-	b.Name = ctx.Name
-	b.Quantity = ctx.Quantity
+	b.Name = ctx.Payload.Name
+	b.Quantity = ctx.Payload.Quantity
 	bdb := models.NewBottleDB(c.db)
 	err := bdb.Update(ctx.Context, b)
 	if err == gorm.ErrRecordNotFound {

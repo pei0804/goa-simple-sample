@@ -108,6 +108,33 @@ definitions:
     - email
     title: AddAccountsPayload
     type: object
+  AddBottlesDataPayload:
+    example:
+      account_id: 1
+      name: 赤ワインなにか
+      quantity: 0
+    properties:
+      account_id:
+        description: アカウントID
+        example: 1
+        format: int64
+        type: integer
+      name:
+        default: ""
+        description: ボトル名
+        example: 赤ワインなにか
+        type: string
+      quantity:
+        description: 数量
+        example: 0
+        format: int64
+        type: integer
+    required:
+    - account_id
+    - name
+    - quantity
+    title: AddBottlesDataPayload
+    type: object
   AddBottlesPayload:
     example:
       account_id: 1
@@ -356,6 +383,24 @@ definitions:
         example: Eum illum nemo.
         type: string
     title: UpdateAccountsPayload
+    type: object
+  UpdateBottlesDataPayload:
+    example:
+      name: 赤ワインなにか
+      quantity: 10
+    properties:
+      name:
+        default: ""
+        description: ボトル名
+        example: 赤ワインなにか
+        type: string
+      quantity:
+        default: 0
+        description: 数量
+        example: 10
+        minimum: 0
+        type: integer
+    title: UpdateBottlesDataPayload
     type: object
   UpdateBottlesPayload:
     example:
@@ -1111,22 +1156,11 @@ paths:
       description: 追加
       operationId: bottles_data#add
       parameters:
-      - description: アカウントID
-        in: query
-        name: account_id
+      - in: body
+        name: payload
         required: true
-        type: integer
-      - default: ""
-        description: ボトル名
-        in: query
-        name: name
-        required: true
-        type: string
-      - description: 数量
-        in: query
-        name: quantity
-        required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/AddBottlesDataPayload'
       produces:
       - application/vnd.goa.error
       responses:
@@ -1208,19 +1242,11 @@ paths:
         name: id
         required: true
         type: integer
-      - default: ""
-        description: ボトル名
-        in: query
-        name: name
-        required: false
-        type: string
-      - default: 0
-        description: 数量
-        in: query
-        minimum: 0
-        name: quantity
-        required: false
-        type: integer
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateBottlesDataPayload'
       produces:
       - application/vnd.goa.error
       - text/plain

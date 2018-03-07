@@ -22,14 +22,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"strconv"
 )
 
-// AddBottlesDataBadRequest runs the method Add of the given controller with the given parameters.
+// AddBottlesDataBadRequest runs the method Add of the given controller with the given parameters and payload.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func AddBottlesDataBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesDataController, accountID int, name string, quantity int) (http.ResponseWriter, error) {
+func AddBottlesDataBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesDataController, payload *app.AddBottlesDataPayload) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -47,70 +46,55 @@ func AddBottlesDataBadRequest(t goatest.TInterface, ctx context.Context, service
 		service.Encoder.Register(newEncoder, "*/*")
 	}
 
-	// Setup request context
-	rw := httptest.NewRecorder()
-	query := url.Values{}
-	{
-		sliceVal := []string{strconv.Itoa(accountID)}
-		query["account_id"] = sliceVal
-	}
-	{
-		sliceVal := []string{name}
-		query["name"] = sliceVal
-	}
-	{
-		sliceVal := []string{strconv.Itoa(quantity)}
-		query["quantity"] = sliceVal
-	}
-	u := &url.URL{
-		Path:     fmt.Sprintf("/api/v1/bottles_data/"),
-		RawQuery: query.Encode(),
-	}
-	req, err := http.NewRequest("POST", u.String(), nil)
+	// Validate payload
+	err := payload.Validate()
 	if err != nil {
-		panic("invalid test " + err.Error()) // bug
-	}
-	prms := url.Values{}
-	{
-		sliceVal := []string{strconv.Itoa(accountID)}
-		prms["account_id"] = sliceVal
-	}
-	{
-		sliceVal := []string{name}
-		prms["name"] = sliceVal
-	}
-	{
-		sliceVal := []string{strconv.Itoa(quantity)}
-		prms["quantity"] = sliceVal
-	}
-	if ctx == nil {
-		ctx = context.Background()
-	}
-	goaCtx := goa.NewContext(goa.WithAction(ctx, "BottlesDataTest"), rw, req, prms)
-	addCtx, _err := app.NewAddBottlesDataContext(goaCtx, req, service)
-	if _err != nil {
-		e, ok := _err.(goa.ServiceError)
+		e, ok := err.(goa.ServiceError)
 		if !ok {
-			panic("invalid test data " + _err.Error()) // bug
+			panic(err) // bug
 		}
 		return nil, e
 	}
 
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/api/v1/bottles_data/"),
+	}
+	req, _err := http.NewRequest("POST", u.String(), nil)
+	if _err != nil {
+		panic("invalid test " + _err.Error()) // bug
+	}
+	prms := url.Values{}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "BottlesDataTest"), rw, req, prms)
+	addCtx, __err := app.NewAddBottlesDataContext(goaCtx, req, service)
+	if __err != nil {
+		_e, _ok := __err.(goa.ServiceError)
+		if !_ok {
+			panic("invalid test data " + __err.Error()) // bug
+		}
+		return nil, _e
+	}
+	addCtx.Payload = payload
+
 	// Perform action
-	_err = ctrl.Add(addCtx)
+	__err = ctrl.Add(addCtx)
 
 	// Validate response
-	if _err != nil {
-		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	if __err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", __err, logBuf.String())
 	}
 	if rw.Code != 400 {
 		t.Errorf("invalid response status code: got %+v, expected 400", rw.Code)
 	}
 	var mt error
 	if resp != nil {
-		var _ok bool
-		mt, _ok = resp.(error)
-		if !_ok {
+		var __ok bool
+		mt, __ok = resp.(error)
+		if !__ok {
 			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of error", resp, resp)
 		}
 	}
@@ -119,11 +103,11 @@ func AddBottlesDataBadRequest(t goatest.TInterface, ctx context.Context, service
 	return rw, mt
 }
 
-// AddBottlesDataCreated runs the method Add of the given controller with the given parameters.
+// AddBottlesDataCreated runs the method Add of the given controller with the given parameters and payload.
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func AddBottlesDataCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesDataController, accountID int, name string, quantity int) http.ResponseWriter {
+func AddBottlesDataCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesDataController, payload *app.AddBottlesDataPayload) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -140,62 +124,48 @@ func AddBottlesDataCreated(t goatest.TInterface, ctx context.Context, service *g
 		service.Encoder.Register(newEncoder, "*/*")
 	}
 
+	// Validate payload
+	err := payload.Validate()
+	if err != nil {
+		e, ok := err.(goa.ServiceError)
+		if !ok {
+			panic(err) // bug
+		}
+		t.Errorf("unexpected payload validation error: %+v", e)
+		return nil
+	}
+
 	// Setup request context
 	rw := httptest.NewRecorder()
-	query := url.Values{}
-	{
-		sliceVal := []string{strconv.Itoa(accountID)}
-		query["account_id"] = sliceVal
-	}
-	{
-		sliceVal := []string{name}
-		query["name"] = sliceVal
-	}
-	{
-		sliceVal := []string{strconv.Itoa(quantity)}
-		query["quantity"] = sliceVal
-	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/api/v1/bottles_data/"),
-		RawQuery: query.Encode(),
+		Path: fmt.Sprintf("/api/v1/bottles_data/"),
 	}
-	req, err := http.NewRequest("POST", u.String(), nil)
-	if err != nil {
-		panic("invalid test " + err.Error()) // bug
+	req, _err := http.NewRequest("POST", u.String(), nil)
+	if _err != nil {
+		panic("invalid test " + _err.Error()) // bug
 	}
 	prms := url.Values{}
-	{
-		sliceVal := []string{strconv.Itoa(accountID)}
-		prms["account_id"] = sliceVal
-	}
-	{
-		sliceVal := []string{name}
-		prms["name"] = sliceVal
-	}
-	{
-		sliceVal := []string{strconv.Itoa(quantity)}
-		prms["quantity"] = sliceVal
-	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	goaCtx := goa.NewContext(goa.WithAction(ctx, "BottlesDataTest"), rw, req, prms)
-	addCtx, _err := app.NewAddBottlesDataContext(goaCtx, req, service)
-	if _err != nil {
-		e, ok := _err.(goa.ServiceError)
-		if !ok {
-			panic("invalid test data " + _err.Error()) // bug
+	addCtx, __err := app.NewAddBottlesDataContext(goaCtx, req, service)
+	if __err != nil {
+		_e, _ok := __err.(goa.ServiceError)
+		if !_ok {
+			panic("invalid test data " + __err.Error()) // bug
 		}
-		t.Errorf("unexpected parameter validation error: %+v", e)
+		t.Errorf("unexpected parameter validation error: %+v", _e)
 		return nil
 	}
+	addCtx.Payload = payload
 
 	// Perform action
-	_err = ctrl.Add(addCtx)
+	__err = ctrl.Add(addCtx)
 
 	// Validate response
-	if _err != nil {
-		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	if __err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", __err, logBuf.String())
 	}
 	if rw.Code != 201 {
 		t.Errorf("invalid response status code: got %+v, expected 201", rw.Code)
@@ -741,11 +711,11 @@ func ShowBottlesDataOK(t goatest.TInterface, ctx context.Context, service *goa.S
 	return rw, mt
 }
 
-// UpdateBottlesDataBadRequest runs the method Update of the given controller with the given parameters.
+// UpdateBottlesDataBadRequest runs the method Update of the given controller with the given parameters and payload.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateBottlesDataBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesDataController, id int, name string, quantity int) (http.ResponseWriter, error) {
+func UpdateBottlesDataBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesDataController, id int, payload *app.UpdateBottlesDataPayload) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -763,63 +733,56 @@ func UpdateBottlesDataBadRequest(t goatest.TInterface, ctx context.Context, serv
 		service.Encoder.Register(newEncoder, "*/*")
 	}
 
-	// Setup request context
-	rw := httptest.NewRecorder()
-	query := url.Values{}
-	{
-		sliceVal := []string{name}
-		query["name"] = sliceVal
-	}
-	{
-		sliceVal := []string{strconv.Itoa(quantity)}
-		query["quantity"] = sliceVal
-	}
-	u := &url.URL{
-		Path:     fmt.Sprintf("/api/v1/bottles_data/%v", id),
-		RawQuery: query.Encode(),
-	}
-	req, err := http.NewRequest("PUT", u.String(), nil)
+	// Validate payload
+	err := payload.Validate()
 	if err != nil {
-		panic("invalid test " + err.Error()) // bug
-	}
-	prms := url.Values{}
-	prms["id"] = []string{fmt.Sprintf("%v", id)}
-	{
-		sliceVal := []string{name}
-		prms["name"] = sliceVal
-	}
-	{
-		sliceVal := []string{strconv.Itoa(quantity)}
-		prms["quantity"] = sliceVal
-	}
-	if ctx == nil {
-		ctx = context.Background()
-	}
-	goaCtx := goa.NewContext(goa.WithAction(ctx, "BottlesDataTest"), rw, req, prms)
-	updateCtx, _err := app.NewUpdateBottlesDataContext(goaCtx, req, service)
-	if _err != nil {
-		e, ok := _err.(goa.ServiceError)
+		e, ok := err.(goa.ServiceError)
 		if !ok {
-			panic("invalid test data " + _err.Error()) // bug
+			panic(err) // bug
 		}
 		return nil, e
 	}
 
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/api/v1/bottles_data/%v", id),
+	}
+	req, _err := http.NewRequest("PUT", u.String(), nil)
+	if _err != nil {
+		panic("invalid test " + _err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "BottlesDataTest"), rw, req, prms)
+	updateCtx, __err := app.NewUpdateBottlesDataContext(goaCtx, req, service)
+	if __err != nil {
+		_e, _ok := __err.(goa.ServiceError)
+		if !_ok {
+			panic("invalid test data " + __err.Error()) // bug
+		}
+		return nil, _e
+	}
+	updateCtx.Payload = payload
+
 	// Perform action
-	_err = ctrl.Update(updateCtx)
+	__err = ctrl.Update(updateCtx)
 
 	// Validate response
-	if _err != nil {
-		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	if __err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", __err, logBuf.String())
 	}
 	if rw.Code != 400 {
 		t.Errorf("invalid response status code: got %+v, expected 400", rw.Code)
 	}
 	var mt error
 	if resp != nil {
-		var _ok bool
-		mt, _ok = resp.(error)
-		if !_ok {
+		var __ok bool
+		mt, __ok = resp.(error)
+		if !__ok {
 			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of error", resp, resp)
 		}
 	}
@@ -828,11 +791,11 @@ func UpdateBottlesDataBadRequest(t goatest.TInterface, ctx context.Context, serv
 	return rw, mt
 }
 
-// UpdateBottlesDataNotFound runs the method Update of the given controller with the given parameters.
+// UpdateBottlesDataNotFound runs the method Update of the given controller with the given parameters and payload.
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateBottlesDataNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesDataController, id int, name string, quantity int) http.ResponseWriter {
+func UpdateBottlesDataNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesDataController, id int, payload *app.UpdateBottlesDataPayload) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -849,55 +812,49 @@ func UpdateBottlesDataNotFound(t goatest.TInterface, ctx context.Context, servic
 		service.Encoder.Register(newEncoder, "*/*")
 	}
 
+	// Validate payload
+	err := payload.Validate()
+	if err != nil {
+		e, ok := err.(goa.ServiceError)
+		if !ok {
+			panic(err) // bug
+		}
+		t.Errorf("unexpected payload validation error: %+v", e)
+		return nil
+	}
+
 	// Setup request context
 	rw := httptest.NewRecorder()
-	query := url.Values{}
-	{
-		sliceVal := []string{name}
-		query["name"] = sliceVal
-	}
-	{
-		sliceVal := []string{strconv.Itoa(quantity)}
-		query["quantity"] = sliceVal
-	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/api/v1/bottles_data/%v", id),
-		RawQuery: query.Encode(),
+		Path: fmt.Sprintf("/api/v1/bottles_data/%v", id),
 	}
-	req, err := http.NewRequest("PUT", u.String(), nil)
-	if err != nil {
-		panic("invalid test " + err.Error()) // bug
+	req, _err := http.NewRequest("PUT", u.String(), nil)
+	if _err != nil {
+		panic("invalid test " + _err.Error()) // bug
 	}
 	prms := url.Values{}
 	prms["id"] = []string{fmt.Sprintf("%v", id)}
-	{
-		sliceVal := []string{name}
-		prms["name"] = sliceVal
-	}
-	{
-		sliceVal := []string{strconv.Itoa(quantity)}
-		prms["quantity"] = sliceVal
-	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	goaCtx := goa.NewContext(goa.WithAction(ctx, "BottlesDataTest"), rw, req, prms)
-	updateCtx, _err := app.NewUpdateBottlesDataContext(goaCtx, req, service)
-	if _err != nil {
-		e, ok := _err.(goa.ServiceError)
-		if !ok {
-			panic("invalid test data " + _err.Error()) // bug
+	updateCtx, __err := app.NewUpdateBottlesDataContext(goaCtx, req, service)
+	if __err != nil {
+		_e, _ok := __err.(goa.ServiceError)
+		if !_ok {
+			panic("invalid test data " + __err.Error()) // bug
 		}
-		t.Errorf("unexpected parameter validation error: %+v", e)
+		t.Errorf("unexpected parameter validation error: %+v", _e)
 		return nil
 	}
+	updateCtx.Payload = payload
 
 	// Perform action
-	_err = ctrl.Update(updateCtx)
+	__err = ctrl.Update(updateCtx)
 
 	// Validate response
-	if _err != nil {
-		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	if __err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", __err, logBuf.String())
 	}
 	if rw.Code != 404 {
 		t.Errorf("invalid response status code: got %+v, expected 404", rw.Code)
@@ -907,11 +864,11 @@ func UpdateBottlesDataNotFound(t goatest.TInterface, ctx context.Context, servic
 	return rw
 }
 
-// UpdateBottlesDataOK runs the method Update of the given controller with the given parameters.
+// UpdateBottlesDataOK runs the method Update of the given controller with the given parameters and payload.
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateBottlesDataOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesDataController, id int, name string, quantity int) http.ResponseWriter {
+func UpdateBottlesDataOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.BottlesDataController, id int, payload *app.UpdateBottlesDataPayload) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -928,55 +885,49 @@ func UpdateBottlesDataOK(t goatest.TInterface, ctx context.Context, service *goa
 		service.Encoder.Register(newEncoder, "*/*")
 	}
 
+	// Validate payload
+	err := payload.Validate()
+	if err != nil {
+		e, ok := err.(goa.ServiceError)
+		if !ok {
+			panic(err) // bug
+		}
+		t.Errorf("unexpected payload validation error: %+v", e)
+		return nil
+	}
+
 	// Setup request context
 	rw := httptest.NewRecorder()
-	query := url.Values{}
-	{
-		sliceVal := []string{name}
-		query["name"] = sliceVal
-	}
-	{
-		sliceVal := []string{strconv.Itoa(quantity)}
-		query["quantity"] = sliceVal
-	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/api/v1/bottles_data/%v", id),
-		RawQuery: query.Encode(),
+		Path: fmt.Sprintf("/api/v1/bottles_data/%v", id),
 	}
-	req, err := http.NewRequest("PUT", u.String(), nil)
-	if err != nil {
-		panic("invalid test " + err.Error()) // bug
+	req, _err := http.NewRequest("PUT", u.String(), nil)
+	if _err != nil {
+		panic("invalid test " + _err.Error()) // bug
 	}
 	prms := url.Values{}
 	prms["id"] = []string{fmt.Sprintf("%v", id)}
-	{
-		sliceVal := []string{name}
-		prms["name"] = sliceVal
-	}
-	{
-		sliceVal := []string{strconv.Itoa(quantity)}
-		prms["quantity"] = sliceVal
-	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	goaCtx := goa.NewContext(goa.WithAction(ctx, "BottlesDataTest"), rw, req, prms)
-	updateCtx, _err := app.NewUpdateBottlesDataContext(goaCtx, req, service)
-	if _err != nil {
-		e, ok := _err.(goa.ServiceError)
-		if !ok {
-			panic("invalid test data " + _err.Error()) // bug
+	updateCtx, __err := app.NewUpdateBottlesDataContext(goaCtx, req, service)
+	if __err != nil {
+		_e, _ok := __err.(goa.ServiceError)
+		if !_ok {
+			panic("invalid test data " + __err.Error()) // bug
 		}
-		t.Errorf("unexpected parameter validation error: %+v", e)
+		t.Errorf("unexpected parameter validation error: %+v", _e)
 		return nil
 	}
+	updateCtx.Payload = payload
 
 	// Perform action
-	_err = ctrl.Update(updateCtx)
+	__err = ctrl.Update(updateCtx)
 
 	// Validate response
-	if _err != nil {
-		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	if __err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", __err, logBuf.String())
 	}
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)

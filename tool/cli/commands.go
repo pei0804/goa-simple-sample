@@ -160,12 +160,8 @@ type (
 
 	// AddBottlesDataCommand is the command line data structure for the add action of bottles_data
 	AddBottlesDataCommand struct {
-		// アカウントID
-		AccountID int
-		// ボトル名
-		Name string
-		// 数量
-		Quantity    int
+		Payload     string
+		ContentType string
 		PrettyPrint bool
 	}
 
@@ -190,12 +186,10 @@ type (
 
 	// UpdateBottlesDataCommand is the command line data structure for the update action of bottles_data
 	UpdateBottlesDataCommand struct {
+		Payload     string
+		ContentType string
 		// id
-		ID int
-		// ボトル名
-		Name string
-		// 数量
-		Quantity    int
+		ID          int
 		PrettyPrint bool
 	}
 
@@ -344,7 +338,16 @@ Payload example:
 	sub = &cobra.Command{
 		Use:   `bottles-data ["/api/v1/bottles_data/"]`,
 		Short: ``,
-		RunE:  func(cmd *cobra.Command, args []string) error { return tmp4.Run(c, args) },
+		Long: `
+
+Payload example:
+
+{
+   "account_id": 1,
+   "name": "赤ワインなにか",
+   "quantity": 0
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp4.Run(c, args) },
 	}
 	tmp4.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp4.PrettyPrint, "pp", false, "Pretty print response body")
@@ -713,7 +716,15 @@ Payload example:
 	sub = &cobra.Command{
 		Use:   `bottles-data ["/api/v1/bottles_data/ID"]`,
 		Short: ``,
-		RunE:  func(cmd *cobra.Command, args []string) error { return tmp34.Run(c, args) },
+		Long: `
+
+Payload example:
+
+{
+   "name": "赤ワインなにか",
+   "quantity": 10
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp34.Run(c, args) },
 	}
 	tmp34.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp34.PrettyPrint, "pp", false, "Pretty print response body")
@@ -1494,9 +1505,16 @@ func (cmd *AddBottlesDataCommand) Run(c *client.Client, args []string) error {
 	} else {
 		path = "/api/v1/bottles_data/"
 	}
+	var payload client.AddBottlesDataPayload
+	if cmd.Payload != "" {
+		err := json.Unmarshal([]byte(cmd.Payload), &payload)
+		if err != nil {
+			return fmt.Errorf("failed to deserialize payload: %s", err)
+		}
+	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.AddBottlesData(ctx, path, cmd.AccountID, cmd.Name, cmd.Quantity)
+	resp, err := c.AddBottlesData(ctx, path, &payload, cmd.ContentType)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -1508,12 +1526,8 @@ func (cmd *AddBottlesDataCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *AddBottlesDataCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
-	var accountID int
-	cc.Flags().IntVar(&cmd.AccountID, "account_id", accountID, `アカウントID`)
-	var name string
-	cc.Flags().StringVar(&cmd.Name, "name", name, `ボトル名`)
-	var quantity int
-	cc.Flags().IntVar(&cmd.Quantity, "quantity", quantity, `数量`)
+	cc.Flags().StringVar(&cmd.Payload, "payload", "", "Request body encoded in JSON")
+	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
 }
 
 // Run makes the HTTP request corresponding to the DeleteBottlesDataCommand command.
@@ -1600,9 +1614,16 @@ func (cmd *UpdateBottlesDataCommand) Run(c *client.Client, args []string) error 
 	} else {
 		path = fmt.Sprintf("/api/v1/bottles_data/%v", cmd.ID)
 	}
+	var payload client.UpdateBottlesDataPayload
+	if cmd.Payload != "" {
+		err := json.Unmarshal([]byte(cmd.Payload), &payload)
+		if err != nil {
+			return fmt.Errorf("failed to deserialize payload: %s", err)
+		}
+	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.UpdateBottlesData(ctx, path, stringFlagVal("name", cmd.Name), intFlagVal("quantity", cmd.Quantity))
+	resp, err := c.UpdateBottlesData(ctx, path, &payload, cmd.ContentType)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -1614,12 +1635,10 @@ func (cmd *UpdateBottlesDataCommand) Run(c *client.Client, args []string) error 
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *UpdateBottlesDataCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	cc.Flags().StringVar(&cmd.Payload, "payload", "", "Request body encoded in JSON")
+	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
 	var id int
 	cc.Flags().IntVar(&cmd.ID, "id", id, `id`)
-	var name string
-	cc.Flags().StringVar(&cmd.Name, "name", name, `ボトル名`)
-	var quantity int
-	cc.Flags().IntVar(&cmd.Quantity, "quantity", quantity, `数量`)
 }
 
 // Run makes the HTTP request corresponding to the EtcMethodCommand command.
