@@ -1155,9 +1155,10 @@ func MountSecurityController(service *goa.Service, ctrl SecurityController) {
 		}
 		return ctrl.Security(rctx)
 	}
+	h = handleSecurity("userToken", h)
 	h = handleSecurityOrigin(h)
 	service.Mux.Handle("GET", "/api/v1/securiy/", ctrl.MuxHandler("security", h, nil))
-	service.LogInfo("mount", "ctrl", "Security", "action", "Security", "route", "GET /api/v1/securiy/")
+	service.LogInfo("mount", "ctrl", "Security", "action", "Security", "route", "GET /api/v1/securiy/", "security", "userToken")
 }
 
 // handleSecurityOrigin applies the CORS response headers corresponding to the origin.

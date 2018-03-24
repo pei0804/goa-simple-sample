@@ -606,14 +606,13 @@ externalDocs:
 host: localhost:8080
 info:
   contact:
-    email: satak47cpc@gmail.com
+    email: peeeei0804@gmail.com
     name: pei
     url: https://github.com/pei0804/goa-simple-sample/issues
   description: goaのサンプルです
   license:
     name: MIT
-    url: https://github.com/tikasan/eventory/blob/master/LICENSE
-  title: tikasan/goa-simple-sample
+  title: pei0804/goa-simple-sample
   version: ""
 paths:
   /api/v1/accounts/:
@@ -1635,6 +1634,8 @@ paths:
       schemes:
       - http
       - https
+      security:
+      - userToken: []
       summary: security security
       tags:
       - security

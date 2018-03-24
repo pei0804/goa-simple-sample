@@ -43,5 +43,10 @@ func (c *Client) NewSecuritySecurityRequest(ctx context.Context, path string) (*
 	if err != nil {
 		return nil, err
 	}
+	if c.UserTokenSigner != nil {
+		if err := c.UserTokenSigner.Sign(req); err != nil {
+			return nil, err
+		}
+	}
 	return req, nil
 }

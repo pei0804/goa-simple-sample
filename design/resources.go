@@ -86,6 +86,7 @@ var _ = Resource("actions", func() {
 
 var _ = Resource("security", func() {
 	BasePath("/securiy")
+	Security(UserAuth)
 	Action("security", func() {
 		Description("セキュリティの例です")
 		Routing(
